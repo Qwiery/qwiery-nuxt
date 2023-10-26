@@ -137,18 +137,27 @@
 	});
 
 	async function onQuery(queryPath: string[]) {
-		viewer.clear();
 		showSpinner.value = true;
 		console.log("Path Query >>: " + queryPath.join(" "));
-		const g = await GraphAPI.pathQuery(queryPath, 10);
-		await new Promise((r) => setTimeout(r, 2000));
-		if (g) {
-			viewer.loadGraph(g);
-			viewer.setStyle(GraphStyle.Default);
-		} else {
-			Toasts.error("The data could not be loaded.");
+
+		try {
+			if (!viewer) {
+				return Toasts.error("Graph viewer surface is not initialized.");
+			}
+			viewer.clear();
+			const g = await GraphAPI.pathQuery(queryPath, 10);
+			await new Promise((r) => setTimeout(r, 2000));
+			if (g) {
+				viewer.loadGraph(g);
+				viewer.setStyle(GraphStyle.Default);
+			} else {
+				Toasts.error("The data could not be loaded.");
+			}
+		} catch (e: any) {
+			Toasts.error(e.message);
+		} finally {
+			showSpinner.value = false;
 		}
-		showSpinner.value = false;
 	}
 </script>
 <style scoped></style>
