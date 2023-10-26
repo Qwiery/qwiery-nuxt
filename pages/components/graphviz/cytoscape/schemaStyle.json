@@ -1,0 +1,37 @@
+[
+  {
+    "selector": "node",
+    "css": {
+      "label": "data(name)",
+      "text-valign": "center",
+      "text-halign": "center",
+      "height": "60px",
+      "width": "100px",
+      "shape": "ellipse",
+      "background-color": "steelblue",
+      "color": "white"
+
+    }
+  },
+  {
+    "selector": "edge",
+    "css": {
+      "curve-style": "bezier",
+      "control-point-step-size": 40,
+      "target-arrow-shape": "triangle",
+      "line-color": "dimgrey",
+      "color": "dimgrey",
+      "label": "data(name)",
+      "text-rotation": "autorotate",
+      "text-outline-color": "green",
+      "text-background-color": "white",
+      "text-border-width": "1px",
+      "text-border-color": "dimgrey",
+      "text-border-style": "solid",
+      "font-size": "10px",
+      "text-background-padding": 5,
+      "text-background-opacity": 1,
+      "text-border-opacity": 1
+    }
+  }
+]
