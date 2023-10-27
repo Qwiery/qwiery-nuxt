@@ -84,7 +84,7 @@
 				</pane>
 				<pane size="70">
 					<auto-search @query="onQuery"></auto-search>
-					<cyto-viewer ref="viewer"></cyto-viewer>
+					<cyto-viewer ref="viewerControl"></cyto-viewer>
 					<div v-if="showSpinner" class="absolute inset-0 flex justify-center items-center z-10">
 						<spinner></spinner>
 					</div>
