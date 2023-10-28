@@ -1,13 +1,13 @@
 <template>
 	<h1>Graph Schema</h1>
-	<cyto-viewer ref="viewerControl"></cyto-viewer>
+	<graphviz-viewer ref="viewerControl"></graphviz-viewer>
 </template>
 <script setup lang="ts">
 	import "splitpanes/dist/splitpanes.css";
-	import CytoViewer from "~/pages/components/graphviz/cytoscape/cytoViewer.vue";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
 	import { Toasts } from "~/composables/notifications";
+	import CytoscapeViewer from "~/components/graphviz/GraphvizViewer.vue";
 	let viewer: IGraphViewer;
 
 	let viewerControl = ref(null);

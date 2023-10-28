@@ -52,7 +52,7 @@
 						<TabPanel>
 							<div class="flex items-start">
 								<div class="h-20 w-20 flex-none ltr:mr-4 rtl:ml-4">
-									<img src="/assets/images/profile-34.jpeg" alt="" class="m-0 h-20 w-20 rounded-full object-cover ring-2 ring-[#ebedf2] dark:ring-white-dark" />
+									<img src="/images/anonymous.png" alt="" class="m-0 h-20 w-20 rounded-full object-cover ring-2 ring-[#ebedf2] dark:ring-white-dark" />
 								</div>
 								<div class="flex-auto">
 									<h5 class="mb-4 text-xl font-medium">Media heading</h5>
@@ -84,7 +84,8 @@
 				</pane>
 				<pane size="70">
 					<auto-search @query="onQuery"></auto-search>
-					<cyto-viewer ref="viewerControl"></cyto-viewer>
+
+					<graphviz-viewer ref="viewerControl"></graphviz-viewer>
 					<div v-if="showSpinner" class="absolute inset-0 flex justify-center items-center z-10">
 						<spinner></spinner>
 					</div>
@@ -113,11 +114,12 @@
 	import { Pane, Splitpanes } from "splitpanes";
 	import "splitpanes/dist/splitpanes.css";
 	import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
-	import AutoSearch from "~/pages/components/autoSearch/autoSearch.vue";
-	import CytoViewer from "~/pages/components/graphviz/cytoscape/cytoViewer.vue";
+	import AutoSearch from "~/components/autoSearch/autoSearch.vue";
+	// import CytoViewer from "~/components/cystoscape/viewer.vue";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
 	import { Toasts } from "~/composables/notifications";
+	import CytoscapeViewer from "~/components/graphviz/GraphvizViewer.vue";
 
 	let isLeftVisible = ref(false);
 	let isRightVisible = ref(false);

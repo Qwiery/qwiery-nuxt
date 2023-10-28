@@ -6,6 +6,7 @@ import Forest from "~/utils/graphs/lib/forest";
 import { Strings } from "./utils/lib/strings";
 import { Utils } from "./utils/lib/utils";
 import CytoUtils from "./graphs/lib/visualization/cytoUtils";
+import pkg from "../package.json" assert { type: "json" };
 
 export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils };
 
@@ -31,4 +32,12 @@ export interface IGraphViewer {
 	loadGraph: (g: Graph | any, replace?: boolean) => void;
 	clear: () => void;
 	setStyle: (styleName: GraphStyle) => void;
+}
+export function GraphalyzerInfo() {
+	return {
+		version: pkg.version,
+		description: pkg.description,
+		name: "Graphalyzer",
+		title: `Graphalyzer v${pkg.version}`,
+	};
 }

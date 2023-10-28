@@ -25,7 +25,7 @@
 			</div>
 
 			<!-- BEGIN APP SETTING LAUNCHER -->
-			<theme-customizer />
+			<app-settings />
 			<!-- END APP SETTING LAUNCHER -->
 
 			<div class="main-container min-h-screen text-black dark:text-white-dark" :class="[store.navbar]">
@@ -56,6 +56,7 @@
 	import { ref, onMounted } from "vue";
 	import appSetting from "@/app-setting";
 	import { useAppStore } from "@/stores/index";
+	import AppSettings from "~/components/AppSettings.vue";
 	const store = useAppStore();
 	const showTopButton = ref(false);
 	const { setLocale } = useI18n();

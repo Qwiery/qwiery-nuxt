@@ -4,7 +4,7 @@
 			<div class="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-[#333333]">
 				<div class="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
 					<NuxtLink to="/" class="main-logo flex shrink-0 items-center">
-						<img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/orbifold.svg" alt="" />
+						<img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/images/orbifold.svg" alt="" />
 						<span class="hidden align-middle text-2xl font-semibold transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">Graphalizer</span>
 					</NuxtLink>
 
@@ -155,7 +155,7 @@
 													}"
 													@click="changeLanguage(item)"
 												>
-													<img class="h-5 w-5 rounded-full object-cover" :src="`/assets/images/flags/${item.code.toUpperCase()}.svg`" alt="" />
+													<img class="h-5 w-5 rounded-full object-cover" :src="`/images/flags/${item.code.toUpperCase()}.svg`" alt="" />
 													<span class="ltr:ml-3 rtl:mr-3">{{ item.name }}</span>
 												</button>
 											</li>
@@ -337,14 +337,14 @@
 						<client-only>
 							<Popper :placement="store.rtlClass === 'rtl' ? 'bottom-end' : 'bottom-start'" offsetDistance="8" class="!block">
 								<button type="button" class="group relative block">
-									<img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="/assets/images/swa.jpg" alt="" />
+									<img class="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="/images/swa.jpg" alt="" />
 								</button>
 								<template #content="{ close }">
 									<ul class="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
 										<li>
 											<div class="flex items-center px-4 py-4">
 												<div class="flex-none">
-													<img class="h-10 w-10 rounded-md object-cover" src="/assets/images/swa.jpg" alt="Francois Vanderseypen" />
+													<img class="h-10 w-10 rounded-md object-cover" src="/images/swa.jpg" alt="Francois Vanderseypen" />
 												</div>
 												<div class="truncate ltr:pl-4 rtl:pr-4">
 													<h4 class="text-base">{{ store.user.nickname }}<span class="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span></h4>
@@ -440,25 +440,25 @@
 		appSetting.toggleLanguage(item, setLocale);
 	};
 	const currentFlag = computed(() => {
-		return `/assets/images/flags/${store.locale?.toUpperCase()}.svg`;
+		return `/images/flags/${store.locale?.toUpperCase()}.svg`;
 	});
 
 	const notifications = ref([
 		{
 			id: 1,
-			profile: "profile-34.jpeg",
+			profile: "/images/anonymous.png",
 			message: '<strong class="text-sm mr-1">John Doe</strong>invite you to <strong>Prototyping</strong>',
 			time: "45 min ago",
 		},
 		{
 			id: 2,
-			profile: "profile-34.jpeg",
+			profile: "/images/anonymous.png",
 			message: '<strong class="text-sm mr-1">Adam Nolan</strong>mentioned you to <strong>UX Basics</strong>',
 			time: "9h Ago",
 		},
 		{
 			id: 3,
-			profile: "profile-16.jpeg",
+			profile: "/images/anonymous.png",
 			message: '<strong class="text-sm mr-1">Anna Morgan</strong>Upload a file',
 			time: "9h Ago",
 		},

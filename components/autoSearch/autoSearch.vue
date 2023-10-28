@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-	import SchemaMachine from "~/pages/components/autoSearch/schemaMachine";
+	import SchemaMachine from "~/components/autoSearch/schemaMachine";
 	import GraphAPI from "~/utils/GraphAPI";
 
 	const input = ref(null);

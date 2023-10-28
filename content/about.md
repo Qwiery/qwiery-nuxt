@@ -1,6 +1,6 @@
 # Overview
 
-Graphalyzer is a open source template to create graph-driven apps.
+Graphalyzer is an open source toolbox to create graph-driven apps.
 
 
 It's packaged with

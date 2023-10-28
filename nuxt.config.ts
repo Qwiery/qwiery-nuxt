@@ -18,12 +18,12 @@ export default defineNuxtConfig({
 				{
 					hid: "description",
 					name: "description",
-					content: "Graph visualization template",
+					content: "Graphalyzer is an open source toolbox to create graph-driven apps",
 				},
 				{ name: "format-detection", content: "telephone=no" },
 			],
 			link: [
-				{ rel: "icon", type: "image/x-icon", href: "/orbifold.svg" },
+				{ rel: "icon", type: "image/x-icon", href: "/images/orbifold.svg" },
 				{
 					rel: "stylesheet",
 					href: "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap",
@@ -31,7 +31,7 @@ export default defineNuxtConfig({
 			],
 		},
 	},
-	devtools: { enabled: true },
+	devtools: { enabled: process.env.NODE_ENV !== "production" },
 	css: ["~/assets/css/app.css"],
 	postcss: {
 		plugins: {
@@ -82,4 +82,10 @@ export default defineNuxtConfig({
 	tailwindcss: {
 		cssPath: "~/assets/css/documentation.css",
 	},
+	components: [
+		{
+			path: "~/components",
+			pathPrefix: true,
+		},
+	],
 });

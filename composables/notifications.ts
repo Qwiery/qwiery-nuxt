@@ -1,8 +1,15 @@
 import Swal from "sweetalert2";
-import { fa } from "@faker-js/faker";
+
+/**
+ * Gateway to notifications.
+ */
 export class Notifications {
+	/**
+	 * Shows an error toast.
+	 * @param msg {string} The error message.
+	 */
 	static error(msg: string) {
-		Swal.fire({
+		return Swal.fire({
 			title: "Error!",
 			text: "Do you want to continue",
 			icon: "error",
@@ -10,9 +17,13 @@ export class Notifications {
 		});
 	}
 }
+
+/**
+ * Gateway to toasts.
+ */
 export class Toasts {
 	static error(msg: string) {
-		Swal.fire({
+		return Swal.fire({
 			toast: true,
 			title: "Error",
 			position: "top",

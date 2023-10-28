@@ -4,7 +4,7 @@
 			<div class="h-full bg-white dark:bg-[#333333]">
 				<div class="flex items-center justify-between px-4 py-3">
 					<NuxtLink to="/" class="main-logo flex shrink-0 items-center">
-						<img class="ml-[5px] w-8 flex-none" src="/orbifold.svg" alt="" />
+						<img class="ml-[5px] w-8 flex-none" src="/images/orbifold.svg" alt="" />
 						<span class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Graphalizer</span>
 					</NuxtLink>
 					<a href="javascript:;" class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 hover:text-primary rtl:rotate-180 dark:text-white-light dark:hover:bg-dark-light/10" @click="store.toggleSidebar()">
@@ -24,9 +24,9 @@
 					>
 						<!--Top level enum-->
 						<ul class="relative space-y-0.5 p-4 py-0 font-semibold">
-							<!--Dashboards-->
+							<!--Apps-->
 							<li class="menu nav-item">
-								<button type="button" class="nav-link group w-full" :class="{ active: activeDropdown === 'dashboards' }" @click="activeDropdown === 'dashboards' ? (activeDropdown = null) : (activeDropdown = 'dashboards')">
+								<button type="button" class="nav-link group w-full" :class="{ active: activeDropdown === 'apps' }" @click="activeDropdown === 'apps' ? (activeDropdown = null) : (activeDropdown = 'apps')">
 									<div class="flex items-center">
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 											<path
@@ -50,13 +50,13 @@
 											{{ $t("Applications ") }}
 										</span>
 									</div>
-									<div class="rtl:rotate-180" :class="{ '!rotate-90': activeDropdown === 'dashboards' }">
+									<div class="rtl:rotate-180" :class="{ '!rotate-90': activeDropdown === 'apps' }">
 										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 											<path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 										</svg>
 									</div>
 								</button>
-								<height-collapsible :isOpen="activeDropdown === 'dashboards'">
+								<height-collapsible :isOpen="activeDropdown === 'apps'">
 									<ul class="sub-menu text-gray-500">
 										<li>
 											<NuxtLink to="/apps/fraud" @click="toggleMobileMenu" class="">
@@ -100,13 +100,13 @@
 								<svg class="hidden h-5 w-4 flex-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
 									<line x1="5" y1="12" x2="19" y2="12"></line>
 								</svg>
-								<span>{{ $t("graph") }}</span>
+								<span>{{ $t("Basic Apps") }}</span>
 							</h2>
 							<!--Graph items-->
 							<li class="nav-item">
 								<ul>
 									<li class="nav-item">
-										<NuxtLink to="/apps/schema" class="group" @click="toggleMobileMenu">
+										<NuxtLink to="/apps/generic/schema" class="group" @click="toggleMobileMenu">
 											<div class="flex items-center">
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path
@@ -132,7 +132,7 @@
 										</NuxtLink>
 									</li>
 									<li class="nav-item">
-										<NuxtLink to="/apps/viewer" class="group" @click="toggleMobileMenu">
+										<NuxtLink to="/apps/generic/viewer" class="group" @click="toggleMobileMenu">
 											<div class="flex items-center">
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path
@@ -170,7 +170,7 @@
 										</NuxtLink>
 									</li>
 									<li class="nav-item">
-										<NuxtLink to="/apps/editor" class="group" @click="toggleMobileMenu">
+										<NuxtLink to="/apps/generic/editor" class="group" @click="toggleMobileMenu">
 											<div class="flex items-center">
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path
@@ -202,10 +202,10 @@
 								<span>{{ $t("testing") }}</span>
 							</h2>
 							<!--Testing items-->
-							<li class="nav-item">
+							<li class="nav-item" v-if="isDevelopment">
 								<ul>
 									<li class="menu nav-item">
-										<button type="button" class="nav-link group w-full" :class="{ active: activeDropdown === 'ogma' }" @click="activeDropdown === 'ogma' ? (activeDropdown = null) : (activeDropdown = 'ogma')">
+										<button type="button" class="nav-link group w-full" :class="{ active: activeDropdown === 'graphviz' }" @click="activeDropdown === 'graphviz' ? (activeDropdown = null) : (activeDropdown = 'graphviz')">
 											<div class="flex items-center">
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path
@@ -216,15 +216,15 @@
 													/>
 												</svg>
 
-												<span class="text-black ltr:pl-3 rtl:pr-3 dark:text-primary-light/40 dark:group-hover:text-white-dark">{{ $t("Graph Viewer") }}</span>
+												<span class="text-black ltr:pl-3 rtl:pr-3 dark:text-primary-light/40 dark:group-hover:text-white-dark">{{ $t("Graph Viz") }}</span>
 											</div>
-											<div class="rtl:rotate-180" :class="{ '!rotate-90': activeDropdown === 'ogma' }">
+											<div class="rtl:rotate-180" :class="{ '!rotate-90': activeDropdown === 'graphviz' }">
 												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 												</svg>
 											</div>
 										</button>
-										<vue-collapsible :isOpen="activeDropdown === 'ogma'">
+										<height-collapsible :isOpen="activeDropdown === 'graphviz'">
 											<ul class="sub-menu text-gray-500">
 												<li>
 													<NuxtLink to="/testing/cyto/viewer" @click="toggleMobileMenu" class="">
@@ -237,12 +237,12 @@
 																	fill="currentColor"
 																/>
 															</svg>
-															<span class="text-black ltr:pl-3 rtl:pr-3 dark:text-primary-light/40 dark:group-hover:text-white-dark">{{ $t("Cytoscape") }}</span>
+															<span class="text-black ltr:pl-3 rtl:pr-3 dark:text-primary-light/40 dark:group-hover:text-white-dark">{{ $t("Generate Graph") }}</span>
 														</div>
 													</NuxtLink>
 												</li>
 											</ul>
-										</vue-collapsible>
+										</height-collapsible>
 									</li>
 								</ul>
 							</li>

@@ -6,8 +6,8 @@
 	import _ from "lodash";
 	// import CytoUtils from "~/utils/graphs/lib/visualization/cytoUtils";
 	import cola from "cytoscape-cola";
-	import defaultStyle from "./defaultStyle.json";
-	import schemaStyle from "./schemaStyle.json";
+	import defaultStyle from "./styles/defaultStyle.json";
+	import schemaStyle from "./styles/schemaStyle.json";
 	import { GraphStyle } from "~/utils/enums";
 
 	cytoscape.use(cola);

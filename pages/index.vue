@@ -1,15 +1,16 @@
 <template>
 	<div>
-		<h1>Graphalyzer v0.1.0</h1>
+		<h1>{{ info.title }}</h1>
+		<small>{{ info.description }}</small>
 	</div>
 </template>
 
 <script setup lang="ts">
+	import { GraphalyzerInfo } from "../utils";
+
 	useHead({
 		title: "Home",
 	});
-	// const { data, pending, error, refresh } = await useFetch('/api/graph/nodes', {
-	//     method: 'GET',
-	// });
-	// let found = data.value?.map((u) => u.id);
+
+	let info = GraphalyzerInfo();
 </script>
