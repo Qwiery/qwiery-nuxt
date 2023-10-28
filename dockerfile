@@ -18,8 +18,8 @@ RUN npm install --production=false
 COPY --link . .
 
 RUN npm run build
-#RUN npm prune
-#RUN npm install sqlite3
+RUN npm prune
+
 
 # Run
 FROM base

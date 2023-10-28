@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>Home</h1>
+		<h1>Graphalyzer v0.1.0</h1>
 	</div>
 </template>
 
