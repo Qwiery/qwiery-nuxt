@@ -1,6 +1,6 @@
 import { describe, test, it, expect } from "vitest";
 import Graph from "../utils/graphs/lib/graph";
-import SchemaMachine from "~/components/autoSearch/schemaMachine";
+import SchemaMachine from "../components/autoSearch/schemaMachine";
 
 const schema = new Graph();
 const A = schema.addNode({ name: "A" });

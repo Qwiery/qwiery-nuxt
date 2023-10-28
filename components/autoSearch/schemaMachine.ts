@@ -1,8 +1,10 @@
-import Graph from "~/utils/graphs/lib/graph";
+// import Graph from "../utils/graphs/lib/graph";
 
 export default class SchemaMachine {
+	// @ts-ignore
 	private schema: Graph;
 
+	// @ts-ignore
 	constructor(schema: Graph) {
 		this.schema = schema;
 	}
@@ -10,6 +12,7 @@ export default class SchemaMachine {
 	allNodeLabels() {
 		return this.schema.nodes.map((n) => n.name);
 	}
+
 	allEdgeLabels() {
 		return this.schema.edges.map((e) => e.name);
 	}
