@@ -565,4 +565,15 @@ describe("Graphs", function () {
 		expect(h.nodeCount).toEqual(20);
 		expect(h.edgeCount).toEqual(30);
 	});
+
+	it("should re-index", () => {
+		const g = Graph.fromArrows(["a->b->c"]);
+		expect(g.getById("a")).not.toBeNull();
+		let dic = g.reIndex();
+		expect(g.getById("a")).toBeNull();
+		expect(g.getById(dic["a"])).not.toBeNull();
+		// console.log(JSON.stringify(dic, null, 3));
+		// console.log(JSON.stringify(g.edges, null, 3));
+		expect(g.areConnected(dic["a"], dic["b"]));
+	});
 });

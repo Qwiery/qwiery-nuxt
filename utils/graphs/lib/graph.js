@@ -470,10 +470,7 @@ export default class Graph {
 		if (!_.isNil(found)) {
 			return found;
 		}
-		found = this.getGroupById(id);
-		if (!_.isNil(found)) {
-			return found;
-		}
+
 		return null;
 	}
 
@@ -1088,5 +1085,33 @@ export default class Graph {
 			nodes: _.clone(nodes),
 			edges: _.clone(edges),
 		});
+	}
+
+	/**
+	 * This will change all the id's to unique identifiers and thus ensure uniqueness if used elsewhere.
+	 * @param indexFunction {Function|null} The function to assign new id's. If not given UUID's will be assigned.
+	 * @returns {*} The dictionary of the mapping from old to new id's.
+	 */
+	reIndex(indexFunction = null) {
+		// from->to
+		const dic = {};
+		const ids = this.#nodes.map((n) => n.id);
+		if (!indexFunction) {
+			ids.forEach((id) => {
+				dic[id] = Utils.id();
+			});
+			indexFunction = (id) => dic[id] || Utils.id();
+		} else {
+			ids.forEach((id) => (dic[id] = indexFunction(id)));
+		}
+
+		this.#nodes.forEach((n) => (n.id = indexFunction(n.id)));
+		this.#edges.forEach((e) => {
+			e.sourceId = indexFunction(e.sourceId);
+			e.targetId = indexFunction(e.targetId);
+			e.id = indexFunction();
+		});
+		this.id = indexFunction();
+		return dic;
 	}
 }

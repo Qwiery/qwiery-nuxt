@@ -258,6 +258,9 @@ export default class Qwiery extends EventEmitter {
 	async randomGraph(name = "Erdos", ...args) {
 		const g = RandomGraph.create(name, ...args);
 		// note that you can customize the node payload via the static {@link RandomGraph.nodeCreator} method.
+
+		// since this effectively creates data via the adapter we need to convert the ids to ensure that it does not clash with existing data
+		g.reIndex();
 		for (const node of g.nodes) {
 			// name and typeName not relevant here
 			delete node.name;
@@ -521,7 +524,7 @@ export default class Qwiery extends EventEmitter {
 	 * @param labels {string[]} One or more labels.
 	 * @returns {*}
 	 */
-	async createEdge(sourceId, targetId=null, data = null, id = null, labels = null) {
+	async createEdge(sourceId, targetId = null, data = null, id = null, labels = null) {
 		// const edge = await this.#store.createEdge(sourceId, targetId, data, id, labels);
 		// this.emit("createEdge", edge);
 		// return edge;

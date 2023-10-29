@@ -115,7 +115,6 @@
 	import "splitpanes/dist/splitpanes.css";
 	import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 	import AutoSearch from "~/components/autoSearch/autoSearch.vue";
-	// import CytoViewer from "~/components/cystoscape/viewer.vue";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
 	import { Toasts } from "~/composables/notifications";

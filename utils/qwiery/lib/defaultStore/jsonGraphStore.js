@@ -23,9 +23,12 @@ import TreeNode from "../../../graphs/lib/treeNode.js";
 export default class JsonGraphStore extends Store {
 	#nodes;
 	#edges;
+	options = {};
 
 	constructor(options = {}) {
 		super();
+		this.options = options;
+		// console.log(JSON.stringify(options, null, 3));
 		this.#nodes = options.nodes || [];
 		this.#edges = options.edges || [];
 		this.id = options.id || Utils.id();
