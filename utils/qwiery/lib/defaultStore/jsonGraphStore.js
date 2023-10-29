@@ -15,6 +15,7 @@ import Graph from "../../../graphs/lib/graph.js";
 import { Error } from "sequelize";
 import Tree from "../../../graphs/lib/tree.js";
 import TreeNode from "../../../graphs/lib/treeNode.js";
+import fs from "fs";
 
 /**
  * Standard JSON graph structure.
@@ -24,6 +25,7 @@ export default class JsonGraphStore extends Store {
 	#nodes;
 	#edges;
 	options = {};
+	autoSaveHandle = null;
 
 	constructor(options = {}) {
 		super();
@@ -34,6 +36,23 @@ export default class JsonGraphStore extends Store {
 		this.id = options.id || Utils.id();
 		this.name = options.name || "JSON Graph";
 		this.description = options.description || "";
+		this.autoSave(options.autoSave, options.interval);
+	}
+
+	autoSave(onOff = false, interval = 2000) {
+		if (onOff === true) {
+			if (!this.autoSaveHandle) {
+				console.log(`JsonGraphStore auto-save enabled (interval: ${interval}).`);
+				this.autoSaveHandle = setInterval(() => {
+					fs.writeFile("/users/Swa/temp/data.json", JSON.stringify(this.toJSON()), "utf-8", () => {});
+				}, interval);
+			}
+		} else {
+			console.log("JsonGraphStore auto-save disabled.");
+			if (this.autoSaveHandle) {
+				clearInterval(this.autoSaveHandle);
+			}
+		}
 	}
 
 	//region Graph

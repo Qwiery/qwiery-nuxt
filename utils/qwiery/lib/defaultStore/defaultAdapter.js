@@ -76,6 +76,12 @@ export default async function DefaultAdapter(options = {}, done) {
 				done(null, [sourceId, targetId], found);
 			};
 		},
+		inferSchemaGraph(done) {
+			return async ([]) => {
+				const g = await mem.inferSchemaGraph();
+				done(null, [], g);
+			};
+		},
 
 		getNodes(done) {
 			return async ([predicate, amount]) => {
