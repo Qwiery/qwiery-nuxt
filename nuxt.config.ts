@@ -61,6 +61,9 @@ export default defineNuxtConfig({
 		output: {
 			dir: path.join(__dirname, "dist"),
 		},
+		experimental: {
+			openAPI: true, // http://localhost:3000/_nitro/swagger
+		},
 	},
 	content: {
 		// https://content.nuxtjs.org/api/configuration
@@ -80,6 +83,7 @@ export default defineNuxtConfig({
 		},
 	},
 	tailwindcss: {
+		// goto http://localhost:3000/_tailwind/
 		cssPath: "~/assets/css/documentation.css",
 	},
 	components: [
