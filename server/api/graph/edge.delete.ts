@@ -1,9 +1,9 @@
 import { GraphDB } from "./graphDB";
 
 /**
- * Deletes a node.
+ * Deletes en edge.
  */
 export default defineEventHandler(async (event) => {
 	const body = await readBody(event);
-	return await GraphDB.deleteNode(body.id);
+	return await GraphDB.deleteEdge(body.id);
 });

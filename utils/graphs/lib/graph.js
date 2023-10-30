@@ -261,6 +261,7 @@ export default class Graph {
 				case "watts strogatz":
 				case "wattsstrogatzbeta":
 				case "watts strogatz beta":
+				case "watts":
 				case "beta":
 					options = Object.assign({ nodeCount: 30, K: 6, beta: 0.54 }, options);
 					return RandomGraph.WattsStrogatzBeta(options.nodeCount, options.K, options.beta);
@@ -273,7 +274,7 @@ export default class Graph {
 				case "women":
 					return NamedGraph.DavisSouthernWomen();
 				default:
-					throw new Error(`Unknown graph '${name}'.`);
+					throw new Error(`Unknown graph '${name}'. Expected 'Erdos', 'Watts', 'Barabasi'... `);
 			}
 		}
 	}

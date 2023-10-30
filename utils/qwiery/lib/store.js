@@ -1,4 +1,4 @@
-import errors from "./errors.js";
+import errors from "../../utils/lib/errors.js";
 import _ from "lodash";
 import { Utils } from "../../utils/lib/utils.js";
 /* istanbul ignore file since this is an interface*/

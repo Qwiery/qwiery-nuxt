@@ -1,13 +1,13 @@
 import { GraphDB } from "./graphDB";
 
 /**
- * Gets a node.
+ * Gets an edge.
  */
 export default defineEventHandler(async (event) => {
 	const { id } = getQuery(event);
 	if (id) {
-		return await GraphDB.getNode(id);
+		return await GraphDB.getEdge(id.toString());
 	} else {
-		return await GraphDB.getNodes({}, 100);
+		return await GraphDB.getEdges({}, 100);
 	}
 });

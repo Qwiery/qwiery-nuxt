@@ -7,7 +7,6 @@
  * Use one of the storage plugins for something more solid and scalable.
  * */
 import Store from "../store.js";
-import errors from "../errors.js";
 import _ from "lodash";
 import { Utils } from "../../../utils/lib/utils.js";
 import { toPredicate } from "./projections.js";
@@ -412,7 +411,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async deleteNodes(predicate) {
 		if (_.isNil(predicate)) {
-			throw new Error(errors.isNil("predicate", "JsonGraphStore.deleteNodes"));
+			throw new Error(Errors.isNil("predicate", "JsonGraphStore.deleteNodes"));
 		}
 		let fun;
 		if (_.isFunction(predicate)) {
@@ -420,7 +419,7 @@ export default class JsonGraphStore extends Store {
 		} else if (_.isPlainObject(predicate)) {
 			fun = toPredicate(predicate);
 		} else {
-			throw new Error(errors.expectedType("predicate", "projection", "JsonGraphStore.deleteNodes"));
+			throw new Error(Errors.expectedType("predicate", "projection", "JsonGraphStore.deleteNodes"));
 		}
 
 		const found = _.filter(this.#nodes, fun);
@@ -434,7 +433,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async createNodes(seq) {
 		if (Utils.isEmpty(seq)) {
-			throw new Error(errors.isNil("seq", "JsonGraphStore.createNodes"));
+			throw new Error(Errors.isNil("seq", "JsonGraphStore.createNodes"));
 		}
 		const coll = [];
 		for (const item of seq) {
@@ -451,7 +450,7 @@ export default class JsonGraphStore extends Store {
 	async createNode(data = null, id = null, labels = null) {
 		const specs = Utils.getNodeSpecs(data, id, labels);
 		if (specs === null) {
-			throw new Error(errors.insufficientNodeSpecs());
+			throw new Error(Errors.insufficientNodeSpecs());
 		}
 		const node = {
 			id: Utils.id(),
@@ -469,7 +468,7 @@ export default class JsonGraphStore extends Store {
 			node.labels = specs.labels;
 		}
 		if (await this.nodeExists(node.id)) {
-			throw new Error(errors.nodeExistsAlready(node.id));
+			throw new Error(Errors.nodeExistsAlready(node.id));
 		}
 
 		// copy additional attribs
@@ -483,7 +482,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async deleteNode(id) {
 		if (Utils.isEmpty(id)) {
-			throw new Error(errors.isNil("id", "JsonGraphStore.deleteNode"));
+			throw new Error(Errors.isNil("id", "JsonGraphStore.deleteNode"));
 		}
 		const index = _.findIndex(this.#nodes, { id });
 		if (index > -1) {
@@ -501,7 +500,7 @@ export default class JsonGraphStore extends Store {
 	async updateNode(data = null, id = null, labels = null) {
 		const specs = Utils.getNodeSpecs(data, id, labels);
 		if (specs === null) {
-			throw new Error(errors.insufficientNodeSpecs());
+			throw new Error(Errors.insufficientNodeSpecs());
 		}
 		if (specs.id) {
 			specs.data.id = specs.id;
@@ -510,7 +509,7 @@ export default class JsonGraphStore extends Store {
 			specs.data.labels = specs.labels;
 		}
 		if (!(await this.nodeExists(specs.data.id))) {
-			throw new Error(errors.nodeDoesNotExist(specs.data.id));
+			throw new Error(Errors.nodeDoesNotExist(specs.data.id));
 		}
 		// remove replace the node
 		const index = _.findIndex(this.#nodes, { id: specs.id });
@@ -523,7 +522,7 @@ export default class JsonGraphStore extends Store {
 	async upsertNode(data = null, id = null, labels = null) {
 		const specs = Utils.getNodeSpecs(data, id, labels);
 		if (specs === null) {
-			throw new Error(errors.insufficientNodeSpecs());
+			throw new Error(Errors.insufficientNodeSpecs());
 		}
 		if (specs.id && (await this.nodeExists(specs.id))) {
 			return this.updateNode(data, id, labels);
@@ -535,10 +534,10 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getNodesWithLabel(label, amount = 1000) {
 		if (Utils.isEmpty(label)) {
-			throw new Error(errors.emptyString("label", "JsonGraphStore.getNodesWithLabel"));
+			throw new Error(Errors.emptyString("label", "JsonGraphStore.getNodesWithLabel"));
 		}
 		if (!Utils.isPositiveInteger(amount)) {
-			throw new Error(errors.invalidNumber("amount", "JsonGraphStore.getNodesWithLabel"));
+			throw new Error(Errors.invalidNumber("amount", "JsonGraphStore.getNodesWithLabel"));
 		}
 		return _.take(
 			_.filter(this.#nodes, (n) => _.includes(n.labels, label)),
@@ -549,7 +548,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getNode(projection) {
 		if (Utils.isEmpty(projection)) {
-			throw new Error(errors.isNil("projection", "JsonGraphStore.getNode"));
+			throw new Error(Errors.isNil("projection", "JsonGraphStore.getNode"));
 		}
 		if (_.isString(projection)) {
 			return _.find(this.#nodes, { id: projection }) || null;
@@ -566,7 +565,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async nodeExists(id) {
 		if (Utils.isEmpty(id)) {
-			throw new Error(errors.isNil("id", "JsonGraphStore.nodeExists"));
+			throw new Error(Errors.isNil("id", "JsonGraphStore.nodeExists"));
 		}
 		return !_.isNil(_.find(this.#nodes, { id }));
 	}
@@ -586,7 +585,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getNodes(projection = {}, amount = 1000) {
 		if (_.isNil(projection)) {
-			throw new Error(errors.isNil("projection", "JsonGraphStore.getNodes"));
+			throw new Error(Errors.isNil("projection", "JsonGraphStore.getNodes"));
 		}
 		if (_.isFunction(projection)) {
 			return _.take(_.filter(this.#nodes, projection), amount);
@@ -608,7 +607,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getEdge(projection) {
 		if (Utils.isEmpty(projection)) {
-			throw new Error(errors.isNil("id", "JsonGraphStore.getEdge"));
+			throw new Error(Errors.isNil("id", "JsonGraphStore.getEdge"));
 		}
 		if (_.isString(projection)) {
 			return _.find(this.#edges, { id: projection }) || null;
@@ -623,7 +622,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getEdges(projection = {}, amount = 1000) {
 		if (_.isNil(projection)) {
-			throw new Error(errors.isNil("projection", "JsonGraphStore.getEdges"));
+			throw new Error(Errors.isNil("projection", "JsonGraphStore.getEdges"));
 		}
 		if (_.isFunction(projection)) {
 			return _.take(_.filter(this.#edges, projection), amount);
@@ -649,7 +648,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async edgeExists(id) {
 		if (Utils.isEmpty(id)) {
-			throw new Error(errors.isNil("id", "JsonGraphStore.edgeExists"));
+			throw new Error(Errors.isNil("id", "JsonGraphStore.edgeExists"));
 		}
 		return !_.isNil(_.find(this.#edges, { id }));
 	}
@@ -658,7 +657,7 @@ export default class JsonGraphStore extends Store {
 	async createEdge(sourceId, targetId = null, data = null, id = null, labels = null) {
 		const specs = Utils.getEdgeSpecs(sourceId, targetId, data, id, labels);
 		if (specs === null) {
-			throw new Error(errors.insufficientEdgeSpecs());
+			throw new Error(Errors.insufficientEdgeSpecs());
 		}
 
 		if (_.isNil(specs.data)) {
@@ -666,10 +665,10 @@ export default class JsonGraphStore extends Store {
 		}
 		// check endpoints
 		if (!(await this.nodeExists(specs.sourceId))) {
-			throw new Error(errors.sourceDoesNotExist(specs.sourceId));
+			throw new Error(Errors.sourceDoesNotExist(specs.sourceId));
 		}
 		if (!(await this.nodeExists(specs.targetId))) {
-			throw new Error(errors.targetDoesNotExist(specs.targetId));
+			throw new Error(Errors.targetDoesNotExist(specs.targetId));
 		}
 
 		const edge = {
@@ -698,7 +697,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async deleteEdge(id) {
 		if (Utils.isEmpty(id)) {
-			throw new Error(errors.isNil("id", "JsonGraphStore.deleteEdge"));
+			throw new Error(Errors.isNil("id", "JsonGraphStore.deleteEdge"));
 		}
 		const index = _.findIndex(this.#edges, { id });
 		if (index > -1) {
@@ -710,7 +709,7 @@ export default class JsonGraphStore extends Store {
 	async updateEdge(data, id = null, labels = null) {
 		const specs = Utils.getEdgeSpecs(data, id, null);
 		if (specs === null) {
-			throw new Error(errors.insufficientEdgeSpecs());
+			throw new Error(Errors.insufficientEdgeSpecs());
 		}
 		if (_.isNil(specs.data)) {
 			specs.data = {};
@@ -726,13 +725,13 @@ export default class JsonGraphStore extends Store {
 		specs.data.targetId = specs.targetId;
 		// check endpoints
 		if (!(await this.nodeExists(specs.sourceId))) {
-			throw new Error(errors.sourceDoesNotExist(specs.sourceId));
+			throw new Error(Errors.sourceDoesNotExist(specs.sourceId));
 		}
 		if (!(await this.nodeExists(specs.targetId))) {
-			throw new Error(errors.targetDoesNotExist(specs.targetId));
+			throw new Error(Errors.targetDoesNotExist(specs.targetId));
 		}
 		if (!(await this.edgeExists(specs.id))) {
-			throw new Error(errors.edgeDoesNotExist(specs.id));
+			throw new Error(Errors.edgeDoesNotExist(specs.id));
 		}
 		const index = _.findIndex(this.#edges, { id: specs.id });
 		this.#edges.splice(index, 1);
@@ -744,7 +743,7 @@ export default class JsonGraphStore extends Store {
 	async upsertEdge(data, id = null, labels = null) {
 		const specs = Utils.getEdgeSpecs(data, id, labels);
 		if (specs === null) {
-			throw new Error(errors.insufficientEdgeSpecs());
+			throw new Error(Errors.insufficientEdgeSpecs());
 		}
 		if (specs.id && (await this.edgeExists(specs.id))) {
 			return this.updateEdge(data, id, labels);
@@ -756,13 +755,13 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getEdgesBetween(sourceId, targetId, amount = 10) {
 		if (!Utils.isPositiveInteger(amount)) {
-			throw new Error(errors.invalidNumber("amount", "JsonGraphStore.getEdgesBetween"));
+			throw new Error(Errors.invalidNumber("amount", "JsonGraphStore.getEdgesBetween"));
 		}
 		if (Utils.isEmpty(sourceId)) {
-			throw new Error(errors.isNil("sourceId", "JsonGraphStore.getEdgesBetween"));
+			throw new Error(Errors.isNil("sourceId", "JsonGraphStore.getEdgesBetween"));
 		}
 		if (Utils.isEmpty(targetId)) {
-			throw new Error(errors.isNil("targetId", "JsonGraphStore.getEdgesBetween"));
+			throw new Error(Errors.isNil("targetId", "JsonGraphStore.getEdgesBetween"));
 		}
 		return _.take(
 			_.filter(this.#edges, (e) => e.sourceId == sourceId && e.targetId === targetId),
@@ -783,7 +782,7 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async getEdgesWithLabel(label, amount = 1000) {
 		if (!Utils.isPositiveInteger(amount)) {
-			throw new Error(errors.invalidNumber("amount", "JsonGraphStore.getEdgesBetween"));
+			throw new Error(Errors.invalidNumber("amount", "JsonGraphStore.getEdgesBetween"));
 		}
 		if (_.isNil(label)) {
 			return _.take(

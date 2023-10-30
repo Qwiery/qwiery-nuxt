@@ -6,6 +6,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import Durations from "./durations.js";
+import Errors from "./errors.js";
 // from here https://emailregex.com/
 const emailRegex =
 	/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi;
@@ -1029,11 +1030,11 @@ export const Utils = {
 
 				const fromId = Utils.getId(obj["sourceId"]);
 				if (Utils.isEmpty(fromId)) {
-					throw new Error(errors.sourceIdMissing());
+					throw new Error(Errors.sourceIdMissing());
 				}
 				const toId = Utils.getId(obj["targetId"]);
 				if (Utils.isEmpty(toId)) {
-					throw new Error(errors.targetIdMissing());
+					throw new Error(Errors.targetIdMissing());
 				}
 				// even if there is an explicit data param we ignore it here
 				obj.data = Utils.getReducedPlainObject(sourceId, ["id", "labels", "sourceId", "targetId"]);
@@ -1042,11 +1043,11 @@ export const Utils = {
 				// in this case the source and target are node specs
 				const fromId = Utils.getId(sourceId);
 				if (Utils.isEmpty(fromId)) {
-					throw new Error(errors.sourceIdMissing());
+					throw new Error(Errors.sourceIdMissing());
 				}
 				const toId = Utils.getId(targetId);
 				if (Utils.isEmpty(toId)) {
-					throw new Error(errors.targetIdMissing());
+					throw new Error(Errors.targetIdMissing());
 				}
 				const obj = {
 					sourceId: fromId,
@@ -1073,10 +1074,10 @@ export const Utils = {
 				};
 			} else {
 				if (Utils.isEmpty(fromId)) {
-					throw new Error(errors.sourceIdMissing());
+					throw new Error(Errors.sourceIdMissing());
 				}
 				if (Utils.isEmpty(toId)) {
-					throw new Error(errors.targetIdMissing());
+					throw new Error(Errors.targetIdMissing());
 				}
 				const obj = {
 					sourceId: fromId,

@@ -1,4 +1,4 @@
-import errors from "./errors.js";
+import errors from "../../utils/lib/errors.js";
 import _ from "lodash";
 import EventEmitter from "eventemitter3";
 import pkg from "../../../package.json" assert { type: "json" };

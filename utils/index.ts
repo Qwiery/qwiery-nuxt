@@ -7,8 +7,9 @@ import { Strings } from "./utils/lib/strings";
 import { Utils } from "./utils/lib/utils";
 import CytoUtils from "./graphs/lib/visualization/cytoUtils";
 import pkg from "../package.json" assert { type: "json" };
+import Errors from "./utils/lib/errors";
 
-export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils };
+export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Errors };
 
 import { GraphStyle } from "~/utils/enums";
 /**
