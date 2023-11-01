@@ -8,6 +8,7 @@ import { Utils } from "./utils/lib/utils";
 import CytoUtils from "./graphs/lib/visualization/cytoUtils";
 import pkg from "../package.json" assert { type: "json" };
 import Errors from "./utils/lib/errors";
+// import GraphAPI from "./GraphAPI";
 
 export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Errors };
 

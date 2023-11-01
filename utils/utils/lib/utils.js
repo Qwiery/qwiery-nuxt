@@ -329,23 +329,23 @@ export const Utils = {
 		return obj;
 	},
 	/***
-     * Replaces in object d the property path with obj.
-     * If the path does not exist the value will not be created.
-     @example
-     const obj = {
-     a: {
-     b: 4,
-     c: {r: "T"}
-     }
-     }
-     deepReplace(obj, "s", "a") // give {a: "s"}
+   * Replaces in object d the property path with obj.
+   * If the path does not exist the value will not be created.
+   @example
+   const obj = {
+   a: {
+   b: 4,
+   c: {r: "T"}
+   }
+   }
+   deepReplace(obj, "s", "a") // give {a: "s"}
 
-     * @param rootObject {Object} The object in which to replace at the given path.
-     * @param path {String} Something like 'a.b.c'.
-     * @param substitute {Object} The object which replaces the value.
-     *
+   * @param rootObject {Object} The object in which to replace at the given path.
+   * @param path {String} Something like 'a.b.c'.
+   * @param substitute {Object} The object which replaces the value.
+   *
 
-     */
+   */
 	deepReplace(rootObject, substitute, path) {
 		if (path === undefined) {
 			path = "/";
@@ -1168,5 +1168,13 @@ export const Utils = {
 			}
 			return specs;
 		}
+	},
+
+	mergeNodeSpecs(data = null, id = null, labels = null) {
+		const specs = Utils.getNodeSpecs(data, id, labels);
+		const node = specs.data || {};
+		_.assign(node, { id });
+		_.assign(node, { labels });
+		return _.clone(node);
 	},
 };

@@ -1,4 +1,6 @@
 import Graph from "./graphs/lib/graph";
+import type INodeBase from "./graphs/lib/iNodeBase";
+import { Utils } from "./utils/lib/utils";
 
 /**
  * The graph API you need to implement/override if the one going to the
@@ -351,6 +353,25 @@ export class GraphAPIBase {
  * It's the default implementation of {@link GraphAPIBase}
  */
 export default class GraphAPI implements GraphAPIBase {
+	//region Nodes
+	static async getNode(id: string): Promise<INodeBase | null> {
+		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+			method: "GET",
+		});
+		return <INodeBase>data.value || null;
+	}
+
+	static async createNode(nodeData: any = null, id = null, labels = null): Promise<INodeBase | null> {
+		const nodeSpecs = Utils.mergeNodeSpecs(nodeData, id, labels);
+
+		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+			method: "PUT",
+			body: nodeSpecs,
+		});
+		return <INodeBase>data.value || null;
+	}
+	//endregion
+
 	/** @inheritdoc */
 	static async getSchema(): Promise<Graph | null> {
 		const { data, pending, error, refresh } = await useFetch("/api/graph/schema", {
