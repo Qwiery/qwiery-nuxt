@@ -706,7 +706,7 @@ export default class JsonGraphStore extends Store {
 
 	/** @inheritdoc */
 	async updateEdge(data, id = null, labels = null) {
-		const specs = Utils.getEdgeSpecs(data, id, null);
+		const specs = Utils.getEdgeSpecs(null, null, data, id, null);
 		if (specs === null) {
 			throw new Error(Errors.insufficientEdgeSpecs());
 		}
@@ -716,6 +716,9 @@ export default class JsonGraphStore extends Store {
 		// priority to the explicit id
 		if (specs.id) {
 			specs.data.id = specs.id;
+			const e = await this.getEdge(specs.id);
+			specs.sourceId = e.sourceId;
+			specs.targetId = e.targetId;
 		}
 		if (specs.labels) {
 			specs.data.labels = specs.labels;
@@ -745,7 +748,7 @@ export default class JsonGraphStore extends Store {
 			throw new Error(Errors.insufficientEdgeSpecs());
 		}
 		if (specs.id && (await this.edgeExists(specs.id))) {
-			return this.updateEdge(data, id, labels);
+			return this.updateEdge(data, specs.id, labels);
 		} else {
 			return this.createEdge(data, id, labels);
 		}

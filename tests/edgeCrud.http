@@ -1,0 +1,155 @@
+# Edge CRUD
+
+###
+# @name Put source
+< {%
+    import Utils from "./httpUtils.js"
+
+    client.global.set("name", Utils.rnd())
+%}
+PUT {{baseUrl}}/api/graph/node
+Content-Type: application/json
+
+{
+    "name":"{{name}}"
+}
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("A source id is returned", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.log(JSON.stringify(response.body, null, 3))
+        client.assert(response.body.name.toString() === client.global.get("name"));
+        client.global.set("sourceId", response.body.id)
+    });
+%}
+
+###
+# @name Put target
+< {%
+    import Utils from "./httpUtils.js"
+
+    client.global.set("name", Utils.rnd())
+%}
+PUT {{baseUrl}}/api/graph/node
+Content-Type: application/json
+
+{
+    "name":"{{name}}"
+}
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("A target id is returned", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.log(JSON.stringify(response.body, null, 3))
+        client.assert(response.body.name.toString() === client.global.get("name"));
+        client.global.set("targetId", response.body.id)
+    });
+%}
+
+###
+# @name Put edge
+PUT {{baseUrl}}/api/graph/edge
+Content-Type: application/json
+
+{
+    "sourceId":"{{sourceId}}",
+    "targetId":"{{targetId}}",
+    "id": "edge1"
+}
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("The edge should exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.sourceId === client.global.get("sourceId"));
+        client.assert(response.body.targetId === client.global.get("targetId"));
+        client.assert(response.body.id === "edge1");
+    });
+%}
+
+###
+# @name Get edge
+GET {{baseUrl}}/api/graph/edge?id=edge1
+Content-Type: application/json
+
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("The edge should exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.id === "edge1");
+    });
+%}
+
+###
+# @name Update edge
+< {%
+    import Utils from "./httpUtils.js"
+    client.global.set("name", Utils.rnd())
+%}
+PATCH {{baseUrl}}/api/graph/edge
+Content-Type: application/json
+
+{
+    "id":"edge1",
+    "name":"{{name}}"
+}
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("The edge should be updated", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.name === client.global.get("name"));
+    });
+%}
+
+###
+# @name Get edge
+GET {{baseUrl}}/api/graph/edge?id=edge1
+Content-Type: application/json
+
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("The edge should be updated", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.name === client.global.get("name"));
+    });
+%}
+
+###
+# @name Delete edge
+DELETE {{baseUrl}}/api/graph/edge
+Content-Type: application/json
+
+{
+  "id": "edge1"
+}
+
+
+
+###
+# @name Gone
+GET {{baseUrl}}/api/graph/edge
+Content-Type: application/json
+
+{
+  "id": "edge1"
+}
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("The edge should be gone", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.length === 0);
+    });
+%}

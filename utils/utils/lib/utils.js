@@ -1027,15 +1027,18 @@ export const Utils = {
 					},
 					sourceId,
 				);
+				const id = obj["id"];
+				if (Utils.isEmpty(id)) {
+					const fromId = Utils.getId(obj["sourceId"]);
+					if (Utils.isEmpty(fromId)) {
+						throw new Error(Errors.sourceIdMissing());
+					}
+					const toId = Utils.getId(obj["targetId"]);
+					if (Utils.isEmpty(toId)) {
+						throw new Error(Errors.targetIdMissing());
+					}
+				}
 
-				const fromId = Utils.getId(obj["sourceId"]);
-				if (Utils.isEmpty(fromId)) {
-					throw new Error(Errors.sourceIdMissing());
-				}
-				const toId = Utils.getId(obj["targetId"]);
-				if (Utils.isEmpty(toId)) {
-					throw new Error(Errors.targetIdMissing());
-				}
 				// even if there is an explicit data param we ignore it here
 				obj.data = Utils.getReducedPlainObject(sourceId, ["id", "labels", "sourceId", "targetId"]);
 				return obj;
@@ -1073,11 +1076,13 @@ export const Utils = {
 					id: fromId,
 				};
 			} else {
-				if (Utils.isEmpty(fromId)) {
-					throw new Error(Errors.sourceIdMissing());
-				}
-				if (Utils.isEmpty(toId)) {
-					throw new Error(Errors.targetIdMissing());
+				if (Utils.isEmpty(id) && Utils.isEmpty(data.id)) {
+					if (Utils.isEmpty(fromId)) {
+						throw new Error(Errors.sourceIdMissing());
+					}
+					if (Utils.isEmpty(toId)) {
+						throw new Error(Errors.targetIdMissing());
+					}
 				}
 				const obj = {
 					sourceId: fromId,
