@@ -14,5 +14,5 @@
 	});
 
 	let info = GraphalyzerInfo();
-	let n = await GraphAPI.createNode({ name: "Swa" });
+	// let n = await GraphAPI.createNode({ name: "Swa" });
 </script>

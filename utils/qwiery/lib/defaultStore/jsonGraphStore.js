@@ -11,10 +11,9 @@ import _ from "lodash";
 import { Utils } from "../../../utils/lib/utils.js";
 import { toPredicate } from "./projections.js";
 import Graph from "../../../graphs/lib/graph.js";
-import { Error } from "sequelize";
-import Tree from "../../../graphs/lib/tree.js";
-import TreeNode from "../../../graphs/lib/treeNode.js";
+// import { Error } from "sequelize";
 import fs from "fs";
+import Errors from "../../../utils/lib/errors.js";
 
 /**
  * Standard JSON graph structure.

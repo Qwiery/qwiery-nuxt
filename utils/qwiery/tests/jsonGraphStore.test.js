@@ -48,7 +48,7 @@ describe("JsonGraphStore", function () {
 		expect(edge.targetId).toEqual("1");
 		let found = await jg.getEdge((e) => e.id === edge.id);
 		expect(found.id).toEqual(edge.id);
-		// nodes aint there
+		// nodes ain't there
 		await expect(jg.createEdge({ sourceId: "a", targetId: "b" })).rejects.toThrow(Error);
 		await expect(jg.deleteNode(null)).rejects.toThrow("is nil");
 		await expect(jg.getEdgeBetween(null, "a")).rejects.toThrow("is nil");

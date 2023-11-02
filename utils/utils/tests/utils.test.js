@@ -3,6 +3,7 @@ import { describe, test, it, expect } from "vitest";
 import _ from "lodash";
 
 import { Utils } from "../lib/utils";
+import INodeBase from "../../graphs/lib/iNodeBase.js";
 
 const getNumber = Utils.getNumber;
 const getFloat = Utils.getFloat;
