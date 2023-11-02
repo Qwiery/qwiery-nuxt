@@ -1,85 +1,77 @@
-# [1] Node CRUD
+# Node CRUD
+
 ###
 # @name Create source
-# This returns a `token` that you can use to retrieve information later on.
-# We have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection.
+
+< {%
+    import Utils from "./httpUtils.js"
+    client.global.set("name", Utils.rnd())
+%}
 POST {{baseUrl}}/api/graph/createNode
 Content-Type: application/json
 
 {
-  "name": "a"
+  "name": {{name}}
 }
 
 > {%
-  client.test("A node id is returned", function() {
-    client.assert(response.status === 200, "Response status is not 200");
-    client.assert(response.body.name ==="a");
-  });
-  // TODO: migrate to HTTP Client Response handler API
-  // pm.test("A source id is returned", () => {
-  //     pm.expect(pm.response.json()).to.have.property('id')
-  //     pm.expect(pm.response.json().id).to.be.a('string')
-  //     // Set the collection-scope "token" variable to the token received from the API
-  //     // This lets us use it in other requests
-  //     pm.collectionVariables.set('sourceId', pm.response.json().id)
-  // })
-  //
+    import Utils from "./httpUtils.js"
+    client.test("A source id is returned", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.log(JSON.stringify(response.body, null, 3))
+        client.assert(response.body.name.toString() === client.global.get("name"));
+        client.global.set("sourceId", response.body.id)
+    });
 %}
 
 ###
 # @name Source exists
-GET {{baseUrl}}/api/graph/nodeExists?
-    id={{sourceId}}
+GET {{baseUrl}}/api/graph/nodeExists?id={{sourceId}}
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  //
-  // pm.test("Should be false", function () {
-  //     pm.expect(pm.response.text()).to.be.eq("true");
-  // });
+    client.log(request.url())
+    client.assert(response.body === true)
 %}
 
 ###
 # @name Create target
-# This returns a `token` that you can use to retrieve information later on.
-# We have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection.
+< {%
+    import Utils from "./httpUtils.js"
+    client.global.set("name", Utils.rnd())
+%}
 POST {{baseUrl}}/api/graph/createNode
 Content-Type: application/json
 
 {
-  "name": "b"
+  "name": "{{name}}"
 }
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  // pm.test("A target id is returned", () => {
-  //     pm.expect(pm.response.json()).to.have.property('id')
-  //     pm.expect(pm.response.json().id).to.be.a('string')
-  //     // Set the collection-scope "token" variable to the token received from the API
-  //     // This lets us use it in other requests
-  //     pm.collectionVariables.set('targetId', pm.response.json().id)
-  // })
-  //
+    import Utils from "./httpUtils.js"
+    client.test("A target id is returned", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.log(JSON.stringify(response.body, null, 3))
+        client.assert(response.body.name.toString() === client.global.get("name"));
+        client.global.set("targetId", response.body.id)
+    });
 %}
 
 ###
 # @name Target exists
-GET http://{{host}}/api/graph/nodeExists?
+GET http://{{baseUrl}}/api/graph/nodeExists?
     id={{targetId}}
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  //
-  // pm.test("Should be false", function () {
-  //     pm.expect(pm.response.text()).to.be.eq("true");
-  // });
+    import Utils from "./httpUtils.js"
+    client.test("The target should exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.toString() === "true");
+    });
 %}
 
 ###
 # @name Create edge
-POST http://{{host}}/api/graph/createEdge
+POST http://{{baseUrl}}/api/graph/createEdge
 Content-Type: application/json
 
 {
@@ -89,21 +81,18 @@ Content-Type: application/json
 }
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  // const json = pm.response.json();
-  //
-  // pm.test("Should have the endpoints", function () {
-  //     pm.expect(json.sourceId).to.be.eq(pm.variables.get("sourceId"));
-  //     pm.expect(json.targetId).to.be.eq(pm.variables.get("targetId"));
-  // });
-  //
-  //
+    import Utils from "./httpUtils.js"
+    client.test("The target should exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.sourceId === client.global.get("sourceId"));
+        client.assert(response.body.targetId === client.global.get("targetId"));
+        client.assert(response.body.id === "edge1");
+    });
 %}
 
 ###
 # @name Edges between
-POST http://{{host}}/api/graph/edgesBetween
+POST http://{{baseUrl}}/api/graph/edgesBetween
 Content-Type: application/json
 
 {
@@ -112,14 +101,12 @@ Content-Type: application/json
 }
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  // const json = pm.response.json();
-  //
-  // pm.test("Should be the created edge", function () {
-  //     pm.expect(json.length).to.be.eq(1)
-  //     pm.expect(json[0].id).to.be.eq("edge1")
-  // });
+    import Utils from "./httpUtils.js"
+    client.test("The edge should exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.length === 1);
+        client.assert(response.body[0].id === "edge1");
+    });
 %}
 
 ###
@@ -127,34 +114,22 @@ Content-Type: application/json
 GET {{baseUrl}}/api/graph/deleteNode?
     id={{targetId}}
 
-> {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  // // const json = pm.response.json();
-  //
-  // // pm.test("Should be a graph", function () {
-  // //     pm.expect(json.typeName).to.be.eq('Graph');
-  // // });
-%}
-
 ###
 # @name Target exists
-GET http://{{host}}/api/graph/nodeExists?
+GET http://{{baseUrl}}/api/graph/nodeExists?
     id={{targetId}}
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  //
-  //
-  // pm.test("Should be false", function () {
-  //     pm.expect(pm.response.text()).to.be.eq("false");
-  // });
+    import Utils from "./httpUtils.js"
+    client.test("The target should not exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.toString() === "false");
+    });
 %}
 
 ###
 # @name Edge gone
-POST http://{{host}}/api/graph/edgesBetween
+POST http://{{baseUrl}}/api/graph/edgesBetween
 Content-Type: application/json
 
 {
@@ -163,11 +138,9 @@ Content-Type: application/json
 }
 
 > {%
-  // TODO: migrate to HTTP Client Response handler API
-  //
-  // const json = pm.response.json();
-  //
-  // pm.test("Should have zero length", function () {
-  //     pm.expect(json.length).to.be.eq(0);
-  // });
+    import Utils from "./httpUtils.js"
+    client.test("The edge should not exist", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.length === 0);
+    });
 %}
