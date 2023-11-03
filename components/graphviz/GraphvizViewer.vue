@@ -18,6 +18,8 @@
 			container: document.getElementById("cy"),
 			style: <Stylesheet[]>(<unknown>defaultStyle),
 		});
+		// for debugging
+		window["cy"] = cy;
 	});
 
 	function addNode(rawNode: IRawNode) {
@@ -42,15 +44,7 @@
 			clear();
 		}
 		cy.json({ elements: CytoUtils.toElements(g) });
-		const layout = cy.layout(<any>{
-			name: "cola",
-			nodeSpacing: 58,
-			padding: 80,
-			randomize: true,
-			maxSimulationTime: 6000,
-		});
-		layout.run();
-		cy.centre();
+		layout();
 	}
 
 	function clear() {
@@ -72,6 +66,50 @@
 	}
 
 	/**
+	 * Apply the layout with the name and options.
+	 * @see Part of the {@link IGraphViewer} interface.
+	 * @param layoutName {string} The name of the layout.
+	 * @param [options] {any} Options specific to the layout.
+	 */
+	function layout(layoutName: string = "organic", options: any = {}) {
+		organicLayout(options);
+		fit();
+	}
+
+	/**
+	 * Centers the graph in the canvas.
+	 * @see Part of the {@link IGraphViewer} interface.
+	 * @param [shouldFit] {boolean} Whether to resize so it fits in the cureent view.
+	 */
+	function center(shouldFit: boolean = true) {
+		if (shouldFit) {
+			fit();
+		} else {
+			cy.centre();
+		}
+	}
+
+	function fit(padding: number = 20) {
+		cy.fit(cy.elements(), padding);
+	}
+
+	/**
+	 * Classic organic layout based on the Cola package.
+	 * @see https://github.com/cytoscape/cytoscape.js-cola
+	 * @param options
+	 */
+	function organicLayout(options = {}) {
+		const layout = cy.layout(<any>{
+			name: "cola",
+			nodeSpacing: 58,
+			padding: 80,
+			randomize: true,
+			maxSimulationTime: 6000,
+		});
+		layout.run();
+	}
+
+	/**
 	 * Expose the IGraphViewer interface.
 	 */
 	defineExpose({
@@ -79,6 +117,9 @@
 		loadGraph,
 		clear,
 		setStyle,
+		layout,
+		center,
+		fit,
 	});
 </script>
 <style scoped>
