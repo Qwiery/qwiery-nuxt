@@ -224,7 +224,7 @@
 						</li>
 						<li>
 							<!-- Hierarchic Layout-->
-							<button type="button" class="bg-none border-none p-1" title="Hierarchic Layout">
+							<button type="button" class="bg-none border-none p-1" title="Hierarchic Layout" @click="layout('hierarchical')">
 								<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 40 40">
 									<g class="layer">
 										<circle cx="7.19864" cy="33.44652" fill="currentColor" id="svg_1" r="3.63898" stroke="currentColor" />
@@ -236,6 +236,30 @@
 										<line fill="none" id="svg_18" stroke="currentColor" x1="19.89813" x2="19.89813" y1="23.93888" y2="31.07357" />
 										<line fill="none" id="svg_20" stroke="currentColor" x1="18.30221" x2="8.6927" y1="21.73175" y2="31.37521" />
 										<line fill="none" id="svg_21" stroke="currentColor" x1="21.08659" x2="32.42784" y1="21.59593" y2="32.73345" />
+									</g>
+								</svg>
+							</button>
+						</li>
+						<li>
+							<!-- Concentric Layout-->
+							<button type="button" class="bg-none border-none p-1" title="Concentric Layout" @click="layout('concentric')">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 40 40">
+									<g class="layer">
+										<circle cx="9.26995" cy="33.78608" fill="currentColor" id="svg_1" r="3.63898" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
+										<circle cx="7.26655" cy="21.68082" fill="currentColor" id="svg_2" r="3.63898" stroke="currentColor" />
+										<circle cx="22.71647" cy="5.28014" fill="currentColor" id="svg_4" r="3.63898" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
+										<circle cx="12.1562" cy="11.08659" fill="currentColor" id="svg_6" r="3.63898" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
+										<circle cx="29.37182" cy="27.48727" fill="currentColor" id="svg_7" r="3.63898" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
+										<circle cx="16.62139" cy="27.04584" fill="currentColor" id="svg_24" r="2.28075" stroke="currentColor" />
+										<circle cx="18.31918" cy="19.76231" fill="currentColor" id="svg_25" r="2.28075" stroke="currentColor" />
+										<circle cx="24.60102" cy="15.21222" fill="currentColor" id="svg_26" r="2.28075" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
+										<line fill="none" id="svg_27" stroke="currentColor" x1="10.59423" x2="15.28014" y1="32.02037" y2="28.04754" />
+										<line fill="none" id="svg_28" stroke="currentColor" x1="20.27165" x2="28.55688" y1="21.32428" y2="26.85908" />
+										<line fill="none" id="svg_29" stroke="currentColor" x1="25.33107" x2="28.93039" y1="16.84211" y2="25.29711" />
+										<line fill="none" id="svg_30" stroke="currentColor" x1="10.1528" x2="15.24618" y1="23.05603" y2="26.24788" />
+										<line fill="none" id="svg_31" stroke="currentColor" x1="14.39728" x2="23.42954" y1="12.1562" y2="15.0764" />
+										<line fill="none" id="svg_32" stroke="currentColor" x1="23.53141" x2="24.38031" y1="6.41766" y2="14.29542" />
+										<line fill="none" id="svg_33" stroke="currentColor" x1="18.37012" x2="28.28523" y1="27.47029" y2="27.40238" />
 									</g>
 								</svg>
 							</button>

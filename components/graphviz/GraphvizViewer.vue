@@ -72,7 +72,19 @@
 	 * @param [options] {any} Options specific to the layout.
 	 */
 	function layout(layoutName: string = "organic", options: any = {}) {
-		organicLayout(options);
+		switch (layoutName.toLowerCase()) {
+			case "organic":
+				organicLayout(options);
+				break;
+			case "hierarchical":
+				hierarchicalLayout(options);
+				break;
+			case "concentric":
+				concentricLayout(options);
+				break;
+			default:
+				return Toasts.error(`The layout type '${layoutName}' is not handled or not supported.`);
+		}
 		fit();
 	}
 
@@ -105,6 +117,20 @@
 			padding: 80,
 			randomize: true,
 			maxSimulationTime: 6000,
+		});
+		layout.run();
+	}
+
+	function hierarchicalLayout(options = {}) {
+		const layout = cy.layout(<any>{
+			name: "breadthfirst",
+		});
+		layout.run();
+	}
+
+	function concentricLayout(options = {}) {
+		const layout = cy.layout(<any>{
+			name: "concentric",
 		});
 		layout.run();
 	}
