@@ -103,6 +103,18 @@ export interface IGraphViewer {
 	 * Removes the nodes with degree zero.
 	 */
 	removeIsolatedNodes: () => void;
+
+	/**
+	 * Enables or disables the interactive edge creation.
+	 * @param [enabled] {boolean} Whether it should be enabled.
+	 */
+	edgeCreation: (enabled: boolean) => void;
+
+	/**
+	 * Enables or disables the interactive node creation.
+	 * @param [enabled] {boolean} Whether it should be enabled.
+	 */
+	nodeCreation: (enabled: boolean) => void;
 }
 
 export function GraphalyzerInfo() {

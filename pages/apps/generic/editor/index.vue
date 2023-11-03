@@ -269,6 +269,52 @@
 						</li>
 					</ul>
 				</div>
+
+				<!-- Edit Section -->
+				<div class="border-r-2 border-primary pt-3 pr-2" v-if="isEditSectionVisible">
+					<div class="absolute top-0 pl-0 z-20 dark:text-neutral-500 text-xs">Edit</div>
+					<ul class="flex items-center space-x-2 dark:text-[#a1a1aa]">
+						<li>
+							<!-- Pointer-->
+							<button type="button" :class="{ enabledSectionButton: interactionMode === 'universal', disabledSectionButton: interactionMode !== 'universal' }" title="Create edges" @click="setInteractionMode('universal')">
+								<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<g>
+										<path
+											fill-rule="evenodd"
+											clip-rule="evenodd"
+											d="M3.3572 3.23397C3.66645 2.97447 4.1014 2.92638 4.45988 3.11204L20.7851 11.567C21.1426 11.7522 21.3542 12.1337 21.322 12.5351C21.2898 12.9364 21.02 13.2793 20.6375 13.405L13.7827 15.6586L10.373 22.0179C10.1828 22.3728 9.79826 22.5789 9.39743 22.541C8.9966 22.503 8.65762 22.2284 8.53735 21.8441L3.04564 4.29872C2.92505 3.91345 3.04794 3.49346 3.3572 3.23397ZM5.67123 5.99173L9.73507 18.9752L12.2091 14.361C12.3304 14.1347 12.5341 13.9637 12.7781 13.8835L17.7518 12.2484L5.67123 5.99173Z"
+											fill="currentColor"
+										></path>
+									</g>
+								</svg>
+							</button>
+						</li>
+						<li>
+							<!-- Create Edges-->
+							<button type="button" :class="{ enabledSectionButton: interactionMode === 'edgeCreation', disabledSectionButton: interactionMode !== 'edgeCreation' }" title="Create edges" @click="setInteractionMode('edgeCreation')">
+								<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+									<g class="layer">
+										<line fill="none" id="svg_4" stroke="currentColor" x1="6.86" x2="18.16" y1="16.56" y2="5.6" />
+										<circle cx="5.78" cy="18.26" fill="currentColor" id="svg_1" r="3.66" stroke="#000000" stroke-opacity="0" />
+										<circle cx="17.89" cy="5.8" fill="currentColor" id="svg_2" r="3.66" stroke="#000000" stroke-opacity="0" />
+										<path d="m14.3,16.36l2.45,0l0,-2.72l2.31,0l0,2.72l2.45,0l0,2.56l-2.45,0l0,2.72l-2.31,0l0,-2.72l-2.45,0z" fill="currentColor" id="svg_5" stroke="currentColor" stroke-width="0" />
+									</g>
+								</svg>
+							</button>
+						</li>
+						<li>
+							<!-- Create Nodes-->
+							<button type="button" :class="{ enabledSectionButton: interactionMode === 'nodeCreation', disabledSectionButton: interactionMode !== 'nodeCreation' }" title="Create nodes" @click="setInteractionMode('nodeCreation')">
+								<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+									<g class="layer">
+										<circle cx="8.54" cy="8.62" fill="currentColor" r="5.38" stroke="#000000" stroke-opacity="0" />
+										<path d="m14.3,16.36l2.45,0l0,-2.72l2.31,0l0,2.72l2.45,0l0,2.56l-2.45,0l0,2.72l-2.31,0l0,-2.72l-2.45,0z" fill="currentColor" id="svg_5" stroke="#dd1818" stroke-width="0" transform="matrix(1 0 0 1 0 0)" />
+									</g>
+								</svg>
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
 			<div>
 				<!--Toggle Right -->
@@ -412,8 +458,8 @@
 	import { GraphStyle } from "~/utils/enums";
 	import { Toasts } from "~/composables/notifications";
 	import { useAppStore } from "~/stores";
-	import { fa } from "@faker-js/faker";
 	import GraphAPI from "~/utils/GraphAPI";
+	import { fa } from "@faker-js/faker";
 
 	const search = ref(true);
 	let isExploreSectionVisible = ref(true);
@@ -421,6 +467,7 @@
 	let isViewSectionVisible = ref(true);
 	let isLayoutSectionVisible = ref(true);
 	let isLeftVisible = ref(true);
+	let isEditSectionVisible = ref(true);
 	let isRightVisible = ref(true);
 	let isHamburgerIconVisible = ref(true);
 	let isPropertiesIconVisible = ref(true);
@@ -429,6 +476,8 @@
 	let viewer: IGraphViewer;
 	let viewerControl = ref(null);
 	let showSpinner = ref(false);
+	let interactionMode = ref("universal");
+
 	const store = useAppStore();
 	definePageMeta({
 		layout: "default",
@@ -494,6 +543,7 @@
 			isViewSectionVisible.value = true;
 			isLayoutSectionVisible.value = true;
 			isPropertiesIconVisible.value = true;
+			isEditSectionVisible.value = true;
 		}
 
 		function showSchema() {
@@ -505,6 +555,7 @@
 			isViewSectionVisible.value = false;
 			isLayoutSectionVisible.value = false;
 			isPropertiesIconVisible.value = false;
+			isEditSectionVisible.value = false;
 
 			GraphAPI.getSchema().then((schema) => {
 				if (schema) {
@@ -526,5 +577,42 @@
 				return showSchema();
 		}
 	}
+
+	function setInteractionMode(mode: string = "universal") {
+		switch (mode.toLowerCase()) {
+			case "universal":
+				return setUniversalMode();
+			case "edgecreation":
+				return setEdgeCreationMode();
+			case "nodecreation":
+				return setNodeCreationMode();
+		}
+	}
+
+	function setEdgeCreationMode() {
+		interactionMode.value = "edgeCreation";
+		viewer.edgeCreation(true);
+		viewer.nodeCreation(false);
+	}
+
+	function setNodeCreationMode() {
+		interactionMode.value = "nodeCreation";
+		viewer.edgeCreation(false);
+		viewer.nodeCreation(true);
+	}
+
+	function setUniversalMode() {
+		interactionMode.value = "universal";
+		viewer.edgeCreation(false);
+		viewer.nodeCreation(false);
+	}
 </script>
-<style scoped></style>
+<style>
+	.enabledSectionButton {
+		@apply border-black border;
+	}
+
+	.disabledSectionButton {
+		@apply border-none;
+	}
+</style>
