@@ -118,7 +118,6 @@
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
 	import { Toasts } from "~/composables/notifications";
-	import CytoscapeViewer from "~/components/graphviz/GraphvizViewer.vue";
 
 	let isLeftVisible = ref(false);
 	let isRightVisible = ref(false);

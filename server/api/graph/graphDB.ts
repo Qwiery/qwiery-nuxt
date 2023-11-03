@@ -4,10 +4,9 @@ import Qwiery from "~/utils/qwiery/lib/qwiery";
 // ============================================================;
 // Sqlite graph adapter
 // ============================================================;
-import Sqlite from "~/utils/qwiery-sqlite/lib/index.js";
-
-Qwiery.plugin(Sqlite);
-let filePath = path.join(process.cwd(), "data.sqlite");
+// import Sqlite from "~/utils/qwiery-sqlite/lib/index.js";
+// Qwiery.plugin(Sqlite);
+// let filePath = path.join(process.cwd(), "data.sqlite");
 // console.log("Data path >>", filePath);
 // const q = new Qwiery({
 // 	adapters: ["sqlite"],
@@ -16,6 +15,10 @@ let filePath = path.join(process.cwd(), "data.sqlite");
 // 		storage: filePath,
 // 	},
 // });
+
+// ============================================================;
+// JSON graph adapter
+// ============================================================;
 console.log("Qwiery backend with JsonGraphStore adapter enabled.");
 
 const q = new Qwiery({
@@ -25,4 +28,5 @@ const q = new Qwiery({
 		interval: 5000,
 	},
 });
+
 export { q as GraphDB };

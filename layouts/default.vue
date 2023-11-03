@@ -39,7 +39,7 @@
 					<!--  END TOP NAVBAR  -->
 
 					<!--  BEGIN CONTENT AREA  -->
-					<div class="animation p-6">
+					<div class="animation p-2">
 						<NuxtPage />
 					</div>
 					<!--  END CONTENT AREA  -->
