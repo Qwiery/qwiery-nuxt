@@ -1,5 +1,8 @@
-.tippy-box[data-theme~='primary'] {
-    background-color: #4361ee;
+.tippy-box{
+    @apply   bg-primary;
+}
+.tippy-arrow{
+    @apply text-primary
 }
 
 .tippy-box[data-theme~='primary'][data-placement^='top'] > .tippy-arrow::before {

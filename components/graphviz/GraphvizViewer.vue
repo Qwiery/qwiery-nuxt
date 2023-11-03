@@ -105,6 +105,13 @@
 		cy.fit(cy.elements(), padding);
 	}
 
+	function zoom(factor: number | null = null) {
+		if (factor) {
+			cy.zoom(factor);
+		}
+		return cy.zoom();
+	}
+
 	/**
 	 * Classic organic layout based on the Cola package.
 	 * @see https://github.com/cytoscape/cytoscape.js-cola
@@ -135,6 +142,29 @@
 		layout.run();
 	}
 
+	function removeNode(id: string | any) {
+		if (!Utils.isEmpty(id)) {
+			if (_.isString(id)) {
+				cy.remove(cy.getElementById(id));
+			} else {
+				cy.remove(id);
+			}
+		}
+	}
+
+	function getNodes(filter?: Function) {
+		if (filter) {
+			return cy.nodes().filter((element: any, i: number, elements: any[]) => filter(element, i, elements));
+		} else {
+			return cy.elements();
+		}
+	}
+
+	function removeIsolatedNodes() {
+		const singletons = cy.nodes().filter((element: any, i: number, elements: any[]) => element.degree() === 0);
+		cy.remove(singletons);
+	}
+
 	/**
 	 * Expose the IGraphViewer interface.
 	 */
@@ -146,6 +176,10 @@
 		layout,
 		center,
 		fit,
+		zoom,
+		removeNode,
+		getNodes,
+		removeIsolatedNodes,
 	});
 </script>
 <style scoped>

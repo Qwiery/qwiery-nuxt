@@ -35,4 +35,17 @@ export class Toasts {
 			timer: 2000,
 		});
 	}
+	static info(msg: string) {
+		return Swal.fire({
+			toast: true,
+			title: "Info",
+			position: "top",
+			text: msg,
+			icon: "info",
+			showCloseButton: false,
+			showConfirmButton: false,
+			background: "#565656",
+			timer: 3000,
+		});
+	}
 }

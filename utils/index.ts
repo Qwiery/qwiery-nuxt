@@ -80,6 +80,29 @@ export interface IGraphViewer {
 	 * @param [padding] {number} The margin around the graph (in pixels).
 	 */
 	fit: (padding?: number) => void;
+
+	/**
+	 * Zoom into the diagram.
+	 * @param [amount] {number} A value >1 magnifies while <1 zooms out. If nothing is given the current value is returned.
+	 */
+	zoom: (amount?: number) => number;
+
+	/**
+	 * Removes the node with the given id.
+	 * @param id {string|any} A node or the id of a node.
+	 */
+	removeNode: (id: string | any) => void;
+
+	/**
+	 * Returns the nodes of the graph or the ones satisfying the given predicate.
+	 * @param [filter] {Function} Optional node predicate.
+	 */
+	getNodes: (filter?: Function) => any[];
+
+	/**
+	 * Removes the nodes with degree zero.
+	 */
+	removeIsolatedNodes: () => void;
 }
 
 export function GraphalyzerInfo() {

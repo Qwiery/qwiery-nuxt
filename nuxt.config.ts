@@ -31,7 +31,7 @@ export default defineNuxtConfig({
 			],
 		},
 	},
-	devtools: { enabled: process.env.NODE_ENV !== "production" },
+	devtools: { enabled: false },
 	css: ["~/assets/css/app.css"],
 	postcss: {
 		plugins: {

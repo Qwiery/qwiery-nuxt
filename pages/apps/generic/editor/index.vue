@@ -7,7 +7,7 @@
 				<ul class="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 					<li>
 						<!-- Hamburger left panel-->
-						<button class="ml-2 p-1" @click="isLeftVisible = !isLeftVisible">
+						<button class="ml-2 p-1" @click="isLeftVisible = !isLeftVisible" title="Toggle the left panel" v-if="isHamburgerIconVisible">
 							<svg height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<g class="hover:stroke-sky-300" fill="transparent">
 									<rect width="24" height="24" rx="5" ry="5"></rect>
@@ -20,16 +20,19 @@
 						</button>
 					</li>
 					<li>
-						<button type="button" class="hover:bg-sky-300 btn btn-primary">Schema</button>
+						<button type="button" class="hover:bg-sky-300 btn btn-primary" @click="generateSampleGraph()">Generate</button>
 					</li>
 					<li>
-						<button type="button" class="hover:bg-sky-300 btn btn-primary">Explorer</button>
+						<button type="button" class="hover:bg-sky-300 btn btn-primary" @click="showPerspective('schema')" title="Show the inferred database schema (if any)">Schema</button>
+					</li>
+					<li>
+						<button type="button" class="hover:bg-sky-300 btn btn-primary" @click="showPerspective('explorer')" title="Show the data exploration perspective">Explorer</button>
 					</li>
 				</ul>
 			</div>
 			<div class="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto dark:text-[#a1a1aa] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
 				<!--Explore Section-->
-				<div class="border-r-2 border-primary pt-3 pr-2">
+				<div class="border-r-2 border-primary pt-3 pr-2" v-if="isExploreSectionVisible">
 					<div class="absolute top-0 pl-1 z-20 dark:text-neutral-500 text-xs">Explore</div>
 					<ul class="flex items-center mt-1 space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 						<li>
@@ -64,7 +67,7 @@
 						</li>
 						<li>
 							<!-- Clear Canvas-->
-							<button type="button" class="bg-none border-none p-1 w-5">
+							<button type="button" class="bg-none border-none p-1 w-5" @click="clearGraph()">
 								<svg class="hover:fill-sky-300" fill="currentColor" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511.999 511.999" xml:space="preserve">
 									<g>
 										<g>
@@ -101,7 +104,7 @@
 						</li>
 						<li>
 							<!-- Remove Isolated-->
-							<button type="button" class="bg-none border-none p-1">
+							<button type="button" class="bg-none border-none p-1" @click="removeIsolatedNodes()">
 								<svg class="hover:fill-sky-300" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path d="M15.59 12.26C18.4232 12.26 20.72 9.96323 20.72 7.13C20.72 4.29678 18.4232 2 15.59 2C12.7567 2 10.46 4.29678 10.46 7.13C10.46 9.96323 12.7567 12.26 15.59 12.26Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"></path>
@@ -125,7 +128,7 @@
 					</ul>
 				</div>
 				<!-- Search Input -->
-				<div class="border-r-2 border-primary pt-0 pr-2">
+				<div class="border-r-2 border-primary pt-0 pr-2" v-if="isSearchVisible">
 					<form class="absolute inset-x-0 top-1/2 z-10 mx-4 hidden -translate-y-1/2 sm:relative sm:top-0 sm:mx-0 sm:block sm:translate-y-0" :class="{ '!block': search }" @submit.prevent="search = false">
 						<!--Search input-->
 						<div class="relative">
@@ -153,12 +156,12 @@
 					</button>
 				</div>
 				<!-- View Section -->
-				<div class="border-r-2 border-primary pt-3 pr-2">
+				<div class="border-r-2 border-primary pt-3 pr-2" v-if="isViewSectionVisible">
 					<div class="absolute top-0 pl-1.5 z-20 dark:text-neutral-500 text-xs">View</div>
 					<ul class="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 						<li>
 							<!-- Zoom In  -->
-							<button type="button" class="bg-none border-none p-1">
+							<button type="button" class="bg-none border-none p-1" @click="zoomIn()">
 								<svg class="hover:fill-sky-300" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -171,7 +174,7 @@
 						</li>
 						<li>
 							<!-- Zoom Out  -->
-							<button type="button" class="bg-none border-none p-1">
+							<button type="button" class="bg-none border-none p-1" @click="zoomOut()">
 								<svg class="hover:fill-sky-300" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -198,7 +201,7 @@
 					</ul>
 				</div>
 				<!-- Layout Section -->
-				<div class="border-r-2 border-primary pt-3 pr-2">
+				<div class="border-r-2 border-primary pt-3 pr-2" v-if="isLayoutSectionVisible">
 					<div class="absolute top-0 pl-1.5 z-20 dark:text-neutral-500 text-xs">Layout</div>
 					<ul class="flex items-center space-x-2 dark:text-[#a1a1aa]">
 						<li>
@@ -269,7 +272,7 @@
 			</div>
 			<div>
 				<!--Toggle Right -->
-				<button class="mr-5 mt-3" @click="isRightVisible = !isRightVisible">
+				<button class="mr-5 mt-3" @click="isRightVisible = !isRightVisible" v-if="isPropertiesIconVisible">
 					<svg fill="currentColor" width="24px" height="24px" viewBox="0 0 36 36" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
 						<g>
 							<path class="clr-i-outline clr-i-outline-path-1" d="M16.08,14.9a10.41,10.41,0,0,1,1.87-.71l-4-10.77a2,2,0,0,0-3.75,0L2,25.26A2,2,0,0,0,3.92,28h6.94a10,10,0,0,1-.52-2H3.92L12.06,4.12Z"></path>
@@ -409,10 +412,18 @@
 	import { GraphStyle } from "~/utils/enums";
 	import { Toasts } from "~/composables/notifications";
 	import { useAppStore } from "~/stores";
+	import { fa } from "@faker-js/faker";
+	import GraphAPI from "~/utils/GraphAPI";
 
 	const search = ref(true);
+	let isExploreSectionVisible = ref(true);
+	let isSearchVisible = ref(true);
+	let isViewSectionVisible = ref(true);
+	let isLayoutSectionVisible = ref(true);
 	let isLeftVisible = ref(true);
 	let isRightVisible = ref(true);
+	let isHamburgerIconVisible = ref(true);
+	let isPropertiesIconVisible = ref(true);
 	let isTopVisible = ref(false);
 	let isBottomVisible = ref(false);
 	let viewer: IGraphViewer;
@@ -445,6 +456,75 @@
 	 */
 	function fit() {
 		viewer.fit();
+	}
+
+	function zoomOut() {
+		viewer.zoom(viewer.zoom() * 0.8);
+	}
+
+	function zoomIn() {
+		viewer.zoom(viewer.zoom() * 1.2);
+	}
+
+	function removeIsolatedNodes() {
+		viewer.removeIsolatedNodes();
+	}
+
+	function generateSampleGraph() {
+		const g = Graph.create("Erdos");
+		viewer.loadGraph(g);
+		viewer.setStyle(GraphStyle.Default);
+	}
+
+	function clearGraph() {
+		viewer.clear();
+	}
+
+	/**
+	 * Switches between panel layout and buttons available.
+	 * @param name {string} The name of the perspective.
+	 */
+	function showPerspective(name = "explorer") {
+		function showExplorer() {
+			isLeftVisible.value = false;
+			isRightVisible.value = false;
+			isHamburgerIconVisible.value = true;
+			isExploreSectionVisible.value = true;
+			isSearchVisible.value = true;
+			isViewSectionVisible.value = true;
+			isLayoutSectionVisible.value = true;
+			isPropertiesIconVisible.value = true;
+		}
+
+		function showSchema() {
+			isLeftVisible.value = false;
+			isRightVisible.value = false;
+			isHamburgerIconVisible.value = false;
+			isExploreSectionVisible.value = false;
+			isSearchVisible.value = false;
+			isViewSectionVisible.value = false;
+			isLayoutSectionVisible.value = false;
+			isPropertiesIconVisible.value = false;
+
+			GraphAPI.getSchema().then((schema) => {
+				if (schema) {
+					if (schema.nodeCount === 0) {
+						Toasts.info("The inferred schema is empty.");
+					}
+					viewer.loadGraph(schema);
+					viewer.setStyle(GraphStyle.Schema);
+				} else {
+					Toasts.error("The schema could not be loaded.");
+				}
+			});
+		}
+
+		switch (name.toLowerCase()) {
+			case "explorer":
+				return showExplorer();
+			case "schema":
+				return showSchema();
+		}
 	}
 </script>
 <style scoped></style>
