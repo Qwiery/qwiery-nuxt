@@ -1,20 +1,21 @@
 [
-  {
-    "selector": "node",
-    "css": {
-      "label": "data(name)",
-      "text-valign": "center",
-      "text-halign": "center",
-      "height": "60px",
-      "width": "100px",
-      "shape": "round-rectangle",
-      "background-color": "#52525b"
-    }
-  },
+    {
+        "selector": "node",
+        "css": {
+            "label": "data(name)",
+            "text-valign": "center",
+            "text-halign": "center",
+            "color": "orange",
+            "height": "60px",
+            "width": "100px",
+            "shape": "round-rectangle",
+            "background-color": "#52525b"
+        }
+    },
     {
         "selector": "edge",
         "css": {
-            "curve-style": "bezier",
+            "curve-style": "straight",
             "control-point-step-size": 40,
             "target-arrow-shape": "triangle",
             "line-color": "dimgrey",
@@ -31,5 +32,24 @@
             "text-background-opacity": 1,
             "text-border-opacity": 1
         }
-  }
+    },
+    {
+        "selector": "node:selected",
+        "css": {
+            "border-width": 3,
+            "border-color": "#2874AE",
+            "background-color": "#0097C4"
+        }
+    },
+    {
+        "selector": "edge:selected",
+        "css": {
+            "line-color": "#2874AE",
+            "line-fill": "#2874AE",
+
+            "target-arrow-color": "#2874AE",
+            "source-arrow-color": "#2874AE"
+        }
+    }
+
 ]

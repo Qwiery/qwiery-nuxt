@@ -418,7 +418,7 @@
 				</pane>
 				<pane size="70">
 					<!-- Main Content-->
-					<graphviz-viewer ref="viewerControl"></graphviz-viewer>
+					<graphviz-viewer ref="viewerControl" @selection-changed="onSelectionChanged"></graphviz-viewer>
 					<div v-if="showSpinner" class="absolute inset-0 flex justify-center items-center z-10">
 						<spinner></spinner>
 					</div>
@@ -440,12 +440,60 @@
 				<svg title="Close this panel" class="float-right m-1 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" @click="isRightVisible = !isRightVisible">
 					<path stroke="currentColor" opacity="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
 				</svg>
-				<div class="m-5 absolute">
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a mauris mollis, pellentesque metus nec, fermentum nunc. Nunc tempor maximus erat, faucibus laoreet lorem finibus non. Aenean molestie tellus lacus, elementum porttitor nunc molestie in. Sed sollicitudin lacus
-						eu lectus commodo sagittis. Nulla facilisi. Vivamus vitae nulla blandit, semper lorem non, viverra elit. Nunc maximus tellus vel diam mattis imperdiet. Ut aliquam molestie magna, sit amet euismod neque eleifend at. Vestibulum ut dictum neque. Donec nisl nisi, consequat
-						fermentum ultricies eget, sagittis in ex.
-					</p>
+				<div class="m-1 justify-center">
+					<TabGroup as="div" class="mx-2 mb-5 mt-1">
+						<TabList class="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
+							<Tab as="template" v-slot="{ selected }">
+								<a
+									href="javascript:;"
+									class="-mb-[1px] block border border-transparent p-3.5 py-2 !outline-none transition duration-300 hover:text-primary dark:hover:border-b-black"
+									:class="{ '!border-white-light !border-b-white  text-primary dark:!border-[#191e3a] dark:!border-b-black': selected }"
+									>Properties</a
+								>
+							</Tab>
+							<Tab as="template" v-slot="{ selected }">
+								<div
+									class="-mb-[1px] block cursor-pointer border border-transparent p-3.5 py-2 !outline-none transition duration-300 hover:text-primary dark:hover:border-b-black"
+									:class="{ '!border-white-light !border-b-white text-primary dark:!border-[#191e3a] dark:!border-b-black': selected }"
+								>
+									Style
+								</div>
+							</Tab>
+						</TabList>
+						<TabPanels class="pt-3 text-sm">
+							<TabPanel>
+								<div class="block justify-center">
+									<div class="my-2 flex items-center">
+										<button class="btn btn-primary items-center mx-auto h-5" @click="centerNode()">Center Node</button>
+									</div>
+
+									<div class="mt-4 w-fit">
+										<div v-for="(value, name, index) in propNode">
+											<div class=" ">
+												<div class="flex items-start">
+													<div class="w-[60px] mr-3">{{ name }}:</div>
+													<div>{{ value }}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</TabPanel>
+							<TabPanel>
+								<div class="flex items-start">
+									<div class="h-20 w-20 flex-none ltr:mr-4 rtl:ml-4">
+										<img src="/images/anonymous.png" alt="" class="m-0 h-20 w-20 rounded-full object-cover ring-2 ring-[#ebedf2] dark:ring-white-dark" />
+									</div>
+									<div class="flex-auto">
+										<h5 class="mb-4 text-xl font-medium">Media heading</h5>
+										<p class="text-white-dark">
+											Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+										</p>
+									</div>
+								</div>
+							</TabPanel>
+						</TabPanels>
+					</TabGroup>
 				</div>
 			</div>
 		</pane>
@@ -459,14 +507,14 @@
 	import { Toasts } from "~/composables/notifications";
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { fa } from "@faker-js/faker";
+	import { DataGenerator } from "~/utils";
 
 	const search = ref(true);
 	let isExploreSectionVisible = ref(true);
 	let isSearchVisible = ref(true);
 	let isViewSectionVisible = ref(true);
 	let isLayoutSectionVisible = ref(true);
-	let isLeftVisible = ref(true);
+	let isLeftVisible = ref(false);
 	let isEditSectionVisible = ref(true);
 	let isRightVisible = ref(true);
 	let isHamburgerIconVisible = ref(true);
@@ -476,6 +524,7 @@
 	let viewer: IGraphViewer;
 	let viewerControl = ref(null);
 	let showSpinner = ref(false);
+	let propNode = ref<any>(null);
 	let interactionMode = ref("universal");
 
 	const store = useAppStore();
@@ -487,9 +536,7 @@
 	});
 	onMounted(() => {
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
-		const g = Graph.create("Erdos");
-		viewer.loadGraph(g);
-		viewer.setStyle(GraphStyle.Default);
+		generateSampleGraph();
 	});
 
 	/**
@@ -521,6 +568,7 @@
 
 	function generateSampleGraph() {
 		const g = Graph.create("Erdos");
+		g.nodes.forEach((n: any) => (n.name = DataGenerator.fullName()));
 		viewer.loadGraph(g);
 		viewer.setStyle(GraphStyle.Default);
 	}
@@ -606,6 +654,31 @@
 		viewer.edgeCreation(false);
 		viewer.nodeCreation(false);
 	}
+
+	function centerNode() {
+		const nodes = viewer.selectedNodes();
+		if (nodes && nodes.length > 0) {
+			viewer.zoom(1.5);
+			viewer.centerNode(nodes[0]);
+		}
+	}
+
+	function onSelectionChanged(selection) {
+		if (selection && selection.length > 0) {
+			showProperties(selection[0]);
+		}
+	}
+
+	function showProperties(element) {
+		if (element) {
+			console.log(element.data());
+			propNode.value = element.data();
+		} else {
+			hideProperties();
+		}
+	}
+
+	function hideProperties() {}
 </script>
 <style>
 	.enabledSectionButton {

@@ -9,8 +9,9 @@ import CytoUtils from "./graphs/lib/visualization/cytoUtils";
 import pkg from "../package.json" assert { type: "json" };
 import Errors from "./utils/lib/errors";
 // import GraphAPI from "./GraphAPI";
+import DataGenerator from "./utils/lib/dataGenerator";
 
-export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Errors };
+export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Errors, DataGenerator };
 
 import { GraphStyle } from "~/utils/enums";
 
@@ -115,6 +116,17 @@ export interface IGraphViewer {
 	 * @param [enabled] {boolean} Whether it should be enabled.
 	 */
 	nodeCreation: (enabled: boolean) => void;
+
+	/**
+	 * Centers the given node.
+	 * @param node {any} A node.
+	 */
+	centerNode: (node: any) => void;
+
+	/**
+	 * Returns the selected nodes.
+	 */
+	selectedNodes: () => any[];
 }
 
 export function GraphalyzerInfo() {

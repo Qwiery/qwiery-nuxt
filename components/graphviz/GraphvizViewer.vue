@@ -2,15 +2,14 @@
 	<div id="cy"></div>
 </template>
 <script setup lang="ts">
-	import cytoscape, { Stylesheet } from "cytoscape";
+	import cytoscape, { Stylesheet } from "cytoscape"; // https://js.cytoscape.org/
 	import _ from "lodash";
-	// import CytoUtils from "~/utils/graphs/lib/visualization/cytoUtils";
-	import cola from "cytoscape-cola";
+	import cola from "cytoscape-cola"; // https://github.com/cytoscape/cytoscape.js-cola
 	import defaultStyle from "./styles/defaultStyle.json";
 	import schemaStyle from "./styles/schemaStyle.json";
 	import { GraphStyle } from "~/utils/enums";
 	import edgehandles from "cytoscape-edgehandles"; // https://github.com/cytoscape/cytoscape.js-edgehandles
-
+	let selectionDebounceTimeout: any = null;
 	cytoscape.use(edgehandles);
 	cytoscape.use(cola);
 
@@ -18,6 +17,9 @@
 	let edgeCreator: any = null;
 	let nodeCreationEnabled = false;
 	let edgeCreationEnabled = false;
+	const emit = defineEmits<{
+		(e: "selectionChanged", selection: any[]): void;
+	}>();
 	onMounted(() => {
 		cy = cytoscape({
 			container: document.getElementById("cy"),
@@ -127,6 +129,10 @@
 		}
 	}
 
+	function centerNode(node: any) {
+		cy.center(node);
+	}
+
 	function fit(padding: number = 20) {
 		cy.fit(cy.elements(), padding);
 	}
@@ -206,6 +212,13 @@
 		nodeCreationEnabled = enabled;
 	}
 
+	function selectedNodes(): any[] {
+		const selection = cy.elements(":selected");
+		const coll = [];
+		// selection.forEach(CytoUtils.)
+		return selection.toArray();
+	}
+
 	function addEventHandlers() {
 		// cy.on("click", "node", function (e) {
 		// 	if (nodeCreationEnabled) {
@@ -253,6 +266,16 @@
 				edgeCreator?.disable();
 				cy.nodes().unlock();
 			}
+		});
+		cy.on("select", "node", function (e) {
+			// debounce
+			if (selectionDebounceTimeout) {
+				clearTimeout(selectionDebounceTimeout);
+			}
+			selectionDebounceTimeout = setTimeout(function () {
+				const selection = selectedNodes();
+				emit("selectionChanged", selection);
+			}, 200);
 		});
 		// cy.on("drag", (e) => {
 		// 	e.preventDefault();
@@ -305,6 +328,8 @@
 		removeIsolatedNodes,
 		edgeCreation,
 		nodeCreation,
+		selectedNodes,
+		centerNode,
 	});
 </script>
 <style scoped>

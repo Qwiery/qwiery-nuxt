@@ -12,7 +12,7 @@
 	import { useAppStore } from "@/stores/index";
 	const store = useAppStore();
 	useHead({ title: "Error 404" });
-	definePageMeta({
-		layout: "auth-layout",
-	});
+	// definePageMeta({
+	// 	layout: "auth-layout",
+	// });
 </script>
