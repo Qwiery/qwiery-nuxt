@@ -9,20 +9,21 @@
 	import defaultStyle from "./styles/defaultStyle.json";
 	import schemaStyle from "./styles/schemaStyle.json";
 	import { GraphStyle } from "~/utils/enums";
-	import edgehandles from "cytoscape-edgehandles";
+	import edgehandles from "cytoscape-edgehandles"; // https://github.com/cytoscape/cytoscape.js-edgehandles
 
 	cytoscape.use(edgehandles);
 	cytoscape.use(cola);
 
 	let cy: cytoscape.Core;
-	let edgeCreator = null;
+	let edgeCreator: any = null;
 	let nodeCreationEnabled = false;
+	let edgeCreationEnabled = false;
 	onMounted(() => {
 		cy = cytoscape({
 			container: document.getElementById("cy"),
 			style: <Stylesheet[]>(<unknown>defaultStyle),
 		});
-		addNodeCreationHandler();
+		addEventHandlers();
 		// for debugging
 		window["cy"] = cy;
 
@@ -192,17 +193,20 @@
 
 	function edgeCreation(enabled: boolean = true) {
 		if (enabled) {
+			edgeCreator.enable();
 			edgeCreator.enableDrawMode();
 		} else {
+			edgeCreator.disable();
 			edgeCreator.disableDrawMode();
 		}
+		edgeCreationEnabled = enabled;
 	}
 
 	function nodeCreation(enabled: boolean = true) {
 		nodeCreationEnabled = enabled;
 	}
 
-	function addNodeCreationHandler() {
+	function addEventHandlers() {
 		// cy.on("click", "node", function (e) {
 		// 	if (nodeCreationEnabled) {
 		// 		console.log("clicked " + this.id());
@@ -213,6 +217,65 @@
 				const evtTarget = e.target;
 				if (evtTarget === cy) {
 					console.log(e.position);
+					cy.add({
+						group: "nodes",
+						data: { id: Utils.id() },
+						position: e.position,
+					});
+				} else {
+					console.log("Clicked " + evtTarget.id());
+				}
+			} else {
+				const evtTarget = e.target;
+				if (evtTarget === cy) {
+					// CTRL-click adds a node
+					if (e.originalEvent.ctrlKey) {
+						cy.add({
+							group: "nodes",
+							data: { id: Utils.id() },
+							position: e.position,
+						});
+					}
+				} else {
+					// if (evtTarget.isNode()) {
+					// 	if (e.originalEvent.ctrlKey) {
+					// 		edgeCreator?.enable();
+					// 		edgeCreator?.start(evtTarget.first());
+					// 		// console.log("Node drag");
+					// 		e.preventDefault();
+					// 	}
+					// }
+				}
+			}
+		});
+		cy.on("ehstop", (e) => {
+			if (!edgeCreationEnabled) {
+				edgeCreator?.disable();
+				cy.nodes().unlock();
+			}
+		});
+		// cy.on("drag", (e) => {
+		// 	e.preventDefault();
+		// });
+		cy.on("tapdrag", (e) => {
+			const evtTarget = e.target;
+			if (evtTarget !== cy) {
+				if (evtTarget.isNode()) {
+					const node = evtTarget.first();
+					if (e.originalEvent.ctrlKey) {
+						edgeCreator?.enable();
+						cy.nodes().lock();
+						edgeCreator?.start(node);
+						// console.log("Node drag");
+						e.preventDefault();
+					}
+				}
+			}
+		});
+		cy.on("dbltap", function (e) {
+			const evtTarget = e.target;
+			if (!nodeCreationEnabled) {
+				if (evtTarget === cy) {
 					cy.add({
 						group: "nodes",
 						data: { id: Utils.id() },
