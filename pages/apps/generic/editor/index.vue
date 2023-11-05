@@ -185,8 +185,8 @@
 							</button>
 						</li>
 						<li>
-							<!-- Zoom Fot  -->
-							<button type="button" class="bg-none border-none p-1" @click="fit()">
+							<!-- Zoom Fit  -->
+							<button type="button" class="bg-none border-none p-1" @click="fit()" title="Fit the diagram (CTRL+V)">
 								<svg width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
 									<g class="hover:stroke-sky-300" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 										<g transform="translate(-152.000000, -983.000000)" fill="currentColor">
@@ -206,7 +206,7 @@
 					<ul class="flex items-center space-x-2 dark:text-[#a1a1aa]">
 						<li>
 							<!-- Organic Layout-->
-							<button type="button" class="bg-none border-none p-1" title="Organic Layout" @click="layout('organic')">
+							<button type="button" class="bg-none border-none p-1" title="Organic Layout (CTRL+L)" @click="layout('organic')">
 								<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 40 40">
 									<g class="layer">
 										<circle cx="6.34975" cy="28.14941" fill="currentColor" id="svg_1" r="3.63898" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
@@ -227,7 +227,7 @@
 						</li>
 						<li>
 							<!-- Hierarchic Layout-->
-							<button type="button" class="bg-none border-none p-1" title="Hierarchic Layout" @click="layout('hierarchical')">
+							<button type="button" class="bg-none border-none p-1" title="Hierarchic Layout (CTRL+H)" @click="layout('hierarchical')">
 								<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 40 40">
 									<g class="layer">
 										<circle cx="7.19864" cy="33.44652" fill="currentColor" id="svg_1" r="3.63898" stroke="currentColor" />
@@ -245,7 +245,7 @@
 						</li>
 						<li>
 							<!-- Concentric Layout-->
-							<button type="button" class="bg-none border-none p-1" title="Concentric Layout" @click="layout('concentric')">
+							<button type="button" class="bg-none border-none p-1" title="Concentric Layout (CTRL+O)" @click="layout('concentric')">
 								<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 40 40">
 									<g class="layer">
 										<circle cx="9.26995" cy="33.78608" fill="currentColor" id="svg_1" r="3.63898" stroke="currentColor" transform="matrix(1 0 0 1 0 0)" />
@@ -459,16 +459,24 @@
 									Style
 								</div>
 							</Tab>
+							<Tab as="template" v-slot="{ selected }">
+								<div
+									class="-mb-[1px] block cursor-pointer border border-transparent p-3.5 py-2 !outline-none transition duration-300 hover:text-primary dark:hover:border-b-black"
+									:class="{ '!border-white-light !border-b-white text-primary dark:!border-[#191e3a] dark:!border-b-black': selected }"
+								>
+									Shortcuts
+								</div>
+							</Tab>
 						</TabList>
 						<TabPanels class="pt-3 text-sm">
 							<TabPanel>
 								<div class="justify-center">
 									<div class="my-2">
-										<button class="btn btn-primary items-center mx-auto h-2" @click="centerNode()">Center Node</button>
+										<button :disabled="!hasProperties" class="btn btn-primary items-center mx-auto h-2" @click="centerNode()">Center Node</button>
 									</div>
 									<hr class="w-full h-[1px] mx-auto my-4 bg-primary-dark-light border-0 rounded dark:bg-primary" />
 									<div class="mt-4 w-fit">
-										<div v-for="(value, name, index) in propNode">
+										<div v-if="hasProperties" v-for="(value, name, index) in propNode">
 											<div class=" ">
 												<div class="flex items-start">
 													<div class="w-[60px] mr-3">{{ name }}:</div>
@@ -476,6 +484,7 @@
 												</div>
 											</div>
 										</div>
+										<div v-else>Nothing selected</div>
 									</div>
 								</div>
 							</TabPanel>
@@ -489,6 +498,26 @@
 										<p class="text-white-dark">
 											Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
 										</p>
+									</div>
+								</div>
+							</TabPanel>
+							<TabPanel>
+								<div class="">
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">CTRL V</div>
+										<div>Fit diagram</div>
+									</div>
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">CTRL L</div>
+										<div>Layout</div>
+									</div>
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">CTRL I</div>
+										<div>Add node where pointer is</div>
+									</div>
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">DELETE</div>
+										<div>Remove selection</div>
 									</div>
 								</div>
 							</TabPanel>
@@ -508,6 +537,7 @@
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { DataGenerator } from "~/utils";
+	import { has } from "node-emoji";
 
 	const search = ref(true);
 	let isExploreSectionVisible = ref(true);
@@ -525,6 +555,7 @@
 	let viewerControl = ref(null);
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
+	let hasProperties = ref<boolean>(false);
 	let interactionMode = ref("universal");
 
 	const store = useAppStore();
@@ -539,7 +570,7 @@
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
 		generateSampleGraph();
 	});
-	useKeyPressHandler(shortcuts);
+	// useKeyPressHandler(shortcuts);
 	useKeyDownHandler(shortcuts);
 
 	/**
@@ -556,8 +587,16 @@
 			switch (e.key) {
 				case "l":
 					return layout();
-				case "a":
+				case "i":
 					return addNode(viewer.getPosition());
+				case "v":
+					return fit();
+				case "g":
+					return generateSampleGraph();
+				case "h":
+					return layout("hierarchical");
+				case "o":
+					return layout("concentric");
 			}
 		} else {
 			switch (e.key) {
@@ -569,6 +608,8 @@
 
 	function removeSelection() {
 		viewer.removeSelection();
+		hasProperties.value = false;
+		propNode.value = null;
 	}
 	/**
 	 * See {@link IGraphViewer}
@@ -689,19 +730,19 @@
 	function onSelectionChanged(selection) {
 		if (selection && selection.length > 0) {
 			showProperties(selection[0]);
+		} else {
+			hasProperties.value = false;
 		}
 	}
 
 	function showProperties(element) {
 		if (element) {
-			console.log(element.data());
 			propNode.value = element.data();
+			hasProperties.value = true;
 		} else {
-			hideProperties();
+			hasProperties.value = false;
 		}
 	}
-
-	function hideProperties() {}
 
 	function addNode(position: any = { x: 0, y: 0 }) {
 		const node = {

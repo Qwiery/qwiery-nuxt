@@ -217,8 +217,6 @@
 
 	function selectedNodes(): any[] {
 		const selection = cy.elements(":selected");
-		const coll = [];
-		// selection.forEach(CytoUtils.)
 		return selection.toArray();
 	}
 
@@ -278,6 +276,16 @@
 				emit("selectionChanged", selection);
 			}, 200);
 		});
+		cy.on("unselect", "node", function (e) {
+			if (selectionDebounceTimeout) {
+				clearTimeout(selectionDebounceTimeout);
+			}
+			selectionDebounceTimeout = setTimeout(function () {
+				const selection = selectedNodes();
+				emit("selectionChanged", selection);
+			}, 200);
+		});
+
 		// cy.on("drag", (e) => {
 		// 	e.preventDefault();
 		// });
