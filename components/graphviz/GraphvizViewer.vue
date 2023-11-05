@@ -322,7 +322,20 @@
 	function getPosition() {
 		return currentPosition;
 	}
+	function getNode(id: string) {
+		return cy.getElementById(id);
+	}
 
+	function setNodeProperty(id, name, value) {
+		const node = getNode(id);
+		if (node) {
+			node.data(name, value);
+		}
+	}
+
+	function refreshStyle() {
+		cy.nodes().updateStyle();
+	}
 	/**
 	 * Expose the IGraphViewer interface.
 	 */
@@ -344,6 +357,8 @@
 		centerNode,
 		getPosition,
 		removeSelection,
+		getNode,
+		refreshStyle,
 	});
 </script>
 <style scoped>

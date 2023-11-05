@@ -470,17 +470,41 @@
 						</TabList>
 						<TabPanels class="pt-3 text-sm">
 							<TabPanel>
-								<div class="justify-center">
-									<div class="my-2">
-										<button :disabled="!hasProperties" class="btn btn-primary items-center mx-auto h-2" @click="centerNode()">Center Node</button>
+								<div class="">
+									<div class="my-2 flex">
+										<button :disabled="!hasProperties" class="btn btn-primary h-2 mr-2" @click="centerNode()">Center Node</button>
+										<button v-if="!editPropertiesEnabled" :disabled="!hasProperties" class="btn btn-primary h-2" @click="editProperties()">Edit</button>
 									</div>
 									<hr class="w-full h-[1px] mx-auto my-4 bg-primary-dark-light border-0 rounded dark:bg-primary" />
-									<div class="mt-4 w-fit">
-										<div v-if="hasProperties" v-for="(value, name, index) in propNode">
-											<div class=" ">
+									<div class="mt-4 w-full">
+										<div v-if="hasProperties">
+											<div v-if="editPropertiesEnabled">
+												<div class="flex items-start my-2" v-for="(value, key) in propNode">
+													<div class="w-[60px] mr-3">{{ key }}:</div>
+													<div>
+														<div v-if="key === 'id'">{{ value }}</div>
+														<input
+															v-else
+															type="email"
+															id="email"
+															class="h-3 bg-primary-light border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-primary-dark-light dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+															placeholder=""
+															v-model="propNode[key]"
+														/>
+													</div>
+												</div>
+												<div class="my-2 flex justify-end">
+													<button class="h-2 mr-2" @click="cancelEdit()">Cancel</button>
+													<button class="btn btn-success h-2" @click="saveEdit()">Save</button>
+												</div>
+											</div>
+
+											<div v-else class="my-2" v-for="(value, name, index) in propNode">
 												<div class="flex items-start">
 													<div class="w-[60px] mr-3">{{ name }}:</div>
-													<div>{{ value }}</div>
+													<div>
+														{{ value }}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -555,6 +579,8 @@
 	let viewerControl = ref(null);
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
+	let currentNodeId = ref<string | null>(null);
+	let editPropertiesEnabled = ref<boolean>(false);
 	let hasProperties = ref<boolean>(false);
 	let interactionMode = ref("universal");
 
@@ -580,7 +606,18 @@
 	function layout(layoutName = "organic") {
 		viewer.layout(layoutName);
 	}
-
+	function editProperties() {
+		editPropertiesEnabled.value = true;
+	}
+	function cancelEdit() {
+		editPropertiesEnabled.value = false;
+	}
+	function saveEdit() {
+		setTimeout(() => {
+			viewer.refreshStyle;
+		}, 200);
+		editPropertiesEnabled.value = false;
+	}
 	function shortcuts(e) {
 		console.log(e.key);
 		if (e.metaKey || e.ctrlKey) {
@@ -737,9 +774,12 @@
 
 	function showProperties(element) {
 		if (element) {
+			// todo: these methods are cy specific
+			currentNodeId.value = element.id();
 			propNode.value = element.data();
 			hasProperties.value = true;
 		} else {
+			currentNodeId.value = null;
 			hasProperties.value = false;
 		}
 	}

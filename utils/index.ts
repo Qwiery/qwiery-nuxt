@@ -140,6 +140,15 @@ export interface IGraphViewer {
 	 * Removes whatever is selected.
 	 */
 	removeSelection: () => void;
+
+	/**
+	 * returns the node with the specified id.
+	 * @param id {string} An identifier.
+	 */
+	getNode: (id: string) => any;
+
+	setNodeProperty: (id, name, value) => void;
+	refreshStyle: () => void;
 }
 
 export function GraphalyzerInfo() {

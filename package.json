@@ -50,6 +50,7 @@
         "buffer": "^6.0.3",
         "cytoscape": "^3.26.0",
         "cytoscape-cola": "^2.5.1",
+        "cytoscape-edgehandles": "^4.0.1",
         "eventemitter3": "^5.0.1",
         "jscrypto": "^1.0.3",
         "lodash": "^4.17.21",
@@ -61,9 +62,9 @@
         "postcss": "8.4.31",
         "prettier": "3.0.3",
         "prettier-plugin-tailwindcss": "0.5.6",
-        "sqlite3": "^5.1.6",
         "sequelize": "^6.32.1",
         "splitpanes": "^3.1.5",
+        "sqlite3": "^5.1.6",
         "sweetalert2": "^11.7.31",
         "tippy.vue": "^3.2.1",
         "vitest": "^0.33.0",
@@ -71,7 +72,6 @@
         "vue-height-collapsible": "0.1.1",
         "vue-router": "^4.2.5",
         "vue3-perfect-scrollbar": "1.6.1",
-        "vue3-popper": "^1.5.0",
-        "cytoscape-edgehandles": "^4.0.1"
+        "vue3-popper": "^1.5.0"
     }
 }
