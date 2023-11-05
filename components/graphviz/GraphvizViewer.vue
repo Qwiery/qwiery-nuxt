@@ -12,7 +12,7 @@
 	let selectionDebounceTimeout: any = null;
 	cytoscape.use(edgehandles);
 	cytoscape.use(cola);
-
+	let currentPosition: any = { x: 0, y: 0 };
 	let cy: cytoscape.Core;
 	let edgeCreator: any = null;
 	let nodeCreationEnabled = false;
@@ -58,6 +58,9 @@
 				position: { x: rawNode.data?.x || 0, y: rawNode.data?.y || 0 },
 			},
 		]);
+	}
+	function removeSelection() {
+		return cy.$(":selected").remove();
 	}
 
 	function loadGraph(g: Graph | any, replace: boolean = true) {
@@ -220,11 +223,9 @@
 	}
 
 	function addEventHandlers() {
-		// cy.on("click", "node", function (e) {
-		// 	if (nodeCreationEnabled) {
-		// 		console.log("clicked " + this.id());
-		// 	}
-		// });
+		cy.on("mousemove", function (e) {
+			currentPosition = e.position;
+		});
 		cy.on("tap", function (e) {
 			if (nodeCreationEnabled) {
 				const evtTarget = e.target;
@@ -310,6 +311,9 @@
 			}
 		});
 	}
+	function getPosition() {
+		return currentPosition;
+	}
 
 	/**
 	 * Expose the IGraphViewer interface.
@@ -330,6 +334,8 @@
 		nodeCreation,
 		selectedNodes,
 		centerNode,
+		getPosition,
+		removeSelection,
 	});
 </script>
 <style scoped>

@@ -462,11 +462,11 @@
 						</TabList>
 						<TabPanels class="pt-3 text-sm">
 							<TabPanel>
-								<div class="block justify-center">
-									<div class="my-2 flex items-center">
-										<button class="btn btn-primary items-center mx-auto h-5" @click="centerNode()">Center Node</button>
+								<div class="justify-center">
+									<div class="my-2">
+										<button class="btn btn-primary items-center mx-auto h-2" @click="centerNode()">Center Node</button>
 									</div>
-
+									<hr class="w-full h-[1px] mx-auto my-4 bg-primary-dark-light border-0 rounded dark:bg-primary" />
 									<div class="mt-4 w-fit">
 										<div v-for="(value, name, index) in propNode">
 											<div class=" ">
@@ -531,6 +531,7 @@
 	definePageMeta({
 		layout: "default",
 	});
+
 	useHead({
 		title: "Graph Explorer",
 	});
@@ -538,6 +539,8 @@
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
 		generateSampleGraph();
 	});
+	useKeyPressHandler(shortcuts);
+	useKeyDownHandler(shortcuts);
 
 	/**
 	 * See {@link IGraphViewer}
@@ -547,6 +550,26 @@
 		viewer.layout(layoutName);
 	}
 
+	function shortcuts(e) {
+		console.log(e.key);
+		if (e.metaKey || e.ctrlKey) {
+			switch (e.key) {
+				case "l":
+					return layout();
+				case "a":
+					return addNode(viewer.getPosition());
+			}
+		} else {
+			switch (e.key) {
+				case "Delete":
+					return removeSelection();
+			}
+		}
+	}
+
+	function removeSelection() {
+		viewer.removeSelection();
+	}
 	/**
 	 * See {@link IGraphViewer}
 	 */
@@ -679,6 +702,18 @@
 	}
 
 	function hideProperties() {}
+
+	function addNode(position: any = { x: 0, y: 0 }) {
+		const node = {
+			data: {
+				name: DataGenerator.fullName(),
+				x: position.x,
+				y: position.y,
+			},
+			id: Utils.id(),
+		};
+		viewer.addNode(node);
+	}
 </script>
 <style>
 	.enabledSectionButton {

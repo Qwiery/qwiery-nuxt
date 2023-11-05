@@ -19,9 +19,9 @@ import { GraphStyle } from "~/utils/enums";
  * Defines the data stored in Qwiery.
  */
 export interface IRawNode {
-	id: string;
-	data: any;
-	labels: string[];
+	id?: string;
+	data?: any;
+	labels?: string[];
 }
 
 /**
@@ -127,6 +127,19 @@ export interface IGraphViewer {
 	 * Returns the selected nodes.
 	 */
 	selectedNodes: () => any[];
+
+	/**
+	 * Returns the position of the pointer on canvas.
+	 */
+	getPosition: () => {
+		x: number;
+		y: number;
+	};
+
+	/**
+	 * Removes whatever is selected.
+	 */
+	removeSelection: () => void;
 }
 
 export function GraphalyzerInfo() {
