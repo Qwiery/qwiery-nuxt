@@ -149,6 +149,7 @@ export interface IGraphViewer {
 
 	setNodeProperty: (id, name, value) => void;
 	refreshStyle: () => void;
+	forceResize: () => void;
 }
 
 export function GraphalyzerInfo() {

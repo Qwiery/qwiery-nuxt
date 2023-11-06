@@ -614,7 +614,7 @@
 	}
 	function saveEdit() {
 		setTimeout(() => {
-			viewer.refreshStyle;
+			viewer.refreshStyle();
 		}, 200);
 		editPropertiesEnabled.value = false;
 	}
@@ -797,9 +797,11 @@
 	}
 	function toggleLeft() {
 		isLeftVisible.value = !isLeftVisible.value;
+		viewer.forceResize();
 	}
 	function toggleRight() {
 		isRightVisible.value = !isRightVisible.value;
+		viewer.forceResize();
 	}
 </script>
 <style>
