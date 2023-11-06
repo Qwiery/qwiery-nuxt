@@ -7,7 +7,7 @@
 				<ul class="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 					<li>
 						<!-- Hamburger left panel-->
-						<button class="ml-2 p-1" @click="isLeftVisible = !isLeftVisible" title="Toggle the left panel" v-if="isHamburgerIconVisible">
+						<button class="ml-2 p-1" @click="toggleLeft()" title="Toggle the left panel" v-if="isHamburgerIconVisible">
 							<svg height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<g class="hover:stroke-sky-300" fill="transparent">
 									<rect width="24" height="24" rx="5" ry="5"></rect>
@@ -318,7 +318,7 @@
 			</div>
 			<div>
 				<!--Toggle Right -->
-				<button class="mr-5 mt-3" @click="isRightVisible = !isRightVisible" v-if="isPropertiesIconVisible">
+				<button class="mr-5 mt-3" @click="toggleRight()" v-if="isPropertiesIconVisible">
 					<svg fill="currentColor" width="24px" height="24px" viewBox="0 0 36 36" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
 						<g>
 							<path class="clr-i-outline clr-i-outline-path-1" d="M16.08,14.9a10.41,10.41,0,0,1,1.87-.71l-4-10.77a2,2,0,0,0-3.75,0L2,25.26A2,2,0,0,0,3.92,28h6.94a10,10,0,0,1-.52-2H3.92L12.06,4.12Z"></path>
@@ -794,6 +794,12 @@
 			id: Utils.id(),
 		};
 		viewer.addNode(node);
+	}
+	function toggleLeft() {
+		isLeftVisible.value = !isLeftVisible.value;
+	}
+	function toggleRight() {
+		isRightVisible.value = !isRightVisible.value;
 	}
 </script>
 <style>
