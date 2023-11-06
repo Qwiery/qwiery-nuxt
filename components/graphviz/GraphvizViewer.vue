@@ -336,6 +336,11 @@
 	function refreshStyle() {
 		cy.nodes().updateStyle();
 	}
+
+	function forceResize() {
+		cy.resize();
+		cy.fit();
+	}
 	/**
 	 * Expose the IGraphViewer interface.
 	 */
@@ -359,6 +364,7 @@
 		removeSelection,
 		getNode,
 		refreshStyle,
+		forceResize,
 	});
 </script>
 <style scoped>
