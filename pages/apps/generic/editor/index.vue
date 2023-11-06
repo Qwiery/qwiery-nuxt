@@ -336,7 +336,7 @@
 			<!-- Left Panel-->
 			<div class="border-r border-white-light dark:border-primary !h-[95vh]">
 				<!--Toggle Left -->
-				<svg class="float-right m-1 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" @click="isLeftVisible = !isLeftVisible">
+				<svg class="float-right m-1 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" @click="toggleLeft()">
 					<path stroke="currentColor" opacity="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
 				</svg>
 				<TabGroup as="div" class="mx-2 mb-5 mt-1">
@@ -437,7 +437,7 @@
 			<!--Right Panel -->
 			<div class="border-l border-white-light dark:border-primary !h-[95vh]">
 				<!--Toggle Right -->
-				<svg title="Close this panel" class="float-right m-1 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" @click="isRightVisible = !isRightVisible">
+				<svg title="Close this panel" class="float-right m-1 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" @click="toggleRight()">
 					<path stroke="currentColor" opacity="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
 				</svg>
 				<div class="m-1 justify-center">
@@ -801,6 +801,7 @@
 	}
 	function toggleRight() {
 		isRightVisible.value = !isRightVisible.value;
+		window.dispatchEvent(new Event("resize"));
 		viewer.forceResize();
 	}
 </script>
