@@ -68,7 +68,7 @@ export interface IGraphViewer {
 	 * @param layoutName {string} The name of the layout.
 	 * @param [options] {any} Options specific to the layout.
 	 */
-	layout: (layoutName: string, options?: any) => void;
+	layout: (layoutName?: string, options?: any) => void;
 
 	/**
 	 * Pan the graph to the centre of a collection.

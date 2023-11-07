@@ -594,7 +594,9 @@
 	});
 	onMounted(() => {
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
-		generateSampleGraph();
+		setTimeout(() => {
+			generateSampleGraph();
+		}, 200);
 	});
 	// useKeyPressHandler(shortcuts);
 	useKeyDownHandler(shortcuts);
@@ -665,6 +667,7 @@
 
 	function removeIsolatedNodes() {
 		viewer.removeIsolatedNodes();
+		viewer.layout();
 	}
 
 	function generateSampleGraph() {
