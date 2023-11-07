@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 				{
 					hid: "description",
 					name: "description",
-					content: "Graphalyzer is an open source toolbox to create graph-driven apps",
+					content: "Qwiery is an open source toolbox to create graph-driven apps",
 				},
 				{ name: "format-detection", content: "telephone=no" },
 			],

@@ -152,11 +152,11 @@ export interface IGraphViewer {
 	forceResize: () => void;
 }
 
-export function GraphalyzerInfo() {
+export function QwieryInfo() {
 	return {
 		version: pkg.version,
 		description: pkg.description,
-		name: "Graphalyzer",
-		title: `Graphalyzer v${pkg.version}`,
+		name: "Qwiery",
+		title: `Qwiery v${pkg.version}`,
 	};
 }

@@ -1,6 +1,6 @@
 # Overview
 
-Graphalyzer is an open source toolbox to create graph-driven apps.
+Qwiery (Nuxt) is an open source toolbox to create graph-driven apps.
 
 
 It's packaged with
@@ -15,7 +15,7 @@ It's packaged with
 
 # Enterprise Version
 
-The base-version of Graphalyzer uses diverse open source packages and is also limited in functionality. The enterprise version comes with more sophisticated libraries and integrations:
+The base-version of Qwiery uses diverse open source packages and is also limited in functionality. The enterprise version comes with more sophisticated libraries and integrations:
 
 - **advanced graph visualization** based on high-end libraries like yFiles, Ogma and GoJs (separate license required)
 - **Jupyter notebooks** (in-browser based on Pyodide)
