@@ -4,7 +4,7 @@ This is a Nuxt productivity toolbox to create graph-driven apps. It allows to in
 
 There are three versions within this repo based on three graph visualization frameworks: **yFiles**, **Ogma** and **Cytoscape**. You can access each via git checkout of the respective branches. The core is always the same, only the graph visualization part is implemented differently.
 
-<a href="https://www.yworks.com" target="_blank"><img src="./public/images/yfiles.svg" style="height: 90px; margin-right: 20px"/></a>
+<a href="https://www.yworks.com" target="_blank"><img src="./public/images/yFiles.svg" style="height: 90px; margin-right: 20px"/></a>
 <a href="https://linkurious.com/ogma/" target="_blank"><img src="./public/images/ogma.svg" style="height: 90px; margin-right: 20px"/></a>
 <a href="https://js.cytoscape.org/" target="_blank"><img src="./public/images/cytoscape.svg" style="height: 90px"/></a>
 
