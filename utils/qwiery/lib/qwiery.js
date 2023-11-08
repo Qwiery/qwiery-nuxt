@@ -304,6 +304,20 @@ export default class Qwiery extends EventEmitter {
 	//endregion
 
 	//region Node
+
+	/**
+	 * Search of the nodes for the given term.
+	 * @param term {string} A search term.
+	 * @param fields {string[]} The properties to consider in the search.
+	 */
+	async searchNodes(term, fields =[], amount=100){
+		try {
+			return await this.callStore("searchNodes", [term, fields, amount]);
+		} catch (e) {
+			/* istanbul ignore next */
+			throw e;
+		}
+	}
 	/**
 	 * Returns the nodes satisfying the given predicate.
 	 * @param predicate {function|*} A Mongo-like projection. If the adapter supports it, a function can be passed.

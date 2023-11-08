@@ -679,4 +679,38 @@ describe("Adapter", function () {
 		ns = await g.getNodes({}, count);
 		expect(ns.length).toEqual(count);
 	});
+
+	it('should search for nodes', async () => {
+		Qwiery.plugin(Sqlite);
+		const g = new Qwiery({
+			adapters: ["sqlite"],
+			sqlite: {
+				recreateTables: true,
+			},
+		});
+		for (let i = 0; i < 300; i++) {
+			await g.createNode({
+				id:"A" + i,
+				labels:["A"],
+				name: "A " + i
+			})
+		}
+		for (let i = 0; i < 150; i++) {
+			await g.createNode({
+				id:"B" + i,
+				labels:["B"],
+				name: "B " + i
+			})
+		}
+		let found = await g.searchNodes("A");
+		// default amount is 100
+		expect(found).toHaveLength(100)
+
+		found = await g.searchNodes("A",["name"],4);
+		expect(found).toHaveLength(4)
+
+		// property k does not exist
+		found = await g.searchNodes("A",["k"]);
+		expect(found).toHaveLength(0)
+	});
 });

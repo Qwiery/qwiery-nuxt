@@ -343,4 +343,27 @@ describe("JsonGraphStore", function () {
 		expect(await store.nodeCount()).toEqual(10);
 		expect(await store.edgeCount()).toEqual(8);
 	});
+
+	it('should search for nodes', async () => {
+		const g = new JsonGraphStore();
+		for (let i = 0; i < 300; i++) {
+			await g.createNode({
+				id:"A" + i,
+				labels:["A"],
+				name: "A " + i
+			})
+		}
+		for (let i = 0; i < 150; i++) {
+			await g.createNode({
+				id:"B" + i,
+				labels:["B"],
+				name: "B " + i
+			})
+		}
+		let found = await g.searchNodes("A");
+		// default amount is 100
+		expect(found).toHaveLength(100)
+
+
+	});
 });
