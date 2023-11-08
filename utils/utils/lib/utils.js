@@ -1076,7 +1076,7 @@ export const Utils = {
 					id: fromId,
 				};
 			} else {
-				if (Utils.isEmpty(id) && Utils.isEmpty(data.id)) {
+				if (Utils.isEmpty(id) && Utils.isEmpty(data?.id)) {
 					if (Utils.isEmpty(fromId)) {
 						throw new Error(Errors.sourceIdMissing());
 					}

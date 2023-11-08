@@ -82,6 +82,31 @@ npm run dev
 ```
 There is no 'cytoscape' branch, the master branch contains the Cytoscape version.
 
+wThe output will be something like 
+
+
+```text
+> nuxt-app@0.1.0 dev
+> nuxt dev
+
+Nuxt 3.8.0 with Nitro 2.7.0                                                                                              10:25:38 AM
+                                                                                                                         10:25:39 AM
+  ➜ Local:    http://localhost:3000/
+  ➜ Network:  use --host to expose
+
+ℹ Using default Tailwind CSS file                                                                      nuxt:tailwindcss 10:25:39 AM
+ℹ Tailwind Viewer: http://localhost:3000/_tailwind/                                                    nuxt:tailwindcss 10:25:39 AM
+ℹ ✨ optimized dependencies changed. reloading                                                                          10:25:43 AM
+ℹ Vite client warmed up in 3116ms                                                                                       10:25:43 AM
+✔ Nitro built in 1704 ms                                                                                          nitro 10:25:43 AM
+Qwiery backend with JsonGraphStore adapter enabled.
+JsonGraphStore auto-save enabled (interval: 5000).
+```
+
+Point your browser to [http://localhost:3000/](http://localhost:3000/) to explore the app.
+Note that by default the JsonGraphStore is used.
+
+
 ## Features
 
 - all versions are made with Nuxt (>=v3.8) and NodeJs >=v21

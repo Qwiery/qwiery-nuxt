@@ -696,6 +696,7 @@
 			isLayoutSectionVisible.value = true;
 			isPropertiesIconVisible.value = true;
 			isEditSectionVisible.value = true;
+            clearGraph()
 		}
 
 		function showSchema() {
