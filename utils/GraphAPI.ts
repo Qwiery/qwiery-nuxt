@@ -9,6 +9,8 @@ const notImplemented = "This is either not implemented by the data access guy or
  * default is not what you need.
  */
 export class GraphAPIBase {
+
+
     /**
      * Clears the graph.
      * @return {Promise<void>} Does not return anything.
@@ -417,12 +419,13 @@ export default class GraphAPI implements GraphAPIBase {
         }
     }
 
-    static async searchNodes(term: string, fields: string[]): Promise<INodeBase[] | null> {
+    static async searchNodes(term: string, fields: string[], amount:number=10): Promise<INodeBase[] | null> {
         const {data, pending, error, refresh} = await useFetch("/api/graph/searchNodes", {
             method: "POST",
             body: {
                 term,
-                fields
+                fields,
+                amount
             },
         });
         return <INodeBase[]>data.value || null;

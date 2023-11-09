@@ -16,6 +16,15 @@ export class Notifications {
 			confirmButtonText: "Cool",
 		});
 	}
+
+	static info(msg: string) {
+		return Swal.fire({
+			title: "Info",
+			text: msg,
+			icon: "info",
+			// confirmButtonText: "Cool",
+		});
+	}
 }
 
 /**
