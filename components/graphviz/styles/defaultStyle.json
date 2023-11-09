@@ -5,9 +5,11 @@
             "label": "data(name)",
             "text-valign": "center",
             "text-halign": "center",
+            "text-wrap": "ellipsis",
+            "text-max-width": 120,
             "color": "orange",
             "height": "60px",
-            "width": "100px",
+            "width": "150px",
             "shape": "round-rectangle",
             "background-color": "#52525b"
         }
