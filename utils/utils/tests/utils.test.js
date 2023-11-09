@@ -306,4 +306,15 @@ describe("Utils", function () {
 		expect(() => Utils.getTripleSpecs(null)).toThrow(Error);
 		expect(() => Utils.getTripleSpecs([1, 2, 3, 4])).toThrow(Error);
 	});
+
+	it('should test for alphanumeric', () => {
+		expect(Utils.isAlphaNumeric("abc")).toBeTruthy()
+		expect(Utils.isAlphaNumeric("ab3cA")).toBeTruthy()
+		expect(Utils.isAlphaNumeric("4ab3cA")).toBeTruthy()
+
+		expect(Utils.isAlphaNumeric("4#ab3cA")).not.toBeTruthy()
+		expect(Utils.isAlphaNumeric("65465 sdf")).not.toBeTruthy()
+		expect(Utils.isAlphaNumeric("  ")).not.toBeTruthy()
+
+	});
 });

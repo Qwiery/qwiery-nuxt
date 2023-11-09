@@ -25,6 +25,24 @@ export class Notifications {
 			// confirmButtonText: "Cool",
 		});
 	}
+
+	static async askForPropertyName(){
+		const inputValue:string = "";
+		const { value: propName } = await Swal.fire({
+			title: "New Property",
+			input: "text",
+			inputLabel: "Name of the new property",
+			inputValue,
+			showCancelButton: true,
+			inputValidator: (v) => {
+				if (Utils.isPropertyName(v)) {
+					return "You need to supply a valid property name.";
+				}
+			}
+		});
+
+		return propName;
+	}
 }
 
 /**

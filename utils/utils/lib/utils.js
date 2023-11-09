@@ -35,6 +35,22 @@ export const Utils = {
 		email: (value) => emailRegex.test(value) || "Not a valid email address",
 	},
 
+	isAlphaNumeric(s){
+		if(Utils.isEmpty(s)){
+			return false;
+		}
+		return /^\w+$/gi.test(s);
+	},
+
+	isPropertyName(s){
+		if(!Utils.isAlphaNumeric(s)){
+			return false
+		}
+		if(!/\d/.test(s.substring(0,1))){
+			return false
+		}
+		return true
+	},
 	/**
 	 * Proper formatting of money amount.
 	 * If cannot be converted to a proper format an empty string will be returned.
