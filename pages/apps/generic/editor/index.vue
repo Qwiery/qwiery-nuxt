@@ -381,8 +381,9 @@
                 <div class="flex-auto">
                   <h5 class="mb-4 text-xl font-medium">Media heading</h5>
                   <p class="text-white-dark">
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                    Change
                   </p>
+
                 </div>
               </div>
             </TabPanel>
@@ -524,14 +525,18 @@
               </TabPanel>
               <TabPanel>
                 <div class="flex items-start">
-                  <div class="h-20 w-20 flex-none ltr:mr-4 rtl:ml-4">
-                    <img src="/images/anonymous.png" alt="" class="m-0 h-20 w-20 rounded-full object-cover ring-2 ring-[#ebedf2] dark:ring-white-dark"/>
-                  </div>
+
                   <div class="flex-auto">
-                    <h5 class="mb-4 text-xl font-medium">Media heading</h5>
-                    <p class="text-white-dark">
-                      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                    </p>
+                    <h5 class="mb-4 text-xl font-medium">Change Graph Theme</h5>
+                    <div class="border border-primary rounded p-3 cursor-pointer my-2" @click="setStyle('Schema')">
+                      <h2>Schema</h2>
+
+                    </div>
+                    <div class="border border-primary rounded p-3 cursor-pointer my-2" @click="setStyle('Default')">
+                      <h2>Default</h2>
+
+                    </div>
+
                   </div>
                 </div>
               </TabPanel>
@@ -593,6 +598,7 @@ let currentNodeId = ref<string | null>(null);
 let editPropertiesEnabled = ref<boolean>(false);
 let hasProperties = ref<boolean>(false);
 let interactionMode = ref("universal");
+let currentPerspective = ref("explorer");
 
 const store = useAppStore();
 definePageMeta({
@@ -635,6 +641,10 @@ function saveEdit() {
 }
 
 function shortcuts(e) {
+  // no editing of the schema
+  if (currentPerspective.value === "schema") {
+    return;
+  }
   console.log("Key:", e.key);
   if (e.metaKey || e.ctrlKey) {
     switch (e.key) {
@@ -742,6 +752,7 @@ function showPerspective(name = "explorer") {
     });
   }
 
+  currentPerspective.value = name.toLowerCase()
   switch (name.toLowerCase()) {
     case "explorer":
       return showExplorer();
@@ -868,6 +879,10 @@ function deleteProperty(name: string) {
     return;
   }
   delete propNode.value[name];
+}
+
+function setStyle(name) {
+  viewer.setStyle(name);
 }
 </script>
 <style>
