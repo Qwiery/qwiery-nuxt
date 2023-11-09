@@ -1,5 +1,7 @@
 # Qwiery for Nuxt
 
+<img src="./screenshot.png" style="width:800px"/>
+
 This is a Nuxt productivity toolbox to create graph-driven apps. It allows to integrate the main graph visualization libraries on the front-end and diverse graph and classic databases in the backend.
 
 There are three versions within this repo based on three graph visualization frameworks: **yFiles**, **Ogma** and **Cytoscape**. You can access each via git checkout of the respective branches. The core is always the same, only the graph visualization part is implemented differently.
