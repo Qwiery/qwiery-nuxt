@@ -19,6 +19,7 @@
 	let edgeCreationEnabled = false;
 	const emit = defineEmits<{
 		(e: "selectionChanged", selection: any[]): void;
+		(e: "doubleClick", id: string): void;
 	}>();
 	onMounted(() => {
 		cy = cytoscape({
@@ -53,9 +54,22 @@
 	function addNode(rawNode: IRawNode) {
 		cy.add([
 			{
+				id: rawNode.id,
 				group: "nodes",
 				data: rawNode.data,
 				position: { x: rawNode.data?.x || 0, y: rawNode.data?.y || 0 },
+			},
+		]);
+	}
+
+	function addEdge(rawEdge: IRawEdge) {
+		cy.add([
+			{
+				id: rawEdge.id,
+				group: "edges",
+				data: rawEdge.data,
+				source: rawEdge.sourceId,
+				target: rawEdge.targetId,
 			},
 		]);
 	}
@@ -76,6 +90,7 @@
 		}
 		cy.json({ elements: CytoUtils.toElements(g) });
 		layout();
+		console.log(cy.nodes().map((n) => n.id()));
 	}
 
 	function clear() {
@@ -224,6 +239,24 @@
 		cy.on("mousemove", function (e) {
 			currentPosition = e.position;
 		});
+		cy.on("dbltap", "node", function (e) {
+			emit("doubleClick", e.target.data("id"));
+		});
+		cy.on("dbltap", function (e) {
+			const evtTarget = e.target;
+			if (!nodeCreationEnabled) {
+				if (evtTarget === cy) {
+					cy.add({
+						group: "nodes",
+						data: { id: Utils.id() },
+						position: e.position,
+					});
+				} else {
+					console.log("Clicked " + evtTarget.id());
+				}
+			}
+		});
+
 		cy.on("tap", function (e) {
 			if (nodeCreationEnabled) {
 				const evtTarget = e.target;
@@ -304,26 +337,25 @@
 				}
 			}
 		});
-		cy.on("dbltap", function (e) {
-			const evtTarget = e.target;
-			if (!nodeCreationEnabled) {
-				if (evtTarget === cy) {
-					cy.add({
-						group: "nodes",
-						data: { id: Utils.id() },
-						position: e.position,
-					});
-				} else {
-					console.log("Clicked " + evtTarget.id());
-				}
-			}
-		});
 	}
 	function getPosition() {
 		return currentPosition;
 	}
 	function getNode(id: string) {
-		return cy.getElementById(id);
+		const found = cy.getElementById(id);
+		if (found.size() > 0 && found[0].isNode()) {
+			return found.first();
+		} else {
+			return null;
+		}
+	}
+	function getEdge(id: string) {
+		const found = cy.getElementById(id);
+		if (found.size() > 0 && found[0].isEdge()) {
+			return found.first();
+		} else {
+			return null;
+		}
 	}
 
 	function setNodeProperty(id, name, value) {
@@ -340,6 +372,30 @@
 	function forceResize() {
 		cy.resize();
 		cy.fit();
+	}
+
+	function augment(g: Graph) {
+		function pushNode(node) {
+			const id = node.id;
+			const found = getNode(id);
+			if (!found) {
+				addNode(node);
+			}
+		}
+		function pushEdge(edge) {
+			const id = edge.id;
+			const found = getEdge(id);
+			if (!found) {
+				addEdge(edge);
+			}
+		}
+		g.nodes.forEach((n) => {
+			pushNode(CytoUtils.toCyNode(n));
+		});
+		g.edges.forEach((e) => {
+			pushEdge(CytoUtils.toCyEdge(e));
+		});
+		layout();
 	}
 	/**
 	 * Expose the IGraphViewer interface.
@@ -365,6 +421,7 @@
 		getNode,
 		refreshStyle,
 		forceResize,
+		augment,
 	});
 </script>
 <style scoped>
