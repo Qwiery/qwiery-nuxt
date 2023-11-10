@@ -55,6 +55,36 @@ export default class JsonGraphStore extends Store {
     }
 
     //region Graph
+
+    /**
+     * Returns the neighborhood of the specified node as a graph.
+     * @param id {string} A node id.
+     * @returns {Promise<Graph>}
+     */
+    async getNeighborhood(id) {
+        const g = new Graph()
+
+        const addNode = async (id) => {
+            if (!g.nodeIdExists(id)) {
+                const node = await this.getNode(id);
+                g.addNode(node)
+            }
+        }
+        const downEdges = await this.getDownstreamEdges(id)
+        for (const e of downEdges) {
+            await addNode(e.sourceId)
+            await addNode(e.targetId)
+            g.addEdge(e)
+        }
+        const upEdges = await this.getUpstreamEdges(id)
+        for (const e of upEdges) {
+            await addNode(e.sourceId)
+            await addNode(e.targetId)
+            g.addEdge(e)
+        }
+        return g;
+    }
+
     async clear() {
         this.#nodes = [];
         this.#edges = [];

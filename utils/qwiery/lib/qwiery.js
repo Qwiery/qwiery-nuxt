@@ -250,6 +250,20 @@ export default class Qwiery extends EventEmitter {
 	}
 
 	/**
+	 * Returns the parents and children of the given node id as a graph.
+	 * @param id {string} A node id.
+	 * @returns {Promise<Graph>}
+	 */
+	async getNeighborhood(id) {
+		try {
+			return await this.callStore("getNeighborhood", [id]);
+		} catch (e) {
+			/* istanbul ignore next */
+			throw e;
+		}
+	}
+
+	/**
 	 * Generates pseudo-random graph data.
 	 * @param name {string} The name of the algorithm to use.
 	 * @param args {*[]} Parameters specific to the algorithm.
@@ -310,7 +324,7 @@ export default class Qwiery extends EventEmitter {
 	 * @param term {string} A search term.
 	 * @param fields {string[]} The properties to consider in the search.
 	 */
-	async searchNodes(term, fields =[], amount=100){
+	async searchNodes(term, fields = [], amount = 100) {
 		try {
 			return await this.callStore("searchNodes", [term, fields, amount]);
 		} catch (e) {
