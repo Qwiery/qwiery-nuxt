@@ -1078,6 +1078,10 @@ export default async function SqliteAdapter(options, done) {
 		 */
 		getNeighborhood(done) {
 			return async ([id]) => {
+				if (!isInitialized) {
+					// 'sqlite' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
 				try {
 					const g = new Graph();
 					const addNode = async (id) => {

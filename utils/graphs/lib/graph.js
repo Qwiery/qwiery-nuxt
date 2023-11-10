@@ -435,6 +435,46 @@ export default class Graph {
 		}
 	}
 
+	getDownstreamEdges(id) {
+		return this.#edges.filter((e) => (e.sourceId = id));
+	}
+
+	getUpstreamEdges(id) {
+		return this.#edges.filter((e) => (e.targetId = id));
+	}
+
+	getNeighborhoodEdges(id) {
+		return this.getDownstreamEdges(id).concat(this.getUpstreamEdges(id));
+	}
+
+	/**
+	 * Returns the edges and nodes from the neighborhood of the specified node as a (sub)graph.
+	 * @param id
+	 */
+	getNeighborhood(id) {
+		const g = new Graph();
+
+		const addNode = async (id) => {
+			if (!g.nodeIdExists(id)) {
+				const node = await this.getById(id);
+				g.addNode(node);
+			}
+		};
+		const downEdges = this.getDownstreamEdges(id);
+		for (const e of downEdges) {
+			addNode(e.sourceId);
+			addNode(e.targetId);
+			g.addEdge(e);
+		}
+		const upEdges = this.getUpstreamEdges(id);
+		for (const e of upEdges) {
+			addNode(e.sourceId);
+			addNode(e.targetId);
+			g.addEdge(e);
+		}
+		return g;
+	}
+
 	/**
 	 * Returns the first edge between the given endpoints.
 	 * @param sourceId {string} The source id.

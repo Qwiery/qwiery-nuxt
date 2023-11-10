@@ -24,6 +24,13 @@ export interface IRawNode {
 	labels?: string[];
 }
 
+export interface IRawEdge {
+	id?: string;
+	data?: any;
+	sourceId: string;
+	targetId: string;
+}
+
 /**
  * The interface of a graph viewer.
  * Out of the box you get an implementation based on Cytoscape (https://js.cytoscape.org).
@@ -147,9 +154,25 @@ export interface IGraphViewer {
 	 */
 	getNode: (id: string) => any;
 
+	/*
+	 * Sets the data (payload) on a node.
+	 * */
 	setNodeProperty: (id, name, value) => void;
+
+	/*
+	 * Refreshes the style on the graph.
+	 * */
 	refreshStyle: () => void;
+
+	/*
+	 * Lets the diagram know that dimensions have changed and it should refresh accordingly.
+	 * */
 	forceResize: () => void;
+
+	/*
+	 * Adds the given (sub)graph to the current one.
+	 * */
+	augment: (g: Graph) => void;
 }
 
 export function QwieryInfo() {
