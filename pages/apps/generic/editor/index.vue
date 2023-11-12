@@ -37,7 +37,7 @@
 					<ul class="flex items-center mt-1 space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 						<li>
 							<!-- Search database-->
-							<button type="button" class="bg-none border-none p-1 w-5">
+							<button type="button" class="bg-none border-none p-1 w-5" @click="showDataSearchDialog()">
 								<svg class="hover:fill-sky-300" fill="currentColor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 150.817 150.817" xml:space="preserve" stroke="currentColor">
 									<g>
 										<g>
@@ -494,7 +494,16 @@
 															v-model="propNode[key]"
 														/>
 													</div>
-													<svg v-if="key !== 'id'" title="Delete this property" class="ml-5 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" @click="deleteProperty(key)">
+													<svg
+														v-if="key !== 'id'"
+														title="Delete this property"
+														class="ml-5 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white"
+														aria-hidden="true"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 14 14"
+														@click="deleteProperty(key.toString())"
+													>
 														<path stroke="currentColor" opacity="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
 													</svg>
 												</div>
@@ -555,17 +564,17 @@
 			</div>
 		</pane>
 	</splitpanes>
+	<data-search ref="dataSearchControl"></data-search>
 </template>
 <script setup lang="ts">
 	import { Pane, Splitpanes } from "splitpanes";
 	import "splitpanes/dist/splitpanes.css";
-	import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 	import { GraphStyle } from "~/utils/enums";
 	import { Notifications, Toasts } from "~/composables/notifications";
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { CytoUtils, DataGenerator, Graph } from "~/utils";
-	import { has } from "node-emoji";
+	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 
 	const searchTerm = ref("");
 	let isExploreSectionVisible = ref(true);
@@ -583,12 +592,13 @@
 	let viewerControl = ref(null);
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
+	let dataSearchControl = ref<any>(null);
 	let currentNodeId = ref<string | null>(null);
 	let editPropertiesEnabled = ref<boolean>(false);
 	let hasProperties = ref<boolean>(false);
 	let interactionMode = ref("universal");
 	let currentPerspective = ref("explorer");
-
+	let dataSearchDialog: any;
 	const store = useAppStore();
 	definePageMeta({
 		layout: "default",
@@ -602,6 +612,7 @@
 		setTimeout(() => {
 			generateSampleGraph();
 		}, 200);
+		dataSearchDialog = <unknown>dataSearchControl.value;
 	});
 	// useKeyPressHandler(shortcuts);
 	useKeyDownHandler(shortcuts);
@@ -878,6 +889,10 @@
 		} else {
 			await Toasts.info("No additional nodes found.");
 		}
+	}
+
+	function showDataSearchDialog() {
+		dataSearchDialog.show();
 	}
 </script>
 <style>
