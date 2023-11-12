@@ -365,8 +365,22 @@ export class GraphAPIBase {
  */
 export default class GraphAPI implements GraphAPIBase {
 	//region Nodes
+	static async getNodeLabels(): Promise<string[] | null> {
+		const { data, pending, error, refresh } = await useFetch("/api/graph/nodeLabels", {
+			method: "GET",
+		});
+		return <string[]>data.value || null;
+	}
+
+	static async getNodeLabelProperties(labelName: string): Promise<string[] | null> {
+		const { data, pending, error, refresh } = await useFetch(`/api/graph/nodeLabelProperties?labelName=${labelName}`, {
+			method: "GET",
+		});
+		return <string[]>data.value || null;
+	}
+
 	static async getNode(id: string): Promise<INodeBase | null> {
-		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+		const { data, pending, error, refresh } = await useFetch(`/api/graph/node?id=${id}`, {
 			method: "GET",
 		});
 		return <INodeBase>data.value || null;
@@ -435,6 +449,34 @@ export default class GraphAPI implements GraphAPIBase {
 		});
 		if (data.value) {
 			return <Graph>data.value;
+		} else {
+			return null;
+		}
+	}
+
+	static async getNodesWithLabel(labelName: string, amount: number = 100): Promise<any[] | null> {
+		const { data, pending, error, refresh } = await useFetch(`/api/graph/nodesWithLabel?labelName=${labelName}`, {
+			method: "GET",
+		});
+		if (data.value) {
+			return <any[]>data.value;
+		} else {
+			return null;
+		}
+	}
+
+	static async searchNodesWithLabel(term: string, fields: string[], label: string, amount: number = 100): Promise<any[] | null> {
+		const { data, pending, error, refresh } = await useFetch(`/api/graph/searchNodesWithLabel`, {
+			method: "POST",
+			body: {
+				term,
+				fields,
+				label,
+				amount,
+			},
+		});
+		if (data.value) {
+			return <any[]>data.value;
 		} else {
 			return null;
 		}

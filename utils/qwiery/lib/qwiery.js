@@ -332,6 +332,22 @@ export default class Qwiery extends EventEmitter {
 			throw e;
 		}
 	}
+
+	/**
+	 * Search of the nodes with specified labels for the given term.
+	 * @param term {string} A search term.
+	 * @param fields {string[]} The properties to consider in the search.
+	 * @param label {string|null} Only nodes having the specified label.
+	 * @param [amount=100] {number} Return at most the given amount.
+	 */
+	async searchNodesWithLabel(term, fields = [], label = null, amount = 100) {
+		try {
+			return await this.callStore("searchNodesWithLabel", [term, fields, label, amount]);
+		} catch (e) {
+			/* istanbul ignore next */
+			throw e;
+		}
+	}
 	/**
 	 * Returns the nodes satisfying the given predicate.
 	 * @param predicate {function|*} A Mongo-like projection. If the adapter supports it, a function can be passed.
@@ -500,11 +516,24 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Fetches all the labels across all nodes.
-	 * @return {Promise<*>}
+	 * @return {Promise<string[]>}
 	 */
 	async getNodeLabels() {
 		try {
 			return await this.callStore("getNodeLabels", []);
+		} catch (e) {
+			/* istanbul ignore next */
+			throw e;
+		}
+	}
+
+	/**
+	 * Fetches all the properties of a given label.
+	 * @return {Promise<string[]>}
+	 */
+	async getNodeLabelProperties(labelName) {
+		try {
+			return await this.callStore("getNodeLabelProperties", [labelName]);
 		} catch (e) {
 			/* istanbul ignore next */
 			throw e;

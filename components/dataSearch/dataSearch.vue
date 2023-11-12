@@ -27,11 +27,9 @@
 							<div class="p-5">
 								<div class="flex bg-primary-dark-light px-1 pb-2 mb-2 rounded">
 									<client-only>
-										<Listbox v-model="selectedLabel">
+										<Listbox v-model="selectedLabel" @update:modelValue="labelChanged">
 											<div class="relative !w-1/3 my-2 !h-8 mr-2">
-												<ListboxButton
-													class="relative w-full cursor-default rounded border border-primary-dark-light py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-												>
+												<ListboxButton class="relative w-full rounded border border-primary-dark-light py-2 pl-3 pr-10 text-left focus:outline-none sm:text-sm cursor-pointer">
 													<span v-if="selectedLabel" class="block truncate">{{ selectedLabel.name }}</span>
 													<span v-else class="block truncate">Labels</span>
 													<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -53,11 +51,9 @@
 												</transition>
 											</div>
 										</Listbox>
-										<Listbox v-model="selectedProperty">
+										<Listbox v-model="selectedProperty" @update:modelValue="propertyChanged" v-if="propertiesEnabled">
 											<div class="relative !w-1/3 my-2 !h-8 mr-2">
-												<ListboxButton
-													class="relative w-full cursor-default rounded border border-primary-dark-light py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-												>
+												<ListboxButton class="relative w-full cursor-pointer rounded border border-primary-dark-light py-2 pl-3 pr-10 text-left sm:text-sm">
 													<span v-if="selectedProperty" class="block truncate">{{ selectedProperty.name }}</span>
 													<span v-else class="block truncate">Properties</span>
 													<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -79,11 +75,13 @@
 												</transition>
 											</div>
 										</Listbox>
-										<input type="text" placeholder="Search" class="form-input h-10 mt-2 w-1/3" />
+										<input v-model="searchTerm" type="text" placeholder="Search" class="form-input h-10 mt-2 w-1/3" @keydown.enter="searchNodes()" v-if="searchEnabled" />
+										<button class="btn btn-primary" @click="loadSelected()">Load Selected</button>
 									</client-only>
 								</div>
 								<div class="datatable">
 									<vue3-datatable
+										ref="dataTableControl"
 										class="overflow-hidden"
 										:stickyHeader="true"
 										:rows="rows"
@@ -92,7 +90,7 @@
 										:hasCheckbox="true"
 										:sortable="true"
 										sortColumn="name"
-										:search="search"
+										:search="searchTerm"
 										skin="whitespace-nowrap bh-table-hover"
 										firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180">
 <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -111,7 +109,7 @@
 									>
 										<template #actions="data">
 											<div class="flex gap-4">
-												<button type="button" class="btn btn-primary !py-1" @click="test(data.value)">Load</button>
+												<button type="button" class="btn btn-primary !py-1" @click="loadNode(data.value)">Load</button>
 											</div>
 										</template>
 									</vue3-datatable>
@@ -132,52 +130,123 @@
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import Vue3Datatable from "@bhplugin/vue3-datatable";
 	import { Listbox, ListboxLabel, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/vue";
-	let modalShow = ref(false);
 	import { CheckIcon, ChevronUpDownIcon } from "@heroicons/vue/20/solid";
+
+	const dataTableControl = ref<any>(null);
+	let datatable: any;
+	onMounted(() => {});
+
+	async function loadAllNodeLabels() {
+		const allLabels = await GraphAPI.getNodeLabels();
+		if (allLabels) {
+			labels.value = allLabels.map((name) => ({ name }));
+		} else {
+			labels.value = [];
+		}
+	}
+
+	async function loadAllLabelProperties(labelName) {
+		const allLabels = await GraphAPI.getNodeLabelProperties(labelName);
+		if (allLabels) {
+			properties.value = allLabels.map((name) => ({ name }));
+		} else {
+			properties.value = [];
+		}
+	}
+
 	function show() {
 		modalShow.value = true;
+		loadAllNodeLabels();
+		selectedLabel.value = null;
+		selectedProperty.value = null;
+		propertiesEnabled.value = false;
+		searchEnabled.value = false;
+		rows.value = [];
+		searchTerm.value = "";
 		setTimeout(() => {
-			input1.value = "";
-		}, 1000);
-		// console.log("showing dataSearch");
+			datatable = <any>(<unknown>dataTableControl.value);
+		}, 300);
 	}
 
 	function hide() {
 		modalShow.value = false;
 	}
 
-	const search = ref("");
+	const labels = ref<{ name: string }[]>([]);
+	const properties = ref<{ name: string }[]>([]);
+	const searchTerm = ref("");
+	const selectedLabel = ref<any>(null);
+	const selectedProperty = ref<any>(null);
+	const modalShow = ref(false);
+	let searchEnabled = ref(false);
+	let propertiesEnabled = ref(false);
+
 	const cols =
 		ref([
+			{ field: "id", title: "Id", isUnique: true, hide: true },
 			{ field: "labels", title: "Labels" },
 			{ field: "name", title: "Name" },
 			{ field: "actions", title: "Actions" },
 		]) || [];
 
-	const rows = ref([
-		{
-			id: "a",
-			labels: ["A", "B"],
-			name: "Sea",
-		},
-	]);
+	const rows = ref<{ id: string; labels: string[]; name: string }[]>([]);
 
-	const randomColor = () => {
-		const color = ["primary", "secondary", "success", "danger", "warning", "info"];
-		const random = Math.floor(Math.random() * color.length);
-		return color[random];
-	};
-
-	function test(d) {
-		console.log(d);
+	function labelChanged(selectedItem: any) {
+		if (selectedItem && !Utils.isEmpty(selectedItem.name)) {
+			loadAllLabelProperties(selectedItem.name);
+			selectedProperty.value = null;
+			searchEnabled.value = true;
+			/*
+			 * The search box search in the current rowset.
+			 * If you want to search in the database you need
+			 * to change this behavior.
+			 * */
+			propertiesEnabled.value = false;
+			loadData(selectedItem.name);
+		}
 	}
 
-	const labels = [{ name: "Wade Cooper" }, { name: "Arlene Mccoy" }, { name: "Devon Webb" }, { name: "Tom Cook" }, { name: "Tanya Fox" }, { name: "Hellen Schmidt" }];
-	const properties = [{ name: "Name" }, { name: "Id" }];
-	const selectedLabel = ref(null);
-	const selectedProperty = ref(null);
+	async function loadData(labelName: string, propertyName: string | null = null, searchTerm: string | null = null) {
+		if (Utils.isEmpty(labelName)) {
+			rows.value = [];
+		} else if (Utils.isEmpty(propertyName)) {
+			const found = await GraphAPI.getNodesWithLabel(labelName);
+			rows.value = <any[]>found;
+		}
+	}
+
+	function propertyChanged() {
+		searchEnabled.value = true;
+	}
+
+	async function searchNodes() {
+		if (Utils.isEmpty(searchTerm.value)) {
+			rows.value = [];
+		}
+		const labelName = selectedLabel.value;
+		const propertyName = selectedProperty.value;
+
+		const found = await GraphAPI.searchNodesWithLabel(searchTerm.value, [propertyName], labelName, 100);
+		rows.value = <any[]>found;
+	}
+
+	function loadSelected() {
+		const sel = <any[]>datatable.getSelectedRows();
+		sel.forEach((item) => {
+			loadNode(item);
+		});
+	}
+	function loadNode(item) {
+		if (!Utils.isEmpty(item.id)) {
+			emit("loadId", item.id);
+		}
+	}
+
 	defineExpose({
 		show,
 		hide,
 	});
+	const emit = defineEmits<{
+		(e: "loadId", id: string): void;
+	}>();
 </script>

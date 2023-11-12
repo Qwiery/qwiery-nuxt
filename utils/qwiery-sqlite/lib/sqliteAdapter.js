@@ -72,6 +72,21 @@ export default async function SqliteAdapter(options, done) {
 		return _.uniq(all);
 	}
 
+	async function getNodeLabelProperties(labelName) {
+		const nodes = await getNodesWithLabel(labelName);
+		const propNames = [];
+		for (const node of nodes) {
+			const names = Object.keys(node);
+			names.forEach((name) => {
+				if (name !== "labels" && !_.includes(propNames, name)) {
+					propNames.push(name);
+				}
+			});
+		}
+
+		return propNames;
+	}
+
 	async function getEdgesWithLabels(sourceLabel, edgeLabel, targetLabel, amount = 1000) {
 		if (Utils.isEmpty(sourceLabel)) {
 			throw new Error("No source label given.");
@@ -359,6 +374,51 @@ export default async function SqliteAdapter(options, done) {
 				const lowerTerm = term.trim().toLowerCase();
 				const whereList = [];
 				const whereOr = {
+					[Op.or]: whereList,
+				};
+				for (const field of fields) {
+					const op = {};
+					if (field === "labels") {
+						op[field] = {
+							[Op.substring]: lowerTerm,
+						};
+					} else {
+						op["data." + field] = {
+							[Op.substring]: lowerTerm,
+						};
+					}
+
+					whereList.push(op);
+				}
+				const records = await N.findAll({ where: whereOr, limit: amount });
+				if (records.length > 0) {
+					const nodes = records.map((r) => AdapterUtils.dbRecordToNode(r));
+					return done(null, [term, fields], nodes);
+				} else {
+					return done(null, [term, fields], []);
+				}
+			};
+		},
+
+		searchNodesWithLabel(done) {
+			return async ([term, fields, label, amount]) => {
+				if (!isInitialized) {
+					// 'sqlite' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
+				if (!amount) {
+					amount = 100;
+				}
+				if (Utils.isEmpty(term)) {
+					return done(null, [term, fields], []);
+				}
+				if (fields.length === 0) {
+					fields = ["name"];
+				}
+				const lowerTerm = term.trim().toLowerCase();
+				const whereList = [];
+				const whereOr = {
+					labels: { [Op.substring]: label },
 					[Op.or]: whereList,
 				};
 				for (const field of fields) {
@@ -710,6 +770,19 @@ export default async function SqliteAdapter(options, done) {
 				try {
 					const all = getNodeLabels();
 					done(null, [], all);
+				} catch (e) {
+					done(e.message, [], null);
+				}
+			};
+		},
+		getNodeLabelProperties(done) {
+			return async ([labelName]) => {
+				if (!isInitialized) {
+					await setup(options[AdapterId]);
+				}
+				try {
+					const labels = await getNodeLabelProperties(labelName);
+					done(null, [labelName], labels);
 				} catch (e) {
 					done(e.message, [], null);
 				}

@@ -168,6 +168,21 @@ export default class Store {
 		throw new Error(errors.notImplemented("upsertNode"));
 	}
 
+	/**
+	 * Returns all labels on a node.
+	 * @returns {Promise<string[]>}
+	 */
+	async getNodeLabels() {
+		throw new Error(errors.notImplemented("getNodeLabels"));
+	}
+
+	/**
+	 * Returns the consolidated properties of the specified label.
+	 * @returns {Promise<string[]>}
+	 */
+	async getNodeLabelProperties() {
+		throw new Error(errors.notImplemented("getNodeLabelProperties"));
+	}
 	//endregion
 
 	//region Edge

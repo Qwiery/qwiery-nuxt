@@ -564,7 +564,7 @@
 			</div>
 		</pane>
 	</splitpanes>
-	<data-search ref="dataSearchControl"></data-search>
+	<data-search ref="dataSearchControl" @load-id="loadNodeFromId"></data-search>
 </template>
 <script setup lang="ts">
 	import { Pane, Splitpanes } from "splitpanes";
@@ -893,6 +893,12 @@
 
 	function showDataSearchDialog() {
 		dataSearchDialog.show();
+	}
+	async function loadNodeFromId(id: string) {
+		const found = await GraphAPI.getNode(id);
+		if (found) {
+			viewer.addNode(CytoUtils.toCyNode(found));
+		}
 	}
 </script>
 <style>

@@ -702,16 +702,26 @@ describe("Adapter", function () {
 				name: "B " + i,
 			});
 		}
+		await g.createNode({
+			id: "C1",
+			labels: ["Cell"],
+			name: "a",
+		});
+		await g.createNode({
+			id: "C2",
+			labels: ["Cell"],
+			name: "b",
+		});
 		let found = await g.searchNodes("A");
 		// default amount is 100
 		expect(found).toHaveLength(100);
 
-		found = await g.searchNodes("A", ["name"], 4);
-		expect(found).toHaveLength(4);
+		found = await g.searchNodes("c", ["labels"]);
+		expect(found).toHaveLength(2);
 
-		// property k does not exist
-		found = await g.searchNodes("A", ["k"]);
-		expect(found).toHaveLength(0);
+		found = await g.searchNodesWithLabel("b", ["name"], "Cell");
+		expect(found).toHaveLength(1);
+		expect(found[0].id).toEqual("C2");
 	});
 
 	it("should get the neighborhood graph", async () => {
@@ -734,5 +744,32 @@ describe("Adapter", function () {
 		const ng = await g.getNeighborhood(root.id);
 		expect(ng.nodeCount).toEqual(31);
 		expect(ng.edgeCount).toEqual(30);
+	});
+
+	it("should get node label properties", async () => {
+		Qwiery.plugin(Sqlite);
+		const g = new Qwiery({
+			adapters: ["sqlite"],
+			sqlite: {
+				recreateTables: true,
+			},
+		});
+		await g.createNode({
+			labels: ["A"],
+			x: 2,
+		});
+		await g.createNode({
+			labels: ["A"],
+			y: 2,
+		});
+		await g.createNode({
+			labels: ["A"],
+			y: 2,
+			z: 5,
+		});
+		let found = await g.getNodeLabelProperties("A");
+		found.sort();
+		// the id is always added even if not given
+		expect(found).toEqual(["id", "x", "y", "z"]);
 	});
 });
