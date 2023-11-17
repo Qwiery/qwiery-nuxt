@@ -178,8 +178,8 @@ export default async function DefaultAdapter(options = {}, done) {
 			};
 		},
 		getNeighborhood(done) {
-			return async ([id]) => {
-				const g = await mem.getNeighborhood(id);
+			return async ([id, amount]) => {
+				const g = await mem.getNeighborhood(id, amount);
 				done(null, [id], g);
 			};
 		},

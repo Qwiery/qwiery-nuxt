@@ -69,27 +69,33 @@ export default class CytoUtils {
 		if (!_.isPlainObject(obj)) {
 			throw new Error("Expected a plain object.");
 		}
+		const id = Utils.id();
 		const cyEdge = {
+			id,
 			group: "edges",
 			data: {
-				id: Utils.id(),
+				id,
 			},
 		};
 		const d = _.clone(obj);
 		if (d.id) {
 			cyEdge.data.id = d.id;
+			cyEdge.id = d.id;
 			delete d.id;
 		}
 
 		if (d.source) {
+			cyEdge.source = d.source;
 			cyEdge.data.source = d.source;
 			delete d.source;
 		}
 		if (d.sourceId) {
+			cyEdge.source = d.sourceId;
 			cyEdge.data.source = d.sourceId;
 			delete d.sourceId;
 		}
 		if (d.from) {
+			cyEdge.source = d.from;
 			cyEdge.data.source = d.from;
 			delete d.from;
 		}
@@ -98,14 +104,17 @@ export default class CytoUtils {
 		}
 
 		if (d.target) {
+			cyEdge.target = d.target;
 			cyEdge.data.target = d.target;
 			delete d.target;
 		}
 		if (d.targetId) {
+			cyEdge.target = d.targetId;
 			cyEdge.data.target = d.targetId;
 			delete d.targetId;
 		}
 		if (d.to) {
+			cyEdge.target = d.to;
 			cyEdge.data.target = d.to;
 			delete d.to;
 		}

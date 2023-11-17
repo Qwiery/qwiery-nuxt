@@ -444,7 +444,7 @@ export default class GraphAPI implements GraphAPIBase {
 	}
 
 	static async getNeighborhood(id: string, amount: number = 10): Promise<Graph | null> {
-		const { data, pending, error, refresh } = await useFetch(`/api/graph/neighbors?id=${id}`, {
+		const { data, pending, error, refresh } = await useFetch(`/api/graph/neighbors?id=${id}&amount=${amount}`, {
 			method: "GET",
 		});
 		if (data.value) {

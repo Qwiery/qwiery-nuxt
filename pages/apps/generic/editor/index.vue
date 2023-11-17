@@ -883,7 +883,7 @@
 	}
 
 	async function augmentNode(id) {
-		const g = await GraphAPI.getNeighborhood(id);
+		const g = await GraphAPI.getNeighborhood(id, 4);
 		if (g && g.nodes.length > 0) {
 			viewer.augment(g);
 		} else {

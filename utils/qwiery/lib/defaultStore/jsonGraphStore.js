@@ -60,7 +60,7 @@ export default class JsonGraphStore extends Store {
 	 * @param id {string} A node id.
 	 * @returns {Promise<Graph>}
 	 */
-	async getNeighborhood(id) {
+	async getNeighborhood(id, amount = 10) {
 		const g = new Graph();
 
 		const addNode = async (id) => {
@@ -69,13 +69,15 @@ export default class JsonGraphStore extends Store {
 				g.addNode(node);
 			}
 		};
-		const downEdges = await this.getDownstreamEdges(id);
+		const downAmount = Math.floor(amount / 2);
+		const upAmount = amount - downAmount;
+		const downEdges = _.take(await this.getDownstreamEdges(id), downAmount);
 		for (const e of downEdges) {
 			await addNode(e.sourceId);
 			await addNode(e.targetId);
 			g.addEdge(e);
 		}
-		const upEdges = await this.getUpstreamEdges(id);
+		const upEdges = _.take(await this.getUpstreamEdges(id), upAmount);
 		for (const e of upEdges) {
 			await addNode(e.sourceId);
 			await addNode(e.targetId);

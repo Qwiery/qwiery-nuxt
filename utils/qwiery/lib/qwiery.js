@@ -254,9 +254,9 @@ export default class Qwiery extends EventEmitter {
 	 * @param id {string} A node id.
 	 * @returns {Promise<Graph>}
 	 */
-	async getNeighborhood(id) {
+	async getNeighborhood(id, amount = 10) {
 		try {
-			return await this.callStore("getNeighborhood", [id]);
+			return await this.callStore("getNeighborhood", [id, amount]);
 		} catch (e) {
 			/* istanbul ignore next */
 			throw e;

@@ -1150,7 +1150,7 @@ export default async function SqliteAdapter(options, done) {
 		 * @returns {Promise<Graph>}
 		 */
 		getNeighborhood(done) {
-			return async ([id]) => {
+			return async ([id, amount]) => {
 				if (!isInitialized) {
 					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
@@ -1163,22 +1163,24 @@ export default async function SqliteAdapter(options, done) {
 							g.addNode(node);
 						}
 					};
-					const downEdges = await getDownstreamEdges(id);
+					const downAmount = Math.floor(amount / 2);
+					const upAmount = amount - downAmount;
+					const downEdges = await getDownstreamEdges(id, downAmount);
 					for (const e of downEdges) {
 						await addNode(e.sourceId);
 						await addNode(e.targetId);
 						g.addEdge(e);
 					}
-					const upEdges = await getUpstreamEdges(id);
+					const upEdges = await getUpstreamEdges(id, upAmount);
 					for (const e of upEdges) {
 						await addNode(e.sourceId);
 						await addNode(e.targetId);
 						g.addEdge(e);
 					}
 
-					done(null, [], g);
+					done(null, [id, amount], g);
 				} catch (e) {
-					done(e.message, [], null);
+					done(e.message, [id, amount], null);
 				}
 			};
 		},

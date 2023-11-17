@@ -73,6 +73,7 @@
 			},
 		]);
 	}
+
 	function removeSelection() {
 		return cy.$(":selected").remove();
 	}
@@ -338,9 +339,11 @@
 			}
 		});
 	}
+
 	function getPosition() {
 		return currentPosition;
 	}
+
 	function getNode(id: string) {
 		const found = cy.getElementById(id);
 		if (found.size() > 0 && found[0].isNode()) {
@@ -349,6 +352,7 @@
 			return null;
 		}
 	}
+
 	function getEdge(id: string) {
 		const found = cy.getElementById(id);
 		if (found.size() > 0 && found[0].isEdge()) {
@@ -375,28 +379,40 @@
 	}
 
 	function augment(g: Graph) {
+		const coll: any[] = [];
+
 		function pushNode(node) {
 			const id = node.id;
-			const found = getNode(id);
-			if (!found) {
-				addNode(node);
+			if (!cy.hasElementWithId(id)) {
+				coll.push(CytoUtils.toCyNode(node));
 			}
 		}
+
 		function pushEdge(edge) {
-			const id = edge.id;
-			const found = getEdge(id);
-			if (!found) {
-				addEdge(edge);
-			}
+			// const id = edge.id;
+			// if (!cy.hasElementWithId(id)) {
+			// 	const e = CytoUtils.toCyEdge(edge);
+			// 	// annoying that edges and nodes id's cannot overlap
+			// 	e.id = Utils.id();
+			// 	coll.push(e);
+			// }
+			const e = CytoUtils.toCyEdge(edge);
+			// annoying that edges and nodes id's cannot overlap
+			e.id = Utils.id();
+			e.data.id = e.id;
+			coll.push(e);
 		}
+
 		g.nodes.forEach((n) => {
-			pushNode(CytoUtils.toCyNode(n));
+			pushNode(n);
 		});
 		g.edges.forEach((e) => {
-			pushEdge(CytoUtils.toCyEdge(e));
+			pushEdge(e);
 		});
+		cy.add(coll);
 		layout();
 	}
+
 	/**
 	 * Expose the IGraphViewer interface.
 	 */
