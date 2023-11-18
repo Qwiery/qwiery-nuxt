@@ -51,7 +51,7 @@
 						</li>
 						<li>
 							<!-- Auto Search-->
-							<button type="button" class="bg-none border-none p-1 w-5">
+							<button type="button" class="bg-none border-none p-1 w-5" @click="showAutoSearch()">
 								<svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path
@@ -565,6 +565,7 @@
 		</pane>
 	</splitpanes>
 	<data-search ref="dataSearchControl" @load-id="loadNodeFromId"></data-search>
+	<auto-search-dialog ref="autoSearchControl" @on-query="onAutoSearchQuery"></auto-search-dialog>
 </template>
 <script setup lang="ts">
 	import { Pane, Splitpanes } from "splitpanes";
@@ -575,6 +576,7 @@
 	import GraphAPI from "~/utils/GraphAPI";
 	import { CytoUtils, DataGenerator, Graph } from "~/utils";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
+	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
 
 	const searchTerm = ref("");
 	let isExploreSectionVisible = ref(true);
@@ -590,6 +592,7 @@
 	let isBottomVisible = ref(false);
 	let viewer: IGraphViewer;
 	let viewerControl = ref(null);
+	let autoSearchControl = ref(null);
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
 	let dataSearchControl = ref<any>(null);
@@ -599,6 +602,7 @@
 	let interactionMode = ref("universal");
 	let currentPerspective = ref("explorer");
 	let dataSearchDialog: any;
+	let autoSearchDialog: any;
 	const store = useAppStore();
 	definePageMeta({
 		layout: "default",
@@ -609,6 +613,7 @@
 	});
 	onMounted(() => {
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
+		autoSearchDialog = <any>autoSearchControl.value;
 		setTimeout(() => {
 			generateSampleGraph();
 		}, 200);
@@ -894,10 +899,38 @@
 	function showDataSearchDialog() {
 		dataSearchDialog.show();
 	}
+
 	async function loadNodeFromId(id: string) {
 		const found = await GraphAPI.getNode(id);
 		if (found) {
 			viewer.addNode(CytoUtils.toCyNode(found));
+		}
+	}
+
+	function showAutoSearch() {
+		autoSearchDialog.show();
+	}
+	async function onAutoSearchQuery(queryPath: string[]) {
+		showSpinner.value = true;
+		console.log("Path Query >>: " + queryPath.join(" "));
+
+		try {
+			if (!viewer) {
+				return Toasts.error("Graph viewer surface is not initialized.");
+			}
+			viewer.clear();
+			const g = await GraphAPI.pathQuery(queryPath, 10);
+			await new Promise((r) => setTimeout(r, 2000));
+			if (g) {
+				viewer.loadGraph(g);
+				viewer.setStyle(GraphStyle.Default);
+			} else {
+				Toasts.error("The data could not be loaded.");
+			}
+		} catch (e: any) {
+			Toasts.error(e.message);
+		} finally {
+			showSpinner.value = false;
 		}
 	}
 </script>

@@ -80,6 +80,10 @@
 			currentPath = [];
 		}
 
+		/**
+		 * Removes the last edge and node.
+		 * This effectively goes backwards in the path trail.
+		 */
 		function removeLastBadge() {
 			if (currentPath.length === 0) {
 				return;
