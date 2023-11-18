@@ -1,7 +1,7 @@
 <template>
 	<div class="autocomplete">
-		<div ref="preamble" class="flex min-h-[45px]"></div>
-		<input ref="input" type="text" name="myCountry" placeholder="Search graph" class="input" />
+		<div ref="preamble" class="flex min-h-[45px] overflow-y-scroll max-w-2xl"></div>
+		<input ref="input" type="text" name="autoSearchInput" placeholder="Search graph" class="input focus" />
 	</div>
 </template>
 
@@ -10,7 +10,7 @@
 	import GraphAPI from "~/utils/GraphAPI";
 
 	const input = ref(null);
-	const preamble = ref(null);
+	const preamble = ref<HTMLDivElement>();
 	let inputBox: any;
 	let m: SchemaMachine = null;
 	const schema = await GraphAPI.getSchema();
@@ -32,6 +32,10 @@
 			createItems();
 		});
 
+		function itemsAreVisible() {
+			return document.getElementsByClassName("autocomplete-items").length > 0;
+		}
+
 		function createItems() {
 			highlightIndex = -1;
 
@@ -43,14 +47,15 @@
 			for (let i = 0; i < autocompleteValues.length; i++) {
 				if (isValidOption(i)) {
 					const b = document.createElement("DIV");
+
 					const name = autocompleteValues[i].join(" ");
 					b.innerHTML = `<span class="badge bg-primary">${name}</span>`;
 					b.innerHTML += "<input type='hidden' value='" + i + "'>";
 					b.addEventListener("click", function (e) {
-						appendBadge(autocompleteValues[i]);
+						appendLastAddition(autocompleteValues[i]);
 						currentPath = autocompleteValues[i];
 						inputBox.value = "";
-						clearDropdown();
+						showNext();
 					});
 					a.appendChild(b);
 				}
@@ -75,37 +80,96 @@
 			currentPath = [];
 		}
 
-		function appendBadge(sequence: string[]) {
-			if (sequence.length > 1) {
-				let badge;
-				addDash();
-				if (sequence.slice(-2)[0] !== "*") {
-					badge = document.createElement("div");
-					badge.classList.add("badge", "badge-outline-dimgrey", "h-[25px]", "m-auto", "mx-0", "w-max");
-					badge.innerText = sequence.slice(-2)[0];
-					preamble.value?.appendChild(badge);
-				} else {
-					addDash();
+		function removeLastBadge() {
+			if (currentPath.length === 0) {
+				return;
+			}
+			if (currentPath.length === 1) {
+				clearBadges();
+			} else {
+				currentPath.pop(); // remove the last node
+				currentPath.pop(); // remove the edge
+				createBadgeSequence(currentPath);
+			}
+			// recreate the items since the dropdown is still showing the previous path
+			showNext();
+		}
+
+		function createBadgeSequence(sequence: string[]) {
+			clearBadges();
+			currentPath = sequence.slice(0);
+			if (sequence.length === 0) {
+				return;
+			} else if (sequence.length === 1) {
+				createFirstBadge(sequence[0]);
+			} else {
+				let nodeLabel = sequence.shift();
+				createFirstBadge(nodeLabel);
+				// for here on it's always an edge plus a node
+				while (sequence.length > 0) {
+					const edgeLabel = sequence.shift();
+					const nodeLabel = sequence.shift();
+					appendBadge(edgeLabel, nodeLabel);
 				}
+			}
+		}
 
-				addDash();
+		/**
+		 * The whole sequence is given but only the last addition is added.
+		 */
+		function appendLastAddition(sequence: string[]) {
+			if (sequence.length > 1) {
+				appendBadge(sequence.slice(-2)[0], sequence.slice(-2)[1]);
+			} else {
+				createFirstBadge(sequence[0]);
+			}
+		}
 
+		/**
+		 * Adds an edge and node to the chain of badges.
+		 */
+		function appendBadge(edgeLabel?: string, nodeLabel?: string) {
+			if (!edgeLabel || !nodeLabel) {
+				return;
+			}
+			let badge;
+			addDash();
+			if (edgeLabel !== "*") {
 				badge = document.createElement("div");
-				badge.classList.add("badge", "bg-emerald-600", "h-[25px]", "m-auto", "mx-1");
-				badge.innerText = sequence.slice(-2)[1];
+				badge.classList.add("badge", "badge-outline-dimgrey", "h-[25px]", "m-auto", "mx-0", "w-max");
+				badge.innerText = edgeLabel;
 				preamble.value?.appendChild(badge);
 			} else {
-				const badge = document.createElement("div");
-				badge.classList.add("badge", "bg-emerald-600", "h-[25px]", "m-auto", "mx-1");
-				badge.innerText = sequence[0];
-				preamble.value?.appendChild(badge);
+				addDash();
 			}
+
+			addDash();
+
+			badge = document.createElement("div");
+			badge.classList.add("badge", "bg-emerald-600", "h-[25px]", "m-auto", "mx-1");
+			badge.innerText = nodeLabel;
+			preamble.value?.appendChild(badge);
+		}
+
+		function createFirstBadge(text?: string) {
+			if (!text) {
+				return;
+			}
+			const badge = document.createElement("div");
+			badge.classList.add("badge", "bg-emerald-600", "h-[25px]", "m-auto", "mx-1");
+			badge.innerText = text;
+			preamble.value?.appendChild(badge);
 		}
 
 		function addDash() {
 			const dash = document.createElement("div");
 			dash.classList.add("dash-line");
 			preamble.value?.appendChild(dash);
+		}
+
+		function showNext() {
+			clearDropdown();
+			createItems();
 		}
 
 		// ============================================================`
@@ -120,14 +184,20 @@
 			if (e.key === "ArrowDown") {
 				highlightIndex++;
 				makeActive(x);
+				// if drop isn't visible, show it again
+				if (!itemsAreVisible()) {
+					showNext();
+				}
 			} else if (e.key == "ArrowUp") {
 				highlightIndex--;
 				makeActive(x);
 			} else if (e.key == "Tab") {
+				// TAB means selecting without execute
 				e.preventDefault();
 				if (highlightIndex > -1) {
 					if (x) x[highlightIndex].click();
 				}
+				showNext();
 			} else if (e.key == "Enter") {
 				e.preventDefault();
 				if (highlightIndex > -1) {
@@ -137,9 +207,13 @@
 				}
 				emit("query", currentPath);
 			} else if (e.key === "Backspace") {
+				// if no text typed by the user we are at the start and the intention is to remove badges
 				if (inputBox.value === "") {
-					clearBadges();
+					removeLastBadge();
 				}
+			} else if (e.key === "Escape") {
+				clearDropdown();
+				e.preventDefault();
 			}
 		});
 
@@ -169,6 +243,9 @@
 		document.addEventListener("click", function (e) {
 			clearDropdown(e.target);
 		});
+
+		// show initially what can be selected
+		showNext();
 	}
 
 	onMounted(async () => {
