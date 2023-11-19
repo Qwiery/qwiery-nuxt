@@ -10,8 +10,9 @@ import pkg from "../package.json" assert { type: "json" };
 import Errors from "./utils/lib/errors";
 // import GraphAPI from "./GraphAPI";
 import DataGenerator from "./utils/lib/dataGenerator";
+import { Datasets } from "./utils/lib/datasets";
 
-export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Errors, DataGenerator };
+export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Errors, DataGenerator, Datasets };
 
 import { GraphStyle } from "~/utils/enums";
 

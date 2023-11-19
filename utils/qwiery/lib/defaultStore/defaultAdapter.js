@@ -177,6 +177,12 @@ export default async function DefaultAdapter(options = {}, done) {
 				done(null, [], null);
 			};
 		},
+		loadGraph(done) {
+			return async ([name]) => {
+				await mem.loadGraph(name);
+				done(null, [name], null);
+			};
+		},
 		getNeighborhood(done) {
 			return async ([id, amount]) => {
 				const g = await mem.getNeighborhood(id, amount);

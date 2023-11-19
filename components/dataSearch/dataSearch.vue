@@ -27,6 +27,7 @@
 							<div class="p-5">
 								<div class="flex bg-primary-dark-light px-1 pb-2 mb-2 rounded">
 									<client-only>
+										<!--Node Labels-->
 										<Listbox v-model="selectedLabel" @update:modelValue="labelChanged">
 											<div class="relative !w-1/3 my-2 !h-8 mr-2">
 												<ListboxButton class="relative w-full rounded border border-primary-dark-light py-2 pl-3 pr-10 text-left focus:outline-none sm:text-sm cursor-pointer">

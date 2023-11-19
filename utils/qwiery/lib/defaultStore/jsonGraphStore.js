@@ -14,6 +14,7 @@ import Graph from "../../../graphs/lib/graph.js";
 // import { Error } from "sequelize";
 import fs from "fs";
 import Errors from "../../../utils/lib/errors.js";
+import { Datasets } from "../../../utils/lib/datasets.js";
 
 /**
  * Standard JSON graph structure.
@@ -29,8 +30,8 @@ export default class JsonGraphStore extends Store {
 		super();
 		this.options = options;
 		// console.log(JSON.stringify(options, null, 3));
-		this.#nodes = options.nodes || [];
-		this.#edges = options.edges || [];
+		this.#nodes = (options.nodes || []).slice(0);
+		this.#edges = (options.edges || []).slice(0);
 		this.id = options.id || Utils.id();
 		this.name = options.name || "JSON Graph";
 		this.description = options.description || "";
@@ -89,6 +90,25 @@ export default class JsonGraphStore extends Store {
 	async clear() {
 		this.#nodes = [];
 		this.#edges = [];
+	}
+
+	async loadGraph(name = "food") {
+		await this.clear();
+		let json = null;
+		switch (name.trim().toLowerCase()) {
+			case "food":
+			case "foods":
+			case "foodgraph":
+				json = await Datasets.foodGraph();
+				break;
+		}
+		if (json) {
+			this.#nodes = (json.nodes || []).slice(0);
+			this.#edges = (json.edges || []).slice(0);
+			this.id = json.id || Utils.id();
+			this.name = json.name || "JSON Graph";
+			this.description = json.description || "";
+		}
 	}
 
 	get isEmpty() {
@@ -518,7 +538,7 @@ export default class JsonGraphStore extends Store {
 							return true;
 						}
 					} else {
-						if (n[field].toString().toLowerCase().indexOf(lowerTerm) > -1) {
+						if (n[field] && n[field].toString().toLowerCase().indexOf(lowerTerm) > -1) {
 							return true;
 						}
 					}

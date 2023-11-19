@@ -13,14 +13,49 @@
 				>
 					<div>
 						<div class="relative pb-5 text-center">
-							<a href="javascript:;" class="absolute top-0 opacity-30 hover:opacity-100 ltr:right-0 rtl:left-0 dark:text-white" @click="store.toggleAppSettings()">
+							<a href="javascript:" class="absolute top-0 opacity-30 hover:opacity-100 ltr:right-0 rtl:left-0 dark:text-white" @click="store.toggleAppSettings()">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
 									<line x1="18" y1="6" x2="6" y2="18"></line>
 									<line x1="6" y1="6" x2="18" y2="18"></line>
 								</svg>
 							</a>
-							<h4 class="mb-1 dark:text-white">MORE OPTIONS</h4>
-							<p class="text-white-dark">Set preferences and more.</p>
+							<h4 class="mb-1 dark:text-white uppercase">application settings</h4>
+							<p class="text-white-dark text-xs">set preferences and more</p>
+							<hr class="w-full h-[1px] mx-auto my-4 bg-primary-dark-light border-0 rounded dark:bg-primary" />
+							<p class="text-primary text-left dark:text-primary-light/50">This will load a knowledge graph and completely reset all changes you have made to the data.</p>
+							<Listbox v-model="selectedLabel" @update:modelValue="labelChanged">
+								<div class="relative my-2 !h-8 mr-2">
+									<ListboxButton class="relative w-full rounded border border-primary/50 py-2 pl-3 pr-10 text-left focus:outline-none sm:text-sm cursor-pointer">
+										<span v-if="selectedLabel" class="block truncate text-primary dark:text-primary-light/50">{{ selectedLabel.name }}</span>
+										<span v-else class="block truncate text-primary dark:text-primary-light/50">Dataset</span>
+										<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+											<ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+										</span>
+									</ListboxButton>
+
+									<transition leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+										<ListboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded z-50 bg-white dark:bg-primary py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+											<ListboxOption v-slot="{ active, selected }" v-for="label in labels" :key="label.name" :value="label" as="template">
+												<li :class="[active ? 'bg-amber-100 text-amber-900' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-10 pr-4 bg-white dark:bg-primary']">
+													<span :class="[selected ? 'font-medium' : 'font-normal', 'block truncate text-primary dark:text-white']">{{ label.name }}</span>
+													<span v-if="selected" class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+														<CheckIcon class="h-5 w-5" aria-hidden="true" />
+													</span>
+												</li>
+											</ListboxOption>
+										</ListboxOptions>
+									</transition>
+								</div>
+							</Listbox>
+							<button class="btn btn-primary float-right my-2 mr-2 shadow-none" @click="loadSelectedGraph()">Load</button>
+							<hr class="w-full h-[1px] mx-auto my-4 bg-primary-dark-light border-0 rounded dark:bg-primary" />
+							<p class="text-primary text-left dark:text-primary-light/50">If enabled, all changes will be committed to the database. If disabled, changes are client-side only.</p>
+							<!--Changes checkbox-->
+							<label class="inline-flex float-left my-2">
+								<input type="checkbox" class="form-checkbox rounded-full !border-primary dark:!border-primary-light/50" :checked="store.commitGraphChanges" @change="commitChanged" />
+								<span class="text-primary text-left dark:text-primary-light/50">Commit graph changes</span>
+							</label>
+							<hr class="w-full h-[1px] mx-auto my-4 bg-primary-dark-light border-0 rounded dark:bg-primary" />
 						</div>
 						<div class="hidden mb-3 rounded-md border border-dashed border-[#e0e6ed] p-3 dark:border-[#1b2e4b]">
 							<h5 class="mb-1 text-base leading-none dark:text-white">Graph Component</h5>
@@ -85,5 +120,25 @@
 <script lang="ts" setup>
 	import { ref } from "vue";
 	import { useAppStore } from "@/stores/index";
+	import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/vue";
+	import { CheckIcon, ChevronUpDownIcon } from "@heroicons/vue/20/solid";
+
+	const selectedLabel = ref<any>(null);
 	const store = useAppStore();
+	const labels = ref<{ name: string }[]>([{ name: "Food" }]);
+
+	function labelChanged(selectedItem: any) {}
+
+	function loadSelectedGraph() {
+		debugger;
+		if (selectedLabel && !Utils.isEmpty(selectedLabel.value.name)) {
+			GraphAPI.loadGraph(selectedLabel.value.name);
+			Toasts.info(`The graph '${selectedLabel.value.name}' has been loaded.`);
+		}
+	}
+
+	function commitChanged(e) {
+		const shouldCommit = e.target.checked;
+		store.commitClientChanges(shouldCommit);
+	}
 </script>

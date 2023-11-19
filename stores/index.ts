@@ -26,6 +26,7 @@ export const useAppStore = defineStore("app", {
 		semidark: false,
 		graphlib: "cytoscape",
 		showAppSettings: false,
+		commitGraphChanges: true,
 	}),
 
 	actions: {
@@ -100,6 +101,10 @@ export const useAppStore = defineStore("app", {
 		},
 		toggleAppSettings(state: boolean = false) {
 			this.showAppSettings = !this.showAppSettings;
+		},
+		commitClientChanges(yn: boolean) {
+			this.commitGraphChanges = yn;
+			localStorage.setItem("commitClientChanges", yn ? "true" : "false");
 		},
 	},
 	getters: {},

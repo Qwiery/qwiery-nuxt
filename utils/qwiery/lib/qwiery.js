@@ -249,6 +249,15 @@ export default class Qwiery extends EventEmitter {
 		}
 	}
 
+	async loadGraph(name = "food") {
+		try {
+			await this.callStore("loadGraph", [name]);
+		} catch (e) {
+			/* istanbul ignore next */
+			throw e;
+		}
+	}
+
 	/**
 	 * Returns the parents and children of the given node id as a graph.
 	 * @param id {string} A node id.

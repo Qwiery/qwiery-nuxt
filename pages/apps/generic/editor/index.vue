@@ -650,7 +650,7 @@
 		if (currentPerspective.value === "schema") {
 			return;
 		}
-		console.log("Key:", e.key);
+		// console.log("Key:", e.key);
 		if (e.metaKey || e.ctrlKey) {
 			switch (e.key) {
 				case "l":
@@ -851,7 +851,7 @@
 		console.log("Searching:", term);
 		if (!Utils.isEmpty(term)) {
 			const nodes = await GraphAPI.searchNodes(term, ["name"], 10);
-			if (nodes?.length === 0) {
+			if (Utils.isEmpty(nodes) || nodes?.length === 0) {
 				return await Toasts.info(`Nothing found containing '${term}'.`);
 			}
 			const g = new Graph({ nodes, edges: [] });
@@ -912,7 +912,7 @@
 	}
 	async function onAutoSearchQuery(queryPath: string[]) {
 		showSpinner.value = true;
-		console.log("Path Query >>: " + queryPath.join(" "));
+		// console.log("Path Query >>: " + queryPath.join(" "));
 
 		try {
 			if (!viewer) {

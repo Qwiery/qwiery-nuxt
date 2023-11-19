@@ -34,6 +34,13 @@ export default {
 
 		val = localStorage.getItem("graphlib") || "cytoscape";
 		store.changeGraphlib(val);
+
+		val = localStorage.getItem("commitClientChanges");
+		if (val && val === "true") {
+			store.commitClientChanges(true);
+		} else {
+			store.commitClientChanges(false);
+		}
 	},
 
 	toggleLanguage(item: any, setLocale: any) {

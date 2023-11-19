@@ -7,6 +7,8 @@ import { Utils } from "../../utils/lib/utils.js";
 import _ from "lodash";
 import JsonGraph from "../../graphs/lib/formats/jsonGraph.js";
 import Graph from "../../graphs/lib/graph.js";
+import { Datasets } from "../../utils/lib/datasets.js";
+import fs from "fs";
 
 describe("JsonGraphStore", function () {
 	it("should crud nodes", async function () {
@@ -233,6 +235,7 @@ describe("JsonGraphStore", function () {
 		expect(schema.nodes.length).eq(3);
 		expect(schema.edges.length).eq(6);
 	});
+
 	it("should path-query", async () => {
 		let g = Graph.fromPseudoCypher(`
 		(n1)-[:A]->(n2)
@@ -418,4 +421,24 @@ describe("JsonGraphStore", function () {
 		// the id is always added even if not given
 		expect(found).toEqual(["id", "x", "y", "z"]);
 	});
+
+	it(
+		"should load a JSON file",
+		async () => {
+			// will go only the first time to Google Drive, thereafter sits in the /datasets directory in the solution
+			const json = await Datasets.foodGraph();
+			expect(json.nodes.length).toEqual(33411);
+			expect(json.edges.length).toEqual(287056);
+			const g = JsonGraphStore.fromJSON(json);
+			expect(await g.nodeCount()).toEqual(33411);
+			expect(await g.edgeCount()).toEqual(287056);
+
+			const found = await g.searchNodes("apple", ["name"], 2);
+			expect(found).toHaveLength(2);
+			console.log(JSON.stringify(found, null, 3));
+		},
+		{
+			timeout: 30000,
+		},
+	);
 });

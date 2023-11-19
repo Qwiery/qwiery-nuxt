@@ -1,0 +1,21 @@
+# Load Graph
+
+###
+# @name Load
+ GET {{baseUrl}}/api/graph/loadGraph
+Content-Type: application/json
+
+###
+# @name Count
+ GET {{baseUrl}}/api/graph/nodeCount
+Content-Type: application/json
+
+> {%
+    import Utils from "./httpUtils.js"
+
+    client.test("Should contain stuff", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.log(response.body.toString())
+        client.assert(parseInt(response.body.toString()) > 0);
+    });
+%}
