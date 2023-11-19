@@ -144,3 +144,27 @@ Content-Type: application/json
         client.assert(response.body.length === 0);
     });
 %}
+
+
+###
+# @name Update source
+PATCH http://{{baseUrl}}/api/graph/node
+Content-Type: application/json
+
+{
+    "id":"{{sourceId}}",
+    "data":{"name": "changed"}
+}
+
+###
+# @name Check updated source
+GET http://{{baseUrl}}/api/graph/node?id={{sourceId}}
+Content-Type: application/json
+
+> {%
+    import Utils from "./httpUtils.js"
+    client.test("The node should be update", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.data.name === "changed");
+    });
+%}

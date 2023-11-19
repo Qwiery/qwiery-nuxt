@@ -26,9 +26,12 @@ console.log("Qwiery backend with JSON adapter enabled.");
 const q = new Qwiery({
 	adapters: ["memory"],
 	memory: {
-		autoSave: true,
+		autoSave: false,
 		interval: 5000,
 	},
 });
+setTimeout(() => {
+	q.loadGraph("Food");
+}, 500);
 
 export { q as GraphDB };

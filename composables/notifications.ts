@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import { tr } from "@faker-js/faker";
 
 /**
  * Gateway to notifications.
@@ -26,8 +27,8 @@ export class Notifications {
 		});
 	}
 
-	static async askForPropertyName(){
-		const inputValue:string = "";
+	static async askForPropertyName() {
+		const inputValue: string = "";
 		const { value: propName } = await Swal.fire({
 			title: "New Property",
 			input: "text",
@@ -38,7 +39,7 @@ export class Notifications {
 				if (Utils.isPropertyName(v)) {
 					return "You need to supply a valid property name.";
 				}
-			}
+			},
 		});
 
 		return propName;
@@ -62,6 +63,7 @@ export class Toasts {
 			timer: 2000,
 		});
 	}
+
 	static info(msg: string) {
 		return Swal.fire({
 			toast: true,
@@ -73,6 +75,26 @@ export class Toasts {
 			showConfirmButton: false,
 			background: "#565656",
 			timer: 3000,
+		});
+	}
+
+	static confirm(msg: string) {
+		return Swal.fire({
+			toast: true,
+			title: "Confirmation",
+			position: "center",
+			text: msg,
+			icon: "question",
+			showCloseButton: false,
+			showConfirmButton: true,
+			showDenyButton: true,
+			background: "#565656",
+			confirmButtonText: "Yes",
+			denyButtonText: "No",
+			allowEnterKey: true,
+			allowEscapeKey: true,
+			denyButtonColor: "silver",
+			confirmButtonColor: "green",
 		});
 	}
 }

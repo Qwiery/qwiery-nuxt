@@ -577,6 +577,7 @@
 	import { CytoUtils, DataGenerator, Graph } from "~/utils";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
+	import EditorController from "~/pages/apps/generic/editor/editorController";
 
 	const searchTerm = ref("");
 	let isExploreSectionVisible = ref(true);
@@ -596,7 +597,7 @@
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
 	let dataSearchControl = ref<any>(null);
-	let currentNodeId = ref<string | null>(null);
+	let currentNode = ref<any | null>(null);
 	let editPropertiesEnabled = ref<boolean>(false);
 	let hasProperties = ref<boolean>(false);
 	let interactionMode = ref("universal");
@@ -604,6 +605,8 @@
 	let dataSearchDialog: any;
 	let autoSearchDialog: any;
 	const store = useAppStore();
+	let controller = new EditorController();
+
 	definePageMeta({
 		layout: "default",
 	});
@@ -618,9 +621,28 @@
 			generateSampleGraph();
 		}, 200);
 		dataSearchDialog = <unknown>dataSearchControl.value;
+		initController();
 	});
 	// useKeyPressHandler(shortcuts);
 	useKeyDownHandler(shortcuts);
+
+	/**
+	 * Couples the view and the backend.
+	 */
+	function initController() {
+		controller = new EditorController();
+		// the controller will only commit changes to the db is set in the app settings
+		controller.commitChanges = store.commitGraphChanges;
+
+		//region Event bindings
+		controller.on("nodePropertiesUpdated", (node) => {
+			viewer.refreshStyle();
+		});
+		controller.on("nodeDeleted", (node) => {
+			removeNode(node.id);
+		});
+		//endregion
+	}
 
 	/**
 	 * See {@link IGraphViewer}
@@ -639,9 +661,7 @@
 	}
 
 	function saveEdit() {
-		setTimeout(() => {
-			viewer.refreshStyle();
-		}, 200);
+		controller.updateNode(currentNode.value);
 		editPropertiesEnabled.value = false;
 	}
 
@@ -676,12 +696,28 @@
 
 	function removeSelection() {
 		viewer.removeSelection();
+		clearProperties();
+	}
+
+	function removeNode(id) {
+		viewer.removeNode(id);
+		clearProperties();
+	}
+
+	function clearProperties() {
 		hasProperties.value = false;
 		propNode.value = null;
 	}
 
+	/**
+	 * Called via the properties panel.
+	 */
 	function deleteNode() {
-		removeSelection();
+		Toasts.confirm("Are you sure?").then((r) => {
+			if (r.isConfirmed) {
+				controller.deleteNode(CytoUtils.toPlain(currentNode.value));
+			}
+		});
 	}
 
 	/**
@@ -814,11 +850,11 @@
 	function showProperties(element) {
 		if (element) {
 			// todo: these methods are cy specific
-			currentNodeId.value = element.id();
+			currentNode.value = element;
 			propNode.value = element.data();
 			hasProperties.value = true;
 		} else {
-			currentNodeId.value = null;
+			currentNode.value = null;
 			hasProperties.value = false;
 		}
 	}
@@ -910,6 +946,7 @@
 	function showAutoSearch() {
 		autoSearchDialog.show();
 	}
+
 	async function onAutoSearchQuery(queryPath: string[]) {
 		showSpinner.value = true;
 		// console.log("Path Query >>: " + queryPath.join(" "));

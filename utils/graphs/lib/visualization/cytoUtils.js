@@ -160,4 +160,13 @@ export default class CytoUtils {
 		}
 		return ele;
 	}
+
+	static toPlain(el) {
+		if (Utils.isEmpty(el)) {
+			return null;
+		}
+		let p = _.clone(el.data() || {});
+		p.id = el.id();
+		return p;
+	}
 }

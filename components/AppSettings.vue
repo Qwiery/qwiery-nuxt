@@ -130,7 +130,6 @@
 	function labelChanged(selectedItem: any) {}
 
 	function loadSelectedGraph() {
-		debugger;
 		if (selectedLabel && !Utils.isEmpty(selectedLabel.value.name)) {
 			GraphAPI.loadGraph(selectedLabel.value.name);
 			Toasts.info(`The graph '${selectedLabel.value.name}' has been loaded.`);

@@ -9,6 +9,24 @@ import { GraphAPIBase } from "~/utils/GraphAPIBase";
  */
 export default class GraphAPI implements GraphAPIBase {
 	//region Nodes
+	static async deleteNode(id: string): Promise<void> {
+		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+			method: "DELETE",
+			body: {
+				id,
+			},
+		});
+	}
+	static async updateNode(d = null, id = null, labels = null) {
+		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+			method: "PATCH",
+			body: {
+				data: d,
+				id,
+				labels,
+			},
+		});
+	}
 
 	static async searchNodes(term: string, fields: string[], amount: number = 10): Promise<INodeBase[] | null> {
 		const { data, pending, error, refresh } = await useFetch("/api/graph/searchNodes", {
