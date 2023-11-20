@@ -1,6 +1,10 @@
 import _ from "lodash";
-import { Utils } from "../../../utils/lib/utils.js";
+import { Utils } from "./utils/lib/utils.js";
+import type { ICyEdge, ICyElement, ICyNode } from "./index.js";
 
+/*
+ * Diverse conversion utilities to and from Cytoscape elements.
+ * */
 export default class CytoUtils {
 	/**
 	 * Turns the given object into a Cyto eles collection.
@@ -26,9 +30,14 @@ export default class CytoUtils {
 	}
 
 	/**
-	 * Turns the given object into a Cyto ele.
-	 * @param obj
+	 * Turns the given object into a Cytoscape node.
+	 * Node:
+	 * - the id sits inside the data
+	 * - a node is characterized by the 'group:"nodes"' property
+	 * - the position is not part of the data but in the root
+	 * @param obj {*} Anything
 	 * @return {Ele}
+	 * @see https://js.cytoscape.org/#notation/elements-json
 	 */
 	static toCyNode(obj) {
 		if (!_.isPlainObject(obj)) {
@@ -55,7 +64,7 @@ export default class CytoUtils {
 		}
 		if (d.y) {
 			CytoUtils.setRawProperty(cyNode, "position.y", d.y);
-			delete d.x;
+			delete d.y;
 		}
 
 		// whatever remains goes into the data
@@ -161,12 +170,18 @@ export default class CytoUtils {
 		return ele;
 	}
 
-	static toPlain(el) {
-		if (Utils.isEmpty(el)) {
-			return null;
+	static toPlain(el: ICyElement | ICyElement[]) {
+		if (_.isArray(el)) {
+			if (Utils.isEmpty(el)) {
+				return [];
+			}
+		} else {
+			if (Utils.isEmpty(el)) {
+				return null;
+			}
+			if (el as ICyNode) let p = _.clone(el.data() || {});
+			p.id = el.id();
+			return p;
 		}
-		let p = _.clone(el.data() || {});
-		p.id = el.id();
-		return p;
 	}
 }

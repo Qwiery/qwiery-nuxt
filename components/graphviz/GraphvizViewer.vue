@@ -2,13 +2,18 @@
 	<div id="cy"></div>
 </template>
 <script setup lang="ts">
+	/*
+	 * Cytoscape IGraphViewer implementation.
+	 * */
 	import cytoscape, { Stylesheet } from "cytoscape"; // https://js.cytoscape.org/
 	import _ from "lodash";
 	import cola from "cytoscape-cola"; // https://github.com/cytoscape/cytoscape.js-cola
 	import defaultStyle from "./styles/defaultStyle.json";
 	import schemaStyle from "./styles/schemaStyle.json";
 	import { GraphStyle } from "~/utils/enums";
-	import edgehandles from "cytoscape-edgehandles"; // https://github.com/cytoscape/cytoscape.js-edgehandles
+	import edgehandles from "cytoscape-edgehandles";
+	import type { IQwieryEdge, IQwieryNode } from "~/utils";
+	import { CytoUtils } from "~/utils"; // https://github.com/cytoscape/cytoscape.js-edgehandles
 	let selectionDebounceTimeout: any = null;
 	cytoscape.use(edgehandles);
 	cytoscape.use(cola);
@@ -51,25 +56,27 @@
 		edgeCreator = cy.edgehandles(edgeHandlesDefaults);
 	});
 
-	function addNode(rawNode: IRawNode) {
+	function addNode(node: IQwieryNode) {
+		const cyNode = CytoUtils.toCyNode(node);
 		cy.add([
 			{
-				id: rawNode.id,
+				id: cyNode.id,
 				group: "nodes",
-				data: rawNode.data,
-				position: { x: rawNode.data?.x || 0, y: rawNode.data?.y || 0 },
+				data: cyNode.data,
+				position: { x: cyNode.data?.x || 0, y: cyNode.data?.y || 0 },
 			},
 		]);
 	}
 
-	function addEdge(rawEdge: IRawEdge) {
+	function addEdge(edge: IQwieryEdge) {
+		const cyEdge = CytoUtils.toCyEdge(edge);
 		cy.add([
 			{
-				id: rawEdge.id,
+				id: cyEdge.id,
 				group: "edges",
-				data: rawEdge.data,
-				source: rawEdge.sourceId,
-				target: rawEdge.targetId,
+				data: cyEdge.data,
+				source: cyEdge.sourceId,
+				target: cyEdge.targetId,
 			},
 		]);
 	}
@@ -148,8 +155,9 @@
 		}
 	}
 
-	function centerNode(node: any) {
-		cy.center(node);
+	function centerNode(node: IQwieryNode) {
+		const cyNode = getNode(node.id);
+		cy.center(cyNode);
 	}
 
 	function fit(padding: number = 20) {
@@ -203,12 +211,14 @@
 		}
 	}
 
-	function getNodes(filter?: Function) {
+	function getNodes(filter?: Function): IQwieryNode[] {
+		let found = [];
 		if (filter) {
-			return cy.nodes().filter((element: any, i: number, elements: any[]) => filter(element, i, elements));
+			found = cy.nodes().filter((element: any, i: number, elements: any[]) => filter(element, i, elements));
 		} else {
-			return cy.elements();
+			found = cy.elements();
 		}
+		return CytoUtils.toPlain(found);
 	}
 
 	function removeIsolatedNodes() {

@@ -13,7 +13,7 @@ import MatrixMarket from "./formats/matrixMarket.js";
 import NamedGraph from "../lib/graphData/namedGraph.js";
 
 import RandomGraph from "./graphData/randomGraph.js";
-import OgmaUtils from "./visualization/ogmaUtils.js";
+import OgmaUtils from "../../ogmaUtils.js";
 import JsonGraph from "./formats/jsonGraph.js";
 import TreeNode from "../../graphs/lib/treeNode.js";
 

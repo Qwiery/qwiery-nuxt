@@ -5,7 +5,7 @@ import Forest from "~/utils/graphs/lib/forest";
 
 import { Strings } from "./utils/lib/strings";
 import { Utils } from "./utils/lib/utils";
-import CytoUtils from "./graphs/lib/visualization/cytoUtils";
+import CytoUtils from "./cytoUtils";
 import pkg from "../package.json" assert { type: "json" };
 import Errors from "./utils/lib/errors";
 // import GraphAPI from "./GraphAPI";
@@ -16,18 +16,56 @@ export { Graph, RandomGraph, INodeBase, Forest, Strings, Utils, CytoUtils, Error
 
 import { GraphStyle } from "~/utils/enums";
 
+/*
+ * Common denominator across the various clients and backends.
+ * @see IEntityNode
+ * */
+export interface IQwieryNode {
+	id: string;
+}
+
+/*
+ * Common denominator across the various clients and backends.
+ * @see IEntityEdge
+ * */
+export interface IQwieryEdge {
+	id: string;
+	sourceId: string;
+	targetId: string;
+}
+
+export interface ICyNode {
+	data: { id: string };
+	group: "nodes";
+	position?: { x: number; y: number };
+}
+
+export interface ICyEdge {
+	data: { id: string; source: string; target: string };
+	group: "edges";
+}
+
+export interface ICyElement {
+	group: "nodes" | "edges";
+	data: { id: string; source?: string; target?: string };
+}
+
 /**
- * Defines the data stored in Qwiery.
+ * Defines a knowledge graph entity.
  */
-export interface IRawNode {
+export interface IEntityNode {
 	id?: string;
 	data?: any;
 	labels?: string[];
 }
 
-export interface IRawEdge {
+/*
+ * Defines a knowledge graph edge.
+ * */
+export interface IEntityEdge {
 	id?: string;
 	data?: any;
+	labels?: string[];
 	sourceId: string;
 	targetId: string;
 }
@@ -45,13 +83,20 @@ export interface IRawEdge {
  * For more info, {@link info@orbifold.net|contact us} .
  *
  * ---
+ *
+ * General principle:
+ * - the actual implementation uses underneath different types of node or edge structure
+ * - nodes/edges go in and out as plain objects, DO NOT return vendor specific objects
+ * - a nodes/edges have an id
+ * - in addition, an edge has sourceId/targetId
+ * - all the rest is optional (labels, name, position...)
  */
 export interface IGraphViewer {
 	/**
 	 * Adds a new node to the graph.
-	 * @param n {IRawNode} The raw data defining the node.
+	 * @param n {IEntityNode} The raw data defining the node.
 	 */
-	addNode: (n: IRawNode) => string;
+	addNode: (n: IEntityNode) => string;
 
 	/**
 	 * Load the given graph in the viewer.

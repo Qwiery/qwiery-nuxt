@@ -1,5 +1,5 @@
 import { describe, test, it, expect } from "vitest";
-import CytoUtils from "../utils/graphs/lib/visualization/cytoUtils";
+import CytoUtils from "../utils/cytoUtils";
 
 describe("CyUtils", () => {
 	it("should convert nodes", () => {

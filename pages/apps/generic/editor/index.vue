@@ -597,7 +597,7 @@
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
 	let dataSearchControl = ref<any>(null);
-	let currentNode = ref<any | null>(null);
+	let $currentNode = ref<any | null>(null);
 	let editPropertiesEnabled = ref<boolean>(false);
 	let hasProperties = ref<boolean>(false);
 	let interactionMode = ref("universal");
@@ -661,8 +661,24 @@
 	}
 
 	function saveEdit() {
-		controller.updateNode(currentNode.value);
+		controller.updateNode(currentPlainNode());
 		editPropertiesEnabled.value = false;
+	}
+
+	function currentNode() {
+		return $currentNode.value;
+	}
+
+	/**
+	 * Returns a flattened plain node suitable for the backend.
+	 * @returns {any|null}
+	 */
+	function currentPlainNode() {
+		if (currentNode()) {
+			return CytoUtils.toPlain(currentNode());
+		} else {
+			return null;
+		}
 	}
 
 	function shortcuts(e) {
@@ -689,10 +705,17 @@
 		} else {
 			switch (e.key) {
 				case "Delete":
-					return removeSelection();
+					return deleteSelection();
 			}
 		}
 	}
+
+	function deleteSelection() {
+	       const nodes = viewer.selectedNodes()
+	       if(nodes.length>0){
+	           nodes.
+	       }
+	   }
 
 	function removeSelection() {
 		viewer.removeSelection();
@@ -715,7 +738,7 @@
 	function deleteNode() {
 		Toasts.confirm("Are you sure?").then((r) => {
 			if (r.isConfirmed) {
-				controller.deleteNode(CytoUtils.toPlain(currentNode.value));
+				controller.deleteNode(currentPlainNode());
 			}
 		});
 	}
@@ -850,11 +873,11 @@
 	function showProperties(element) {
 		if (element) {
 			// todo: these methods are cy specific
-			currentNode.value = element;
+			$currentNode.value = element;
 			propNode.value = element.data();
 			hasProperties.value = true;
 		} else {
-			currentNode.value = null;
+			$currentNode.value = null;
 			hasProperties.value = false;
 		}
 	}

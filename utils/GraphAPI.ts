@@ -1,7 +1,7 @@
 import Graph from "./graphs/lib/graph";
 import type INodeBase from "./graphs/lib/iNodeBase";
 import { Utils } from "./utils/lib/utils";
-import { GraphAPIBase } from "~/utils/GraphAPIBase";
+import { GraphAPIBase } from "./GraphAPIBase";
 
 /**
  * The graph API is a proxy to the REST service.
@@ -17,7 +17,7 @@ export default class GraphAPI implements GraphAPIBase {
 			},
 		});
 	}
-	static async updateNode(d = null, id = null, labels = null) {
+	static async updateNode(d: any = null, id: string | null = null, labels: string[] | null = null) {
 		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
 			method: "PATCH",
 			body: {

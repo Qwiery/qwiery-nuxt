@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Utils } from "../../../utils/lib/utils.js";
+import { Utils } from "./utils/lib/utils.js";
 
 export default class OgmaUtils {
 	/**
