@@ -741,7 +741,7 @@ describe("Adapter", function () {
 			});
 			await g.createEdge(root.id, n.id);
 		}
-		const ng = await g.getNeighborhood(root.id);
+		const ng = await g.getNeighborhood(root.id, 1000);
 		expect(ng.nodeCount).toEqual(31);
 		expect(ng.edgeCount).toEqual(30);
 	});
