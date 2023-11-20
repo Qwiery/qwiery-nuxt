@@ -1,4 +1,4 @@
-import CytoUtils from "../../cytoUtils.ts";
+import CytoUtils from "../utils/cytoUtils.ts";
 import { describe, test, it, expect } from "vitest";
 
 describe("CytoUtils", () => {
@@ -52,5 +52,29 @@ describe("CytoUtils", () => {
 				y: 0,
 			},
 		});
+
+		let pn = { id: "a" };
+		cyNode = CytoUtils.toCyNode(pn);
+		expect(cyNode).toEqual({
+			data: { id: "a" },
+			group: "nodes",
+			position: {
+				x: 0,
+				y: 0,
+			},
+		});
+
+		pn = [{ id: "a" }];
+		cyNode = CytoUtils.toCyNode(pn);
+		expect(cyNode).toEqual([
+			{
+				data: { id: "a" },
+				group: "nodes",
+				position: {
+					x: 0,
+					y: 0,
+				},
+			},
+		]);
 	});
 });

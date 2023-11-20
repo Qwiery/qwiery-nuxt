@@ -1,6 +1,5 @@
 import _ from "lodash";
 import { Utils } from "./utils/lib/utils.js";
-import type { ICyEdge, ICyElement, ICyNode } from "./index.js";
 
 /*
  * Diverse conversion utilities to and from Cytoscape elements.
@@ -9,11 +8,11 @@ export default class CytoUtils {
 	/**
 	 * Turns the given object into a Cyto eles collection.
 	 */
-	static toElements(g) {
+	static toElements(g: any) {
 		if (!g) {
 			return null;
 		}
-		const coll = [];
+		const coll: any[] = [];
 		if (!g.nodes || Utils.isEmpty(g.nodes)) {
 			return [];
 		}
@@ -40,6 +39,9 @@ export default class CytoUtils {
 	 * @see https://js.cytoscape.org/#notation/elements-json
 	 */
 	static toCyNode(obj) {
+		if (_.isArray(obj)) {
+			return obj.map((e) => CytoUtils.toCyNode(e));
+		}
 		if (!_.isPlainObject(obj)) {
 			throw new Error("Expected a plain object.");
 		}
@@ -74,12 +76,12 @@ export default class CytoUtils {
 		return cyNode;
 	}
 
-	static toCyEdge(obj) {
+	static toCyEdge(obj: any) {
 		if (!_.isPlainObject(obj)) {
 			throw new Error("Expected a plain object.");
 		}
 		const id = Utils.id();
-		const cyEdge = {
+		const cyEdge: any = {
 			id,
 			group: "edges",
 			data: {
@@ -170,18 +172,41 @@ export default class CytoUtils {
 		return ele;
 	}
 
-	static toPlain(el: ICyElement | ICyElement[]) {
+	static toPlain(el: any | any[]): any {
 		if (_.isArray(el)) {
 			if (Utils.isEmpty(el)) {
 				return [];
 			}
+			return el.map((e) => CytoUtils.toPlain(e));
 		} else {
 			if (Utils.isEmpty(el)) {
 				return null;
 			}
-			if (el as ICyNode) let p = _.clone(el.data() || {});
-			p.id = el.id();
-			return p;
+			if (CytoUtils.isCytoNode(el)) {
+				let p = _.clone(el.data() || {});
+				p.id = el.id();
+				return p;
+			} else if (CytoUtils.isCytoEdge(el)) {
+				let p = _.clone(el.data() || {});
+				p.id = el.id();
+				return p;
+			} else {
+				throw new Error("Does not seem to be a Cytoscape element.");
+			}
 		}
+	}
+
+	static isCytoElement(thing: any) {
+		// difficult to characterize, seems the proto is an Array (WTF).
+		// best next thing is the fact that id is a function
+		return typeof thing.id === "function" && typeof thing.data === "function";
+	}
+
+	static isCytoNode(thing: any) {
+		return CytoUtils.isCytoElement(thing) && thing.data("group") === "nodes";
+	}
+
+	static isCytoEdge(thing: any) {
+		return CytoUtils.isCytoElement(thing) && thing.data("group") === "edges";
 	}
 }

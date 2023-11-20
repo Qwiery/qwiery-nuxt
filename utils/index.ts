@@ -34,22 +34,6 @@ export interface IQwieryEdge {
 	targetId: string;
 }
 
-export interface ICyNode {
-	data: { id: string };
-	group: "nodes";
-	position?: { x: number; y: number };
-}
-
-export interface ICyEdge {
-	data: { id: string; source: string; target: string };
-	group: "edges";
-}
-
-export interface ICyElement {
-	group: "nodes" | "edges";
-	data: { id: string; source?: string; target?: string };
-}
-
 /**
  * Defines a knowledge graph entity.
  */
