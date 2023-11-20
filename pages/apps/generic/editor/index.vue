@@ -403,7 +403,7 @@
 				</pane>
 				<pane size="70">
 					<!-- Main Content-->
-					<graphviz-viewer ref="viewerControl" @selection-changed="onSelectionChanged" @double-click="augmentNode"></graphviz-viewer>
+					<graphviz-viewer ref="viewerControl" @selection-changed="onSelectionChanged" @double-click="augmentNode" @create-node="createNewNode"></graphviz-viewer>
 					<div v-if="showSpinner" class="absolute inset-0 flex justify-center items-center z-10">
 						<spinner></spinner>
 					</div>
@@ -645,6 +645,10 @@
 		controller.on("nodeDeleted", (node) => {
 			removeNode(node.id);
 		});
+		controller.on("nodeCreated", (node) => {
+			viewer.addNode(node);
+			showProperties(node);
+		});
 		//endregion
 	}
 
@@ -708,12 +712,16 @@
 	}
 
 	function deleteSelection() {
-		const nodes = viewer.selectedNodes();
-		if (nodes.length > 0) {
-			for (let i = 0; i < nodes.length; i++) {
-				controller.deleteNode(nodes[i]);
+		Toasts.confirm("Are you sure?").then((r) => {
+			if (r.isConfirmed) {
+				const nodes = viewer.selectedNodes();
+				if (nodes.length > 0) {
+					for (let i = 0; i < nodes.length; i++) {
+						controller.deleteNode(nodes[i]);
+					}
+				}
 			}
-		}
+		});
 	}
 
 	function removeSelection() {
@@ -869,8 +877,11 @@
 		}
 	}
 
-	function showProperties(element: IQwieryNode | IQwieryEdge) {
+	function showProperties(element: any) {
 		if (element) {
+			delete element.x;
+			delete element.y;
+			delete element.position;
 			$currentNode.value = element;
 			propNode.value = element;
 			hasProperties.value = true;
@@ -942,6 +953,13 @@
 
 	function setStyle(name) {
 		viewer.setStyle(name);
+	}
+
+	async function createNewNode(node) {
+		if (Utils.isEmpty(node.name)) {
+			node.name = "New node";
+		}
+		await controller.createNode(node);
 	}
 
 	async function augmentNode(id) {

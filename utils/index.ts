@@ -80,7 +80,7 @@ export interface IGraphViewer {
 	 * Adds a new node to the graph.
 	 * @param n {IEntityNode} The raw data defining the node.
 	 */
-	addNode: (n: IEntityNode) => string;
+	addNode: (n: IQwieryNode) => string;
 
 	/**
 	 * Load the given graph in the viewer.

@@ -35,21 +35,21 @@ export const Utils = {
 		email: (value) => emailRegex.test(value) || "Not a valid email address",
 	},
 
-	isAlphaNumeric(s){
-		if(Utils.isEmpty(s)){
+	isAlphaNumeric(s) {
+		if (Utils.isEmpty(s)) {
 			return false;
 		}
 		return /^\w+$/gi.test(s);
 	},
 
-	isPropertyName(s){
-		if(!Utils.isAlphaNumeric(s)){
-			return false
+	isPropertyName(s) {
+		if (!Utils.isAlphaNumeric(s)) {
+			return false;
 		}
-		if(!/\d/.test(s.substring(0,1))){
-			return false
+		if (!/\d/.test(s.substring(0, 1))) {
+			return false;
 		}
-		return true
+		return true;
 	},
 	/**
 	 * Proper formatting of money amount.
@@ -1194,8 +1194,8 @@ export const Utils = {
 	mergeNodeSpecs(data = null, id = null, labels = null) {
 		const specs = Utils.getNodeSpecs(data, id, labels);
 		const node = specs.data || {};
-		_.assign(node, { id });
-		_.assign(node, { labels });
+		_.assign(node, { id: specs.id });
+		_.assign(node, { labels: specs.labels });
 		return _.clone(node);
 	},
 };

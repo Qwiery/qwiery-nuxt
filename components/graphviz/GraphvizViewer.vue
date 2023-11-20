@@ -25,6 +25,7 @@
 	const emit = defineEmits<{
 		(e: "selectionChanged", selection: any[]): void;
 		(e: "doubleClick", id: string): void;
+		(e: "createNode", node: any): void;
 	}>();
 	onMounted(() => {
 		cy = cytoscape({
@@ -58,14 +59,7 @@
 
 	function addNode(node: IQwieryNode) {
 		const cyNode = CytoUtils.toCyNode(node);
-		cy.add([
-			{
-				id: cyNode.id,
-				group: "nodes",
-				data: cyNode.data,
-				position: { x: cyNode.data?.x || 0, y: cyNode.data?.y || 0 },
-			},
-		]);
+		cy.add(cyNode);
 	}
 
 	function addEdge(edge: IQwieryEdge) {
@@ -261,10 +255,10 @@
 			const evtTarget = e.target;
 			if (!nodeCreationEnabled) {
 				if (evtTarget === cy) {
-					cy.add({
-						group: "nodes",
-						data: { id: Utils.id() },
-						position: e.position,
+					emit("createNode", {
+						id: Utils.id(),
+						x: e.position.x,
+						y: e.position.y,
 					});
 				} else {
 					console.log("Clicked " + evtTarget.id());
@@ -276,11 +270,10 @@
 			if (nodeCreationEnabled) {
 				const evtTarget = e.target;
 				if (evtTarget === cy) {
-					console.log(e.position);
-					cy.add({
-						group: "nodes",
-						data: { id: Utils.id() },
-						position: e.position,
+					emit("createNode", {
+						id: Utils.id(),
+						x: e.position.x,
+						y: e.position.y,
 					});
 				} else {
 					console.log("Clicked " + evtTarget.id());
