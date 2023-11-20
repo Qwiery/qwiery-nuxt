@@ -2,9 +2,30 @@ import CytoUtils from "../utils/cytoUtils.ts";
 import { describe, test, it, expect } from "vitest";
 
 describe("CytoUtils", () => {
+	it("should convert to/from Qwiery edges", () => {
+		let e = {
+			id: "e",
+			sourceId: "a",
+			targetId: "b",
+		};
+		let cyEdge = CytoUtils.toCyEdge(e);
+		expect(cyEdge).toEqual({
+			group: "edges",
+			data: {
+				id: "e",
+				source: "a",
+				target: "b",
+			},
+		});
+		let ce = CytoUtils.toPlain(cyEdge);
+		expect(ce).toEqual({
+			id: "e",
+			sourceId: "a",
+			targetId: "b",
+		});
+	});
 	it("should convert to/from Qwiery nodes", () => {
 		/**
-		 *
 		 * @type {IQwieryNode}
 		 */
 		let n = { id: "a" };
@@ -76,5 +97,14 @@ describe("CytoUtils", () => {
 				},
 			},
 		]);
+		cyNode = {
+			data: { id: "d", name: "d" },
+			group: "nodes",
+		};
+		pn = CytoUtils.toPlain(cyNode);
+		expect(pn).toEqual({
+			id: "d",
+			name: "d",
+		});
 	});
 });

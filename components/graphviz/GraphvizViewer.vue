@@ -241,9 +241,13 @@
 		nodeCreationEnabled = enabled;
 	}
 
-	function selectedNodes(): any[] {
+	/**
+	 *
+	 * @returns {IQwieryNode[]}
+	 */
+	function selectedNodes(): IQwieryNode[] {
 		const selection = cy.elements(":selected");
-		return selection.toArray();
+		return CytoUtils.toPlain(selection.toArray());
 	}
 
 	function addEventHandlers() {
@@ -378,6 +382,12 @@
 			node.data(name, value);
 		}
 	}
+	function setNodeProperties(id, data) {
+		const node = getNode(id);
+		if (node) {
+			node.data(data);
+		}
+	}
 
 	function refreshStyle() {
 		cy.nodes().updateStyle();
@@ -448,6 +458,8 @@
 		refreshStyle,
 		forceResize,
 		augment,
+		setNodeProperty,
+		setNodeProperties,
 	});
 </script>
 <style scoped>

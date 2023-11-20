@@ -189,6 +189,11 @@ export interface IGraphViewer {
 	 * */
 	setNodeProperty: (id, name, value) => void;
 
+	/**
+	 * Sets multiple properties in one go.
+	 */
+	setNodeProperties: (id: string, data: any) => void;
+
 	/*
 	 * Refreshes the style on the graph.
 	 * */

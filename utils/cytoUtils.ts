@@ -82,7 +82,6 @@ export default class CytoUtils {
 		}
 		const id = Utils.id();
 		const cyEdge: any = {
-			id,
 			group: "edges",
 			data: {
 				id,
@@ -91,22 +90,21 @@ export default class CytoUtils {
 		const d = _.clone(obj);
 		if (d.id) {
 			cyEdge.data.id = d.id;
-			cyEdge.id = d.id;
 			delete d.id;
 		}
 
 		if (d.source) {
-			cyEdge.source = d.source;
+			// cyEdge.source = d.source;
 			cyEdge.data.source = d.source;
 			delete d.source;
 		}
 		if (d.sourceId) {
-			cyEdge.source = d.sourceId;
+			// cyEdge.source = d.sourceId;
 			cyEdge.data.source = d.sourceId;
 			delete d.sourceId;
 		}
 		if (d.from) {
-			cyEdge.source = d.from;
+			// cyEdge.source = d.from;
 			cyEdge.data.source = d.from;
 			delete d.from;
 		}
@@ -115,17 +113,17 @@ export default class CytoUtils {
 		}
 
 		if (d.target) {
-			cyEdge.target = d.target;
+			// cyEdge.target = d.target;
 			cyEdge.data.target = d.target;
 			delete d.target;
 		}
 		if (d.targetId) {
-			cyEdge.target = d.targetId;
+			// cyEdge.target = d.targetId;
 			cyEdge.data.target = d.targetId;
 			delete d.targetId;
 		}
 		if (d.to) {
-			cyEdge.target = d.to;
+			// cyEdge.target = d.to;
 			cyEdge.data.target = d.to;
 			delete d.to;
 		}
@@ -183,15 +181,36 @@ export default class CytoUtils {
 				return null;
 			}
 			if (CytoUtils.isCytoNode(el)) {
-				let p = _.clone(el.data() || {});
+				let p = _.cloneDeep(el.data() || {});
 				p.id = el.id();
 				return p;
 			} else if (CytoUtils.isCytoEdge(el)) {
-				let p = _.clone(el.data() || {});
+				let p = _.cloneDeep(el.data() || {});
+				// rename, the Qwiery naming is sourceId/targetId
+				p.sourceId = p.source || null;
+				delete p.source;
+				p.targetId = p.target || null;
+				delete p.target;
 				p.id = el.id();
 				return p;
 			} else {
-				throw new Error("Does not seem to be a Cytoscape element.");
+				// presumable a cy element as json
+				let p = _.clone(el.data || {});
+				if (el.id) {
+					p.id = el.id;
+				}
+				if (el.position) {
+					_.assign(p, el.position);
+				}
+				if (p.source) {
+					p.sourceId = p.source || null;
+					delete p.source;
+				}
+				if (p.target) {
+					p.targetId = p.target || null;
+					delete p.target;
+				}
+				return p;
 			}
 		}
 	}
@@ -199,14 +218,14 @@ export default class CytoUtils {
 	static isCytoElement(thing: any) {
 		// difficult to characterize, seems the proto is an Array (WTF).
 		// best next thing is the fact that id is a function
-		return typeof thing.id === "function" && typeof thing.data === "function";
+		return typeof thing.id === "function" && typeof thing.data === "function" && typeof thing.group === "function";
 	}
 
 	static isCytoNode(thing: any) {
-		return CytoUtils.isCytoElement(thing) && thing.data("group") === "nodes";
+		return CytoUtils.isCytoElement(thing) && thing.group() === "nodes";
 	}
 
 	static isCytoEdge(thing: any) {
-		return CytoUtils.isCytoElement(thing) && thing.data("group") === "edges";
+		return CytoUtils.isCytoElement(thing) && thing.group() === "edges";
 	}
 }

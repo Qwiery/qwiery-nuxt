@@ -2,6 +2,7 @@ import Graph from "./graphs/lib/graph";
 import type INodeBase from "./graphs/lib/iNodeBase";
 import { Utils } from "./utils/lib/utils";
 import { GraphAPIBase } from "./GraphAPIBase";
+import type { IQwieryNode } from "~/utils/index";
 
 /**
  * The graph API is a proxy to the REST service.
@@ -10,20 +11,24 @@ import { GraphAPIBase } from "./GraphAPIBase";
 export default class GraphAPI implements GraphAPIBase {
 	//region Nodes
 	static async deleteNode(id: string): Promise<void> {
-		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+		await useFetch("/api/graph/node", {
 			method: "DELETE",
 			body: {
 				id,
 			},
 		});
 	}
-	static async updateNode(d: any = null, id: string | null = null, labels: string[] | null = null) {
-		const { data, pending, error, refresh } = await useFetch("/api/graph/node", {
+
+	/**
+	 * Updates the given node.
+	 * @param node {IQwieryNode} Should have at least an id, all the rest (e.g. labels) will be handled by the backend.
+	 * @returns {Promise<void>}
+	 */
+	static async updateNode(node: IQwieryNode): Promise<void> {
+		await useFetch("/api/graph/node", {
 			method: "PATCH",
 			body: {
-				data: d,
-				id,
-				labels,
+				data: node,
 			},
 		});
 	}

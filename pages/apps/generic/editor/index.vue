@@ -482,9 +482,9 @@
 													<span class="ml-2">Add property</span>
 												</button>
 												<div class="flex items-start my-2" v-for="(value, key) in propNode">
-													<div class="w-[60px] mr-3">{{ key }}:</div>
+													<div class="w-[100px] mr-3 overflow-hidden overflow-ellipsis">{{ key }}:</div>
 													<div>
-														<div v-if="key === 'id'">{{ value }}</div>
+														<div v-if="key.toString() === 'id'">{{ value }}</div>
 														<input
 															v-else
 															type="email"
@@ -495,7 +495,7 @@
 														/>
 													</div>
 													<svg
-														v-if="key !== 'id'"
+														v-if="key.toString() !== 'id'"
 														title="Delete this property"
 														class="ml-5 h-[13px] w-[13px] cursor-pointer text-gray-800 dark:text-white"
 														aria-hidden="true"
@@ -515,7 +515,7 @@
 
 											<div v-else class="my-2" v-for="(value, name, index) in propNode">
 												<div class="flex items-start">
-													<div class="w-[60px] mr-3">{{ name }}:</div>
+													<div class="w-[100px] mr-3 overflow-hidden overflow-ellipsis">{{ name }}:</div>
 													<div>
 														{{ value }}
 													</div>
@@ -574,7 +574,7 @@
 	import { Notifications, Toasts } from "~/composables/notifications";
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { CytoUtils, DataGenerator, Graph } from "~/utils";
+	import { DataGenerator, Graph, type IQwieryEdge, type IQwieryNode } from "~/utils";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
 	import EditorController from "~/pages/apps/generic/editor/editorController";
@@ -636,6 +636,10 @@
 
 		//region Event bindings
 		controller.on("nodePropertiesUpdated", (node) => {
+			const id = node.id;
+			// the id should not be in the data unless the viewer wishes to do so in the implementation
+			delete node.id;
+			viewer.setNodeProperties(id, node);
 			viewer.refreshStyle();
 		});
 		controller.on("nodeDeleted", (node) => {
@@ -661,24 +665,17 @@
 	}
 
 	function saveEdit() {
-		controller.updateNode(currentPlainNode());
+		controller.updateNode(currentNode());
 		editPropertiesEnabled.value = false;
 	}
 
-	function currentNode() {
-		return $currentNode.value;
-	}
-
 	/**
-	 * Returns a flattened plain node suitable for the backend.
-	 * @returns {any|null}
+	 * Unreactive plain node object.
+	 * @returns {any}
 	 */
-	function currentPlainNode() {
-		if (currentNode()) {
-			return CytoUtils.toPlain(currentNode());
-		} else {
-			return null;
-		}
+	function currentNode(): any {
+		// get rid of the reactive bits
+		return JSON.parse(JSON.stringify($currentNode.value));
 	}
 
 	function shortcuts(e) {
@@ -711,11 +708,13 @@
 	}
 
 	function deleteSelection() {
-	       const nodes = viewer.selectedNodes()
-	       if(nodes.length>0){
-	           nodes.
-	       }
-	   }
+		const nodes = viewer.selectedNodes();
+		if (nodes.length > 0) {
+			for (let i = 0; i < nodes.length; i++) {
+				controller.deleteNode(nodes[i]);
+			}
+		}
+	}
 
 	function removeSelection() {
 		viewer.removeSelection();
@@ -738,7 +737,7 @@
 	function deleteNode() {
 		Toasts.confirm("Are you sure?").then((r) => {
 			if (r.isConfirmed) {
-				controller.deleteNode(currentPlainNode());
+				controller.deleteNode(currentNode());
 			}
 		});
 	}
@@ -862,7 +861,7 @@
 		}
 	}
 
-	function onSelectionChanged(selection) {
+	function onSelectionChanged(selection: IQwieryNode[]) {
 		if (selection && selection.length > 0) {
 			showProperties(selection[0]);
 		} else {
@@ -870,11 +869,10 @@
 		}
 	}
 
-	function showProperties(element) {
+	function showProperties(element: IQwieryNode | IQwieryEdge) {
 		if (element) {
-			// todo: these methods are cy specific
 			$currentNode.value = element;
-			propNode.value = element.data();
+			propNode.value = element;
 			hasProperties.value = true;
 		} else {
 			$currentNode.value = null;
@@ -962,7 +960,7 @@
 	async function loadNodeFromId(id: string) {
 		const found = await GraphAPI.getNode(id);
 		if (found) {
-			viewer.addNode(CytoUtils.toCyNode(found));
+			viewer.addNode(found);
 		}
 	}
 
