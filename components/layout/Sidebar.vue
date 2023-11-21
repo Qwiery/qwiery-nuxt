@@ -5,9 +5,9 @@
 				<div class="flex items-center justify-between px-4 py-3">
 					<NuxtLink to="/" class="main-logo flex shrink-0 items-center">
 						<img class="ml-[5px] w-8 flex-none" src="/images/orbifold.svg" alt="" />
-						<span class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Graphalizer</span>
+						<span class="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Qwiery</span>
 					</NuxtLink>
-					<a href="javascript:;" class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 hover:text-primary rtl:rotate-180 dark:text-white-light dark:hover:bg-dark-light/10" @click="store.toggleSidebar()">
+					<a href="javascript:" class="collapse-icon flex h-8 w-8 items-center rounded-full transition duration-300 hover:bg-gray-500/10 hover:text-primary rtl:rotate-180 dark:text-white-light dark:hover:bg-dark-light/10" @click="store.toggleSidebar()">
 						<svg class="m-auto h-5 w-5" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 							<path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -25,7 +25,7 @@
 						<!--Top level enum-->
 						<ul class="relative space-y-0.5 p-4 py-0 font-semibold">
 							<!--Apps-->
-							<li class="menu nav-item">
+							<li class="hidden menu nav-item">
 								<button type="button" class="nav-link group w-full" :class="{ active: activeDropdown === 'apps' }" @click="activeDropdown === 'apps' ? (activeDropdown = null) : (activeDropdown = 'apps')">
 									<div class="flex items-center">
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -340,7 +340,7 @@
 									</li>
 									<!--App Settings-->
 									<li class="nav-item">
-										<a href="javascript:;" class="group cursor-pointer" @click="store.toggleAppSettings()">
+										<a href="javascript:" class="group cursor-pointer" @click="store.toggleAppSettings()">
 											<div class="flex items-center">
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" />

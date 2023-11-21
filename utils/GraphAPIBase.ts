@@ -42,7 +42,7 @@ export class GraphAPIBase {
 	 * @return {Promise<Graph>}
 	 * @abstract
 	 */
-	static inferSchemaGraph(): Promise<Graph> {
+	static inferSchemaGraph(cached = true): Promise<Graph> {
 		throw new Error(notImplemented);
 	}
 

@@ -7,7 +7,7 @@
 				<ul class="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 					<li>
 						<!-- Hamburger left panel-->
-						<button class="ml-2 p-1" @click="toggleLeft()" title="Toggle the left panel" v-if="isHamburgerIconVisible">
+						<button class="hidden ml-2 p-1" @click="toggleLeft()" title="Toggle the left panel" v-if="isHamburgerIconVisible">
 							<svg height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<g class="hover:stroke-sky-300" fill="transparent">
 									<rect width="24" height="24" rx="5" ry="5"></rect>
@@ -20,7 +20,7 @@
 						</button>
 					</li>
 					<li>
-						<button type="button" class="hover:bg-sky-300 btn btn-primary" @click="generateSampleGraph()">Generate</button>
+						<button type="button" class="hidden hover:bg-sky-300 btn btn-primary" @click="generateSampleGraph()">Generate</button>
 					</li>
 					<li>
 						<button type="button" class="hover:bg-sky-300 btn btn-primary" @click="showPerspective('schema')" title="Show the inferred database schema (if any)">Schema</button>
@@ -37,7 +37,7 @@
 					<ul class="flex items-center mt-1 space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 						<li>
 							<!-- Search database-->
-							<button type="button" class="bg-none border-none p-1 w-5" @click="showDataSearchDialog()">
+							<button type="button" class="bg-none border-none p-1 w-5" @click="showDataSearchDialog()" title="Search the database via labels">
 								<svg class="hover:fill-sky-300" fill="currentColor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 150.817 150.817" xml:space="preserve" stroke="currentColor">
 									<g>
 										<g>
@@ -51,7 +51,7 @@
 						</li>
 						<li>
 							<!-- Auto Search-->
-							<button type="button" class="bg-none border-none p-1 w-5" @click="showAutoSearch()">
+							<button type="button" class="bg-none border-none p-1 w-5" @click="showAutoSearch()" title="Search the database using patterns">
 								<svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path
@@ -67,7 +67,7 @@
 						</li>
 						<li>
 							<!-- Clear Canvas-->
-							<button type="button" class="bg-none border-none p-1 w-5" @click="clearGraph()">
+							<button type="button" class="bg-none border-none p-1 w-5" @click="clearGraph()" title="Clear the canvas (CTRL+W)">
 								<svg class="hover:fill-sky-300" fill="currentColor" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511.999 511.999" xml:space="preserve">
 									<g>
 										<g>
@@ -104,7 +104,7 @@
 						</li>
 						<li>
 							<!-- Remove Isolated-->
-							<button type="button" class="bg-none border-none p-1" @click="removeIsolatedNodes()">
+							<button type="button" class="bg-none border-none p-1" @click="removeIsolatedNodes()" title="Remove isolated nodes">
 								<svg class="hover:fill-sky-300" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path d="M15.59 12.26C18.4232 12.26 20.72 9.96323 20.72 7.13C20.72 4.29678 18.4232 2 15.59 2C12.7567 2 10.46 4.29678 10.46 7.13C10.46 9.96323 12.7567 12.26 15.59 12.26Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"></path>
@@ -128,7 +128,7 @@
 					</ul>
 				</div>
 				<!-- Search Input -->
-				<div class="border-r-2 border-primary pt-0 pr-2" v-if="isSearchVisible">
+				<div class="border-r-2 border-primary pt-0 pr-2" v-if="isSearchVisible" title="Search the database using node names">
 					<form class="absolute inset-x-0 top-1/2 z-10 mx-4 hidden -translate-y-1/2 sm:relative sm:top-0 sm:mx-0 sm:block sm:translate-y-0" :class="{ '!block': search }" @submit.prevent="true">
 						<!--Search input-->
 						<div class="relative">
@@ -148,7 +148,7 @@
 					<ul class="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 						<li>
 							<!-- Zoom In  -->
-							<button type="button" class="bg-none border-none p-1" @click="zoomIn()">
+							<button type="button" class="bg-none border-none p-1" @click="zoomIn()" title="Zoom in">
 								<svg class="hover:fill-sky-300" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -161,7 +161,7 @@
 						</li>
 						<li>
 							<!-- Zoom Out  -->
-							<button type="button" class="bg-none border-none p-1" @click="zoomOut()">
+							<button type="button" class="bg-none border-none p-1" @click="zoomOut()" title="Zoom out">
 								<svg class="hover:fill-sky-300" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -173,7 +173,7 @@
 						</li>
 						<li>
 							<!-- Zoom Fit  -->
-							<button type="button" class="bg-none border-none p-1" @click="fit()" title="Fit the diagram (CTRL+V)">
+							<button type="button" class="bg-none border-none p-1" @click="fit()" title="Fit the diagram (CTRL+.)">
 								<svg width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
 									<g class="hover:stroke-sky-300" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 										<g transform="translate(-152.000000, -983.000000)" fill="currentColor">
@@ -263,7 +263,7 @@
 					<ul class="flex items-center space-x-2 dark:text-[#a1a1aa]">
 						<li>
 							<!-- Pointer-->
-							<button type="button" :class="{ enabledSectionButton: interactionMode === 'universal', disabledSectionButton: interactionMode !== 'universal' }" title="Create edges" @click="setInteractionMode('universal')">
+							<button type="button" :class="{ enabledSectionButton: interactionMode === 'universal', disabledSectionButton: interactionMode !== 'universal' }" title="Use the standard pointer" @click="setInteractionMode('universal')">
 								<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g>
 										<path
@@ -278,7 +278,7 @@
 						</li>
 						<li>
 							<!-- Create Edges-->
-							<button type="button" :class="{ enabledSectionButton: interactionMode === 'edgeCreation', disabledSectionButton: interactionMode !== 'edgeCreation' }" title="Create edges" @click="setInteractionMode('edgeCreation')">
+							<button type="button" :class="{ enabledSectionButton: interactionMode === 'edgeCreation', disabledSectionButton: interactionMode !== 'edgeCreation' }" title="Create edges interactively" @click="setInteractionMode('edgeCreation')">
 								<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
 									<g class="layer">
 										<line fill="none" id="svg_4" stroke="currentColor" x1="6.86" x2="18.16" y1="16.56" y2="5.6" />
@@ -291,7 +291,7 @@
 						</li>
 						<li>
 							<!-- Create Nodes-->
-							<button type="button" :class="{ enabledSectionButton: interactionMode === 'nodeCreation', disabledSectionButton: interactionMode !== 'nodeCreation' }" title="Create nodes" @click="setInteractionMode('nodeCreation')">
+							<button type="button" :class="{ enabledSectionButton: interactionMode === 'nodeCreation', disabledSectionButton: interactionMode !== 'nodeCreation' }" title="Create nodes interactively" @click="setInteractionMode('nodeCreation')">
 								<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
 									<g class="layer">
 										<circle cx="8.54" cy="8.62" fill="currentColor" r="5.38" stroke="#000000" stroke-opacity="0" />
@@ -541,16 +541,28 @@
 							<TabPanel>
 								<div class="">
 									<div class="flex flex-grow">
-										<div class="w-[80px] font-bold">CTRL V</div>
+										<div class="w-[80px] font-bold">CTRL .</div>
 										<div>Fit diagram</div>
 									</div>
 									<div class="flex flex-grow">
 										<div class="w-[80px] font-bold">CTRL L</div>
-										<div>Layout</div>
+										<div>Organic layout</div>
+									</div>
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">CTRL H</div>
+										<div>Hierarchical layout</div>
+									</div>
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">CTRL O</div>
+										<div>Concentric layout</div>
 									</div>
 									<div class="flex flex-grow">
 										<div class="w-[80px] font-bold">CTRL I</div>
 										<div>Add node where pointer is</div>
+									</div>
+									<div class="flex flex-grow">
+										<div class="w-[80px] font-bold">CTRL W</div>
+										<div>Clear the canvas</div>
 									</div>
 									<div class="flex flex-grow">
 										<div class="w-[80px] font-bold">DELETE</div>
@@ -618,9 +630,6 @@
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
 		autoSearchDialog = <any>autoSearchControl.value;
 
-		setTimeout(() => {
-			generateSampleGraph();
-		}, 200);
 		dataSearchDialog = <unknown>dataSearchControl.value;
 		initController();
 	});
@@ -694,9 +703,17 @@
 				case "l":
 					return layout();
 				case "i":
-					return addNode(viewer.getPosition());
-				case "v":
+					const p = viewer.getPosition();
+					return createNewNode({
+						id: Utils.id(),
+						name: "New node",
+						x: p.x,
+						y: p.y,
+					});
+				case ".":
 					return fit();
+				case "w":
+					return clearGraph();
 				case "g":
 					return generateSampleGraph();
 				case "h":

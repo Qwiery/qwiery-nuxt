@@ -50,7 +50,7 @@ export default class Store {
 	 * This returns the schema inferred from the data.
 	 * @returns {Promise<Graph>}
 	 */
-	async inferSchemaGraph() {
+	async inferSchemaGraph(cached = true) {
 		throw new Error(errors.notImplemented("inferSchemaGraph"));
 	}
 

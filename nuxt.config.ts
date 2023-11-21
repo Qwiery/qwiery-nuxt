@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 	app: {
 		head: {
 			title: "Graph Visualizer",
-			titleTemplate: "%s | Graphalizer",
+			titleTemplate: "%s | Qwiery",
 			htmlAttrs: {
 				lang: "en",
 			},

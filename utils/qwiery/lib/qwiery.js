@@ -299,11 +299,12 @@ export default class Qwiery extends EventEmitter {
 	/**
 	 * Returns the schema from the existing data as a graph.
 	 * The name of the node and edges is the label (class).
+	 * @param cached {boolean} If true the cached version will be used, otherwise the schema will be recomputed and cached.
 	 * @return {Promise<Graph>}
 	 */
-	async inferSchemaGraph() {
+	async inferSchemaGraph(cached = true) {
 		try {
-			return await this.callStore("inferSchemaGraph", []);
+			return await this.callStore("inferSchemaGraph", [cached]);
 		} catch (e) {
 			/* istanbul ignore next */
 			throw e;

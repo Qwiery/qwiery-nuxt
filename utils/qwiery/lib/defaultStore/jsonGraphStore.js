@@ -11,7 +11,6 @@ import _ from "lodash";
 import { Utils } from "../../../utils/lib/utils.js";
 import { toPredicate } from "./projections.js";
 import Graph from "../../../graphs/lib/graph.js";
-// import { Error } from "sequelize";
 import fs from "fs";
 import Errors from "../../../utils/lib/errors.js";
 import { Datasets } from "../../../utils/lib/datasets.js";
@@ -23,6 +22,7 @@ import { Datasets } from "../../../utils/lib/datasets.js";
 export default class JsonGraphStore extends Store {
 	#nodes;
 	#edges;
+	#schema;
 	options = {};
 	autoSaveHandle = null;
 
@@ -32,6 +32,7 @@ export default class JsonGraphStore extends Store {
 		// console.log(JSON.stringify(options, null, 3));
 		this.#nodes = (options.nodes || []).slice(0);
 		this.#edges = (options.edges || []).slice(0);
+		this.#schema = null;
 		this.id = options.id || Utils.id();
 		this.name = options.name || "JSON Graph";
 		this.description = options.description || "";
@@ -90,6 +91,7 @@ export default class JsonGraphStore extends Store {
 	async clear() {
 		this.#nodes = [];
 		this.#edges = [];
+		this.#schema = null;
 	}
 
 	async loadGraph(name = "food") {
@@ -105,6 +107,7 @@ export default class JsonGraphStore extends Store {
 		if (json) {
 			this.#nodes = (json.nodes || []).slice(0);
 			this.#edges = (json.edges || []).slice(0);
+			this.#schema = Object.assign({}, json.schema);
 			this.id = json.id || Utils.id();
 			this.name = json.name || "JSON Graph";
 			this.description = json.description || "";
@@ -135,6 +138,7 @@ export default class JsonGraphStore extends Store {
 			description: this.description,
 			nodes: _.clone(this.#nodes),
 			edges: _.clone(this.#edges),
+			schema: Object.assign({}, this.#schema),
 		};
 	}
 
@@ -175,10 +179,17 @@ export default class JsonGraphStore extends Store {
 	}
 
 	/** @inheritdoc */
-	async inferSchemaGraph() {
+	async inferSchemaGraph(cached = true) {
+		if (cached) {
+			const cachedSchema = await this.getCachedSchema();
+			if (cachedSchema) {
+				return cachedSchema;
+			}
+		}
 		// incidence
 		const dic = {};
 		const g = new Graph();
+		g.name = "Inferred schema";
 		const labelMap = {};
 		// label-to-node map
 		for (const n of this.#nodes) {
@@ -213,7 +224,22 @@ export default class JsonGraphStore extends Store {
 			}
 		}
 
+		await this.cacheSchema(g);
+		g.description = "";
 		return g;
+	}
+
+	async cacheSchema(g) {
+		if (g) {
+			g.description = `Cached at ${new Date()}`;
+			this.#schema = g.toJSON();
+		}
+	}
+
+	async getCachedSchema() {
+		if (!Utils.isEmpty(this.#schema)) {
+			return Graph.fromJSON(this.#schema);
+		}
 	}
 
 	/** @inheritdoc */

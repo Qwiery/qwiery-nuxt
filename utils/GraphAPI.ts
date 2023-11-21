@@ -89,9 +89,11 @@ export default class GraphAPI implements GraphAPIBase {
 			method: "GET",
 		});
 		if (error.value) {
-			return showErrorToast(error);
+			await showErrorToast(error);
+			return null;
+		} else {
+			return <string[]>data.value || null;
 		}
-		return <string[]>data.value || null;
 	}
 
 	static async getNodeLabelProperties(labelName: string): Promise<string[] | null> {

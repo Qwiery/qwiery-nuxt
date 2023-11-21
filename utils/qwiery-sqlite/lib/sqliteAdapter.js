@@ -1208,7 +1208,7 @@ export default async function SqliteAdapter(options, done) {
 
 		/** @inheritdoc */
 		inferSchemaGraph(done) {
-			return async () => {
+			return async ([cached]) => {
 				if (!isInitialized) {
 					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
