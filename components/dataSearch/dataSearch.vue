@@ -135,7 +135,6 @@
 
 	const dataTableControl = ref<any>(null);
 	let datatable: any;
-	onMounted(() => {});
 
 	async function loadAllNodeLabels() {
 		const allLabels = await GraphAPI.getNodeLabels();

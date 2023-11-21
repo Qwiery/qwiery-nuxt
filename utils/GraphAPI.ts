@@ -3,7 +3,7 @@ import type INodeBase from "./graphs/lib/iNodeBase";
 import { Utils } from "./utils/lib/utils";
 import { GraphAPIBase } from "./GraphAPIBase";
 import type { IQwieryNode } from "~/utils/index";
-
+const showErrorToast = (error) => Toasts.error(error.value.data.message);
 /**
  * The graph API is a proxy to the REST service.
  * It's the default implementation of {@link GraphAPIBase}
@@ -88,6 +88,9 @@ export default class GraphAPI implements GraphAPIBase {
 		const { data, pending, error, refresh } = await useFetch("/api/graph/nodeLabels", {
 			method: "GET",
 		});
+		if (error.value) {
+			return showErrorToast(error);
+		}
 		return <string[]>data.value || null;
 	}
 

@@ -574,10 +574,10 @@
 	import { Notifications, Toasts } from "~/composables/notifications";
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { DataGenerator, Graph, type IQwieryEdge, type IQwieryNode } from "~/utils";
+	import { DataGenerator, Graph, type IGraphViewer, type IQwieryEdge, type IQwieryNode } from "~/utils";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
-	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
 	import EditorController from "~/pages/apps/generic/editor/editorController";
+	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
 
 	const searchTerm = ref("");
 	let isExploreSectionVisible = ref(true);
@@ -593,10 +593,10 @@
 	let isBottomVisible = ref(false);
 	let viewer: IGraphViewer;
 	let viewerControl = ref(null);
-	let autoSearchControl = ref(null);
+	let autoSearchControl = ref<any>(null);
 	let showSpinner = ref(false);
 	let propNode = ref<any>(null);
-	let dataSearchControl = ref<any>(null);
+	let dataSearchControl = ref<InstanceType<typeof AutoSearchDialog> | null>(null);
 	let $currentNode = ref<any | null>(null);
 	let editPropertiesEnabled = ref<boolean>(false);
 	let hasProperties = ref<boolean>(false);
@@ -617,6 +617,7 @@
 	onMounted(() => {
 		viewer = <IGraphViewer>(<unknown>viewerControl.value);
 		autoSearchDialog = <any>autoSearchControl.value;
+
 		setTimeout(() => {
 			generateSampleGraph();
 		}, 200);

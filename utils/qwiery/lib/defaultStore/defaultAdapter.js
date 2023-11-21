@@ -195,6 +195,12 @@ export default async function DefaultAdapter(options = {}, done) {
 				done(null, [labelName], g);
 			};
 		},
+		getNodeLabels(done) {
+			return async () => {
+				const labels = await mem.getNodeLabels();
+				done(null, [], labels);
+			};
+		},
 		searchNodes(done) {
 			return async ([term, fields, amount]) => {
 				const nodes = await mem.searchNodes(term, fields, amount);

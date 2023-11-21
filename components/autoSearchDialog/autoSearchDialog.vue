@@ -43,15 +43,15 @@
 </template>
 <script setup lang="ts">
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay } from "@headlessui/vue";
-	import AutoSearch from "~/components/autoSearch/autoSearch.vue";
+	// import AutoSearch from "../autoSearch/autoSearch.vue";
 
-	onMounted(() => {});
+	// onMounted(() => {});
 
 	function show() {
 		modalShow.value = true;
-		setTimeout(() => {
-			document.getElementsByName("autoSearchInput")[0].focus();
-		}, 300);
+		// setTimeout(() => {
+		// 	document.getElementsByName("autoSearchInput")[0].focus();
+		// }, 300);
 	}
 
 	function hide() {
