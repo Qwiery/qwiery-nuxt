@@ -92,7 +92,7 @@
 		}
 		cy.json({ elements: CytoUtils.toElements(g) });
 		layout();
-		console.log(cy.nodes().map((n) => n.id()));
+		// console.log(cy.nodes().map((n) => n.id()));
 	}
 
 	function clear() {

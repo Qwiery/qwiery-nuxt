@@ -193,6 +193,9 @@ export default class Qwiery extends EventEmitter {
 						returnValue = newReturnValue;
 					}
 				});
+				if (typeof fun.call != "function") {
+					throw new Error(`Very likely that your implementation of '${methodName}' is not correct and does not return an async function. It should be itself not an async function. `);
+				}
 				// the last parameter will always be the return value of the previous call
 				await fun.call(this.storageApis[i], args, returnValue);
 			}
