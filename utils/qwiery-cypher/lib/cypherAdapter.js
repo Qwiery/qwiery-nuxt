@@ -5,7 +5,7 @@ import toCypher from "../lib/projections";
 import parseProjection from "../../utils/lib/mongo/mongoParse.js";
 import Graph from "../../graphs/lib/graph.js";
 
-const adapterId = "cypher";
+const AdapterId = "cypher";
 const DefaultOptions = {
 	protocol: "bolt",
 	host: "localhost",
@@ -72,6 +72,40 @@ function getSession(driver, options) {
 		return driver.session();
 	}
 }
+
+export const pathQueryToCypher = (pathQuery, amount = 100) => {
+	if (Utils.isEmpty(pathQuery)) {
+		return null;
+	}
+	// check nothing is empty
+	pathQuery.forEach((u) => {
+		if (Utils.isEmpty(u)) {
+			throw new Error("Path query items cannot be empty.");
+		}
+	});
+	if (pathQuery.length === 1) {
+		const label = pathQuery[0];
+		return `Match (n:${label}) return n limit ${amount}`;
+	}
+	const coll = [];
+	for (let i = 0; i < pathQuery.length; i++) {
+		const u = pathQuery[i];
+		if (i % 2 === 0) {
+			if (u === "*") {
+				coll.push("()");
+			} else {
+				coll.push(`(:${u})`);
+			}
+		} else {
+			if (u === "*") {
+				coll.push("-->");
+			} else {
+				coll.push(`-[:${u}]->`);
+			}
+		}
+	}
+	return `Match p=${coll.join("")} return p limit ${amount}`;
+};
 
 /*
  * Adapter implementation.
@@ -150,6 +184,95 @@ async function CypherAdapter(options, done) {
 		}
 	}
 
+	async function pathQuery(path, amount = 1000) {
+		// check nothing is empty
+		path.forEach((u) => {
+			if (Utils.isEmpty(u)) {
+				throw new Error("Path query items cannot be empty.");
+			}
+		});
+		const session = getSession(driver, options);
+		try {
+			const g = new Graph();
+			const idMap = {};
+
+			function convertNode(n) {
+				const u = Object.assign({}, n.properties);
+				u.labels = n.labels;
+				idMap[n.identity.toNumber().toString()] = u.id;
+				return u;
+			}
+
+			function convertEdge(e) {
+				const u = Object.assign({}, e.properties);
+
+				const internalSourceId = e.start.toNumber().toString();
+				const internalTargetId = e.end.toNumber().toString();
+				if (!idMap[internalSourceId] || !idMap[internalTargetId]) {
+					throw new Error("Could not find relationship endpoint.");
+				}
+				u.labels = [e.type];
+				u.sourceId = idMap[internalSourceId];
+				u.targetId = idMap[internalTargetId];
+				return u;
+			}
+
+			function addNode(n) {
+				if (!g.nodeIdExists(n.id)) {
+					g.addNode(n);
+				}
+			}
+
+			function addEdge(e) {
+				if (!g.edgeExists(e.id)) {
+					g.addEdge(e);
+				}
+			}
+
+			if (Utils.isEmpty(path)) {
+				return g;
+			}
+
+			const star = "*";
+
+			if (path.length === 1) {
+				if (path[0] === star) {
+					throw new Error("Cannot path-query all nodes.");
+				} else {
+					const nodes = await getNodesWithLabel(path[0], amount);
+					g.addNodes(nodes);
+					return g;
+				}
+			}
+			const query = pathQueryToCypher(path, amount);
+			const params = {};
+			const result = await session.executeRead((tx) => tx.run(query, params));
+
+			const records = result.records;
+			if (records.length > 0) {
+				for (const record of records) {
+					const segments = record.get("p").segments;
+					if (segments.length > 0) {
+						for (const segment of segments) {
+							const s = convertNode(segment["start"]);
+							addNode(s);
+							const e = convertNode(segment["end"]);
+							addNode(e);
+							const r = convertEdge(segment["relationship"]);
+							addEdge(r);
+						}
+					}
+				}
+
+				return g;
+			} else {
+				return g;
+			}
+		} finally {
+			await session.close();
+		}
+	}
+
 	/**
 	 * The method exists below as an adapter override but this one is somewhat easier to use and appears
 	 * in pretty much all methods.
@@ -183,25 +306,11 @@ async function CypherAdapter(options, done) {
 	}
 
 	const api = {
-		/** @inheritdoc */
-		inferSchemaGraph(done) {
-			return async ([cached]) => {
-				if (!isInitialized) {
-					await setup(options[adapterId]);
-				}
-				try {
-					const g = await getSchema();
-					done(null, [], g);
-				} catch (e) {
-					done(e.message, [], null);
-				}
-			};
-		},
-
+		//region Nodes
 		createNode(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getNodeSpecs(data, id, labels);
 				if (_.isNil(specs)) {
@@ -230,6 +339,7 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		async nodePresent(id) {
 			let present = false;
 			await this.nodeExists((x, y, z) => {
@@ -242,7 +352,7 @@ async function CypherAdapter(options, done) {
 			return async ([id]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const session = getSession(driver, options);
 				try {
@@ -260,7 +370,7 @@ async function CypherAdapter(options, done) {
 		createNodes(done) {
 			return async ([seq]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				try {
 					const coll = [];
@@ -277,11 +387,12 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		updateNode(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const session = getSession(driver, options);
 				try {
@@ -314,12 +425,13 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		upsertNode(done) {
 			const self = this;
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getNodeSpecs(data, id, labels);
 				if (specs === null) {
@@ -338,86 +450,10 @@ async function CypherAdapter(options, done) {
 			};
 		},
 
-		getNeighborhood(done) {
-			return async ([id, amount]) => {
-				if (!isInitialized) {
-					await setup(options[adapterId]);
-				}
-				if (!amount) {
-					amount = 100;
-				}
-				if (amount <= 0) {
-					return done(null, [id, amount], []);
-				}
-				const session = getSession(driver, options);
-				const query = `
-				Match (c{id:'${id}'})
-				Optional Match (parent)-[pr]->(c)
-				Optional Match (c)-[cr]->(child)
-				Return parent,pr,c,cr,child
-				limit ${amount}`;
-				try {
-					const params = {};
-					const result = await session.executeRead((tx) => tx.run(query, params));
-
-					const records = result.records;
-					const g = new Graph();
-					const addNode = (n) => {
-						if (!g.nodeIdExists(n.id)) {
-							g.addNode(n);
-						}
-					};
-					const addEdge = (e) => {
-						if (!g.edgeExists(e.id)) {
-							g.addEdge(e);
-						}
-					};
-					const toGraphNode = (b) => {
-						const u = Object.assign({}, b.properties);
-						u.labels = b.labels;
-						return u;
-					};
-					const toGraphEdge = (sourceId, b, targetId) => {
-						const u = Object.assign({}, b.properties);
-						u.labels = b.type ? [b.type] : [];
-						u.sourceId = sourceId;
-						u.targetId = targetId;
-						return u;
-					};
-					if (records.length > 0) {
-						//records.map((u) => u.get(0).properties)
-						for (const record of records) {
-							const center = record.get("c");
-							const parent = record.get("parent");
-							const child = record.get("child");
-							const parentEdge = record.get("pr");
-							const childEdge = record.get("cr");
-
-							addNode(toGraphNode(center));
-							if (parent) {
-								addNode(toGraphNode(parent));
-								addEdge(toGraphEdge(parent.properties.id, parentEdge, id));
-							}
-							if (child) {
-								addNode(toGraphNode(child));
-								addEdge(toGraphEdge(id, childEdge, child.properties.id));
-							}
-						}
-						done(null, [id, amount], g);
-					} else {
-						done(null, [id, amount], g);
-					}
-				} catch (e) {
-					done(e.message, [id, amount], null);
-				} finally {
-					await session.close();
-				}
-			};
-		},
 		getNodeLabelProperties(done) {
 			return async ([labelName, amount = 1000]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 
 				try {
@@ -437,6 +473,7 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		/**
 		 * Search of the nodes for the given term.
 		 * @param term {string} A search term.
@@ -446,7 +483,7 @@ async function CypherAdapter(options, done) {
 		searchNodes(done) {
 			return async ([term, fields, amount]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				if (!amount) {
 					amount = 100;
@@ -498,7 +535,7 @@ async function CypherAdapter(options, done) {
 		searchNodesWithLabel(done) {
 			return async ([term, fields, label, amount]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				if (!amount) {
 					amount = 100;
@@ -546,11 +583,12 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		getNode(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 
 				let query;
@@ -644,11 +682,160 @@ async function CypherAdapter(options, done) {
 			};
 		},
 
+		getNodesWithLabel(done) {
+			return async ([label, amount = 1000]) => {
+				if (!isInitialized) {
+					await setup(options[AdapterId]);
+				}
+
+				try {
+					const nodes = getNodesWithLabel(label, amount);
+					done(null, [label, amount], nodes);
+				} catch (e) {
+					done(e.message, [label, amount], null);
+				}
+			};
+		},
+
+		getNodeLabels(done) {
+			return async ([]) => {
+				if (!isInitialized) {
+					await setup(options[AdapterId]);
+				}
+				const session = getSession(driver, options);
+				try {
+					// todo: will not work with other dbs, like Memgraph
+					const query = `call db.labels()`;
+					const result = await session.executeRead((tx) => tx.run(query));
+
+					const records = result.records;
+					if (records.length > 0) {
+						const labels = records.map((r) => r.get(0));
+						done(null, [], labels);
+					} else {
+						done(null, [], []);
+					}
+				} catch (e) {
+					done(e.message, [], null);
+				} finally {
+					await session.close();
+				}
+			};
+		},
+
+		deleteNodes(done) {
+			return async ([projection]) => {
+				if (!isInitialized) {
+					// 'neo4j' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
+				let query;
+
+				if (_.isFunction(projection)) {
+					// kinda possible by looping over all nodes in the db with the predicate but that's not really scalable or good practice
+					return done("getEdges with a predicate is not supported by the Neo4j adapter. Please use Mongo-like projections instead (https://www.mongodb.com/docs/manual/reference/operator/query/).", [projection], null);
+				} else if (_.isPlainObject(projection)) {
+					try {
+						const constraint = toCypher(parseProjection(projection), "n");
+						query = `Match (n) Where ${constraint} detach delete n`;
+					} catch (e) {
+						return done(e.message, [projection], null);
+					}
+				} else {
+					return done("Please use a Mongo-like projections for getNodes, see https://www.mongodb.com/docs/manual/reference/operator/query/.", [projection], null);
+				}
+				const session = getSession(driver, options);
+				try {
+					const params = {};
+					await session.executeWrite((tx) => tx.run(query, params));
+					done(null, [projection], []);
+				} catch (e) {
+					done(e.message, [projection], null);
+				} finally {
+					await session.close();
+				}
+			};
+		},
+
+		deleteNode(done) {
+			return async ([id]) => {
+				if (!isInitialized) {
+					// 'neo4j' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
+				let query;
+				let params = {};
+				if (_.isString(id)) {
+					query = `Match (n{id: $id}) detach delete n`;
+					params["id"] = id;
+				} else if (_.isFunction(id)) {
+					// kinda possible by looping over all nodes in the db with the predicate but that's not really scalable or good practice
+					return done("deleteNode with a predicate is not supported by the Neo4j adapter. Please use Mongo-like projections instead (https://www.mongodb.com/docs/manual/reference/operator/query/).", [id], null);
+				} else if (_.isPlainObject(id)) {
+					try {
+						const constraint = toCypher(parseProjection(id), "n");
+						query = `Match (n) Where ${constraint} detach delete n`;
+					} catch (e) {
+						return done(e.message, [id], null);
+					}
+				} else {
+					return done("Please use a Mongo-like projections for getNodes, see https://www.mongodb.com/docs/manual/reference/operator/query/.", [id], null);
+				}
+				const session = getSession(driver, options);
+				try {
+					await session.executeWrite((tx) => tx.run(query, params));
+					done(null, [id], []);
+				} catch (e) {
+					done(e.message, [id], null);
+				} finally {
+					await session.close();
+				}
+			};
+		},
+
+		nodeCount(done) {
+			return async ([projection]) => {
+				if (!isInitialized) {
+					// 'neo4j' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
+				let query;
+				if (Utils.isEmpty(projection)) {
+					query = "Match (n) return count(n)";
+				} else if (_.isFunction(projection)) {
+					// kinda possible by looping over all nodes in the db with the predicate but that's not really scalable or good practice
+					return done("nodeCount with a predicate is not supported by the Neo4j adapter. Please use Mongo-like projections instead (https://www.mongodb.com/docs/manual/reference/operator/query/).", [projection], null);
+				} else if (_.isPlainObject(projection)) {
+					try {
+						const constraint = toCypher(parseProjection(projection), "n");
+						query = `Match (n) Where ${constraint} return count(n)`;
+					} catch (e) {
+						return done(e.message, [projection], null);
+					}
+				} else {
+					return done("Please use a Mongo-like projections for nodeCount, see https://www.mongodb.com/docs/manual/reference/operator/query/.", [projection], null);
+				}
+				const session = getSession(driver, options);
+				try {
+					const params = {};
+					const results = await session.executeRead((tx) => tx.run(query, params));
+					done(null, [projection], results.records[0].get(0).toNumber());
+				} catch (e) {
+					done(e.message, [projection], null);
+				} finally {
+					await session.close();
+				}
+			};
+		},
+		//endregion
+
+		//region Edges
+
 		deleteEdge(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				let query;
 				let params = {};
@@ -683,7 +870,7 @@ async function CypherAdapter(options, done) {
 		getEdge(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				let query;
 				if (_.isString(id)) {
@@ -717,49 +904,10 @@ async function CypherAdapter(options, done) {
 			};
 		},
 
-		getNodesWithLabel(done) {
-			return async ([label, amount = 1000]) => {
-				if (!isInitialized) {
-					await setup(options[adapterId]);
-				}
-
-				try {
-					const nodes = getNodesWithLabel(label, amount);
-					done(null, [label, amount], nodes);
-				} catch (e) {
-					done(e.message, [label, amount], null);
-				}
-			};
-		},
-		getNodeLabels(done) {
-			return async ([]) => {
-				if (!isInitialized) {
-					await setup(options[adapterId]);
-				}
-				const session = getSession(driver, options);
-				try {
-					// todo: will not work with other dbs, like Memgraph
-					const query = `call db.labels()`;
-					const result = await session.executeRead((tx) => tx.run(query));
-
-					const records = result.records;
-					if (records.length > 0) {
-						const labels = records.map((r) => r.get(0));
-						done(null, [], labels);
-					} else {
-						done(null, [], []);
-					}
-				} catch (e) {
-					done(e.message, [], null);
-				} finally {
-					await session.close();
-				}
-			};
-		},
 		getEdgeBetween(done) {
 			return async ([sourceId, targetId]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const session = getSession(driver, options);
 				try {
@@ -789,7 +937,7 @@ async function CypherAdapter(options, done) {
 			return async ([sourceId, targetId, data = null, id = null, labels = null]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getEdgeSpecs(sourceId, targetId, data, id, labels);
 				if (_.isNil(specs)) {
@@ -831,7 +979,7 @@ async function CypherAdapter(options, done) {
 			return async ([data = null, id = null, labels = null]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				try {
 					const specs = Utils.getEdgeSpecs(data, null, id, labels);
@@ -848,11 +996,12 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		updateEdge(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getEdgeSpecs(data, null, id, labels);
 				if (_.isNil(specs)) {
@@ -886,7 +1035,7 @@ async function CypherAdapter(options, done) {
 		getEdgeWithLabel(done) {
 			return async ([sourceId, targetId, label]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const session = getSession(driver, options);
 				try {
@@ -911,10 +1060,11 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		getEdgeLabels(done) {
 			return async ([]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const session = getSession(driver, options);
 				try {
@@ -935,10 +1085,11 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		getEdgesWithLabel(done) {
 			return async ([label, amount]) => {
 				if (!isInitialized) {
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				const session = getSession(driver, options);
 				try {
@@ -960,11 +1111,12 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
 		getEdges(done) {
 			return async ([projection, amount]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				let query;
 
@@ -1003,135 +1155,12 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
-		deleteNodes(done) {
-			return async ([projection]) => {
-				if (!isInitialized) {
-					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
-				}
-				let query;
-
-				if (_.isFunction(projection)) {
-					// kinda possible by looping over all nodes in the db with the predicate but that's not really scalable or good practice
-					return done("getEdges with a predicate is not supported by the Neo4j adapter. Please use Mongo-like projections instead (https://www.mongodb.com/docs/manual/reference/operator/query/).", [projection], null);
-				} else if (_.isPlainObject(projection)) {
-					try {
-						const constraint = toCypher(parseProjection(projection), "n");
-						query = `Match (n) Where ${constraint} detach delete n`;
-					} catch (e) {
-						return done(e.message, [projection], null);
-					}
-				} else {
-					return done("Please use a Mongo-like projections for getNodes, see https://www.mongodb.com/docs/manual/reference/operator/query/.", [projection], null);
-				}
-				const session = getSession(driver, options);
-				try {
-					const params = {};
-					await session.executeWrite((tx) => tx.run(query, params));
-					done(null, [projection], []);
-				} catch (e) {
-					done(e.message, [projection], null);
-				} finally {
-					await session.close();
-				}
-			};
-		},
-
-		edgeExists(done) {
-			return async ([id]) => {
-				if (!isInitialized) {
-					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
-				}
-				const session = getSession(driver, options);
-				try {
-					const result = await session.executeRead((tx) => tx.run("Match ()-[e{id: $id}]->() return e", { id }));
-					done(null, [id], result.records.length > 0);
-				} catch (e) {
-					error = e.message;
-					done(e.message, [id], false);
-				} finally {
-					await session.close();
-				}
-			};
-		},
-
-		deleteNode(done) {
-			return async ([id]) => {
-				if (!isInitialized) {
-					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
-				}
-				let query;
-				let params = {};
-				if (_.isString(id)) {
-					query = `Match (n{id: $id}) detach delete n`;
-					params["id"] = id;
-				} else if (_.isFunction(id)) {
-					// kinda possible by looping over all nodes in the db with the predicate but that's not really scalable or good practice
-					return done("deleteNode with a predicate is not supported by the Neo4j adapter. Please use Mongo-like projections instead (https://www.mongodb.com/docs/manual/reference/operator/query/).", [id], null);
-				} else if (_.isPlainObject(id)) {
-					try {
-						const constraint = toCypher(parseProjection(id), "n");
-						query = `Match (n) Where ${constraint} detach delete n`;
-					} catch (e) {
-						return done(e.message, [id], null);
-					}
-				} else {
-					return done("Please use a Mongo-like projections for getNodes, see https://www.mongodb.com/docs/manual/reference/operator/query/.", [id], null);
-				}
-				const session = getSession(driver, options);
-				try {
-					await session.executeWrite((tx) => tx.run(query, params));
-					done(null, [id], []);
-				} catch (e) {
-					done(e.message, [id], null);
-				} finally {
-					await session.close();
-				}
-			};
-		},
-
-		nodeCount(done) {
-			return async ([projection]) => {
-				if (!isInitialized) {
-					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
-				}
-				let query;
-				if (Utils.isEmpty(projection)) {
-					query = "Match (n) return count(n)";
-				} else if (_.isFunction(projection)) {
-					// kinda possible by looping over all nodes in the db with the predicate but that's not really scalable or good practice
-					return done("nodeCount with a predicate is not supported by the Neo4j adapter. Please use Mongo-like projections instead (https://www.mongodb.com/docs/manual/reference/operator/query/).", [projection], null);
-				} else if (_.isPlainObject(projection)) {
-					try {
-						const constraint = toCypher(parseProjection(projection), "n");
-						query = `Match (n) Where ${constraint} return count(n)`;
-					} catch (e) {
-						return done(e.message, [projection], null);
-					}
-				} else {
-					return done("Please use a Mongo-like projections for nodeCount, see https://www.mongodb.com/docs/manual/reference/operator/query/.", [projection], null);
-				}
-				const session = getSession(driver, options);
-				try {
-					const params = {};
-					const results = await session.executeRead((tx) => tx.run(query, params));
-					done(null, [projection], results.records[0].get(0).toNumber());
-				} catch (e) {
-					done(e.message, [projection], null);
-				} finally {
-					await session.close();
-				}
-			};
-		},
 
 		edgeCount(done) {
 			return async ([projection]) => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				let query;
 				if (Utils.isEmpty(projection)) {
@@ -1162,11 +1191,32 @@ async function CypherAdapter(options, done) {
 			};
 		},
 
+		edgeExists(done) {
+			return async ([id]) => {
+				if (!isInitialized) {
+					// 'neo4j' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
+				const session = getSession(driver, options);
+				try {
+					const result = await session.executeRead((tx) => tx.run("Match ()-[e{id: $id}]->() return e", { id }));
+					done(null, [id], result.records.length > 0);
+				} catch (e) {
+					error = e.message;
+					done(e.message, [id], false);
+				} finally {
+					await session.close();
+				}
+			};
+		},
+		//endregion
+
+		//region Graphs
 		clear(done) {
 			return async () => {
 				if (!isInitialized) {
 					// 'neo4j' is the id of the adapter which should be used to pass options
-					await setup(options[adapterId]);
+					await setup(options[AdapterId]);
 				}
 				try {
 					const session = getSession(driver, options);
@@ -1193,6 +1243,123 @@ async function CypherAdapter(options, done) {
 				}
 			};
 		},
+
+		/** @inheritdoc */
+		inferSchemaGraph(done) {
+			return async ([cached]) => {
+				if (!isInitialized) {
+					await setup(options[AdapterId]);
+				}
+				try {
+					const g = await getSchema();
+					done(null, [], g);
+				} catch (e) {
+					done(e.message, [], null);
+				}
+			};
+		},
+
+		getNeighborhood(done) {
+			return async ([id, amount]) => {
+				if (!isInitialized) {
+					await setup(options[AdapterId]);
+				}
+				if (!amount) {
+					amount = 100;
+				}
+				if (amount <= 0) {
+					return done(null, [id, amount], []);
+				}
+				const session = getSession(driver, options);
+				const query = `
+				Match (c{id:'${id}'})
+				Optional Match (parent)-[pr]->(c)
+				Optional Match (c)-[cr]->(child)
+				Return parent,pr,c,cr,child
+				limit ${amount}`;
+				try {
+					const params = {};
+					const result = await session.executeRead((tx) => tx.run(query, params));
+
+					const records = result.records;
+					const g = new Graph();
+					const addNode = (n) => {
+						if (!g.nodeIdExists(n.id)) {
+							g.addNode(n);
+						}
+					};
+					const addEdge = (e) => {
+						if (!g.edgeExists(e.id)) {
+							g.addEdge(e);
+						}
+					};
+					const toGraphNode = (b) => {
+						const u = Object.assign({}, b.properties);
+						u.labels = b.labels;
+						return u;
+					};
+					const toGraphEdge = (sourceId, b, targetId) => {
+						const u = Object.assign({}, b.properties);
+						u.labels = b.type ? [b.type] : [];
+						u.sourceId = sourceId;
+						u.targetId = targetId;
+						return u;
+					};
+					if (records.length > 0) {
+						//records.map((u) => u.get(0).properties)
+						for (const record of records) {
+							const center = record.get("c");
+							const parent = record.get("parent");
+							const child = record.get("child");
+							const parentEdge = record.get("pr");
+							const childEdge = record.get("cr");
+
+							addNode(toGraphNode(center));
+							if (parent) {
+								addNode(toGraphNode(parent));
+								addEdge(toGraphEdge(parent.properties.id, parentEdge, id));
+							}
+							if (child) {
+								addNode(toGraphNode(child));
+								addEdge(toGraphEdge(id, childEdge, child.properties.id));
+							}
+						}
+						done(null, [id, amount], g);
+					} else {
+						done(null, [id, amount], g);
+					}
+				} catch (e) {
+					done(e.message, [id, amount], null);
+				} finally {
+					await session.close();
+				}
+			};
+		},
+
+		/**
+		 * A path query defines a patter, e.g. ["A",*,"B","knows","C"].
+		 * There are only two possibilities:
+		 * - an arbitrary edge, meaning all nodes with the label in the next entry
+		 * - a specific edge label, the next item has to be *
+		 * @param path
+		 * @return {Promise<Graph>}
+		 */
+		pathQuery(done) {
+			return async ([path, amount]) => {
+				if (!isInitialized) {
+					// 'sqlite' is the id of the adapter which should be used to pass options
+					await setup(options[AdapterId]);
+				}
+
+				try {
+					const found = await pathQuery(path, amount);
+					done(null, [path], found);
+				} catch (e) {
+					done(e.message, [], null);
+				}
+			};
+		},
+		//endregion
 	};
 
 	function getDriver(opt = {}) {

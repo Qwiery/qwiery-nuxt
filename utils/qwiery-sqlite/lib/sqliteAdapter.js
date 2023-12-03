@@ -193,6 +193,20 @@ export default async function SqliteAdapter(options, done) {
 		}
 	}
 
+	/**
+	 * Things are alot easier if you have Cypher or similar, so this is the tedious path towards path querying.
+	 *
+	 * The approach is as follows:
+	 * - an initial graph is assembled by looking at each segment of the path (a segment being a triple)
+	 * - a depth-first traversal collects the nodes being part of the full path query
+	 * - the nodes not part of the full path are removed.
+	 *
+	 * This is to make sure that partial paths are not part of the resulting graph.
+	 * A path query means an "AND" constraint.
+	 * @param path
+	 * @param amount
+	 * @returns {Promise<Graph>}
+	 */
 	async function pathQuery(path, amount = 1000) {
 		if (Utils.isEmpty(path)) {
 			return Graph.empty();
@@ -297,7 +311,7 @@ export default async function SqliteAdapter(options, done) {
 
 			const edgeLabels = _.range((path.length - 1) / 2).map((i) => path[2 * i + 1]);
 			for (const n of g.nodes) {
-				// walking up and tagging
+				// walking down and tagging
 				walkDownAdnTag(n, edgeLabels);
 			}
 			for (const n of g.nodes) {
@@ -1184,6 +1198,7 @@ export default async function SqliteAdapter(options, done) {
 				}
 			};
 		},
+
 		clear(done) {
 			return async () => {
 				if (!isInitialized) {

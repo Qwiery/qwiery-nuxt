@@ -4,9 +4,7 @@ import Cypher from "../lib/";
 import { Utils } from "../../utils/lib/utils.js";
 import _ from "lodash";
 import path from "path";
-import fs from "fs";
-import AdapterUtils from "../../utils/lib/utils.js";
-
+import { pathQueryToCypher } from "../lib/cypherAdapter.js";
 function createRandomLabel() {
 	return `Label${Utils.randomId(5)}`;
 }
@@ -508,45 +506,65 @@ describe("Adapter", function () {
 		Qwiery.plugin(Cypher);
 		const g = new Qwiery({
 			adapters: ["cypher"],
-			cypher: {
-				recreateTables: true,
-			},
 		});
-		let a = await g.createNode({ id: Utils.id(), labels: ["A"] });
-		let b = await g.createNode({ id: Utils.id(), labels: ["B"] });
-		let c = await g.createNode({ id: Utils.id(), labels: ["C"] });
+		const A = `A${Utils.randomId(5)}`;
+		const B = `B${Utils.randomId(5)}`;
+		const C = `C${Utils.randomId(5)}`;
+		const nodeLabels = [A, B, C];
 
-		let e1 = await g.createEdge(a.id, b.id, null, Utils.id(), "E1");
-		let e2 = await g.createEdge(b.id, c.id, null, Utils.id(), "E2");
+		const E1 = `E1${Utils.randomId(5)}`;
+		const E2 = `E2${Utils.randomId(5)}`;
+		const edgeLabels = [E1, E2];
 
-		let found = await g.pathQuery(["A", "*", "B"]);
+		const star = "*";
+
+		let a = await g.createNode({ id: Utils.id(), labels: [A] });
+		let b = await g.createNode({ id: Utils.id(), labels: [B] });
+		let c = await g.createNode({ id: Utils.id(), labels: [C] });
+
+		let e1 = await g.createEdge(a.id, b.id, null, Utils.id(), E1);
+		let e2 = await g.createEdge(b.id, c.id, null, Utils.id(), E2);
+
+		let found = await g.pathQuery([A, star, B]);
 		expect(found.nodeCount).toEqual(2);
 		expect(found.edgeCount).toEqual(1);
-		expect(found.edges[0].labels).toEqual(["E1"]);
+		expect(found.edges[0].labels).toEqual([E1]);
 
-		found = await g.pathQuery(["A", "*", "B", "*", "C"]);
+		found = await g.pathQuery([A, star, B, star, C]);
 		// console.log(JSON.stringify(found.toJSON(), null, 2));
 		expect(found.nodeCount).toEqual(3);
 		expect(found.edgeCount).toEqual(2);
-		expect(found.edges[0].labels).toEqual(["E1"]);
-		expect(found.edges[1].labels).toEqual(["E2"]);
+		expect(found.edges[0].labels).toEqual([E1]);
+		expect(found.edges[1].labels).toEqual([E2]);
 
 		// can specify both an edge and a node label
 		await expect(g.pathQuery([""])).rejects.toThrow(Error);
-		await expect(g.pathQuery(["A", ""])).rejects.toThrow(Error);
+		await expect(g.pathQuery([A, ""])).rejects.toThrow(Error);
 
-		found = await g.pathQuery(["C"]);
+		found = await g.pathQuery([C]);
 		expect(found.nodeCount).toEqual(1);
 		expect(found.edgeCount).toEqual(0);
 
-		found = await g.pathQuery(["*", "E1", "*"]);
+		found = await g.pathQuery([star, E1, star]);
 		expect(found.nodeCount).toEqual(2);
 		expect(found.edgeCount).toEqual(1);
 
-		found = await g.pathQuery(["*", "E1", "*", "E2", "*"]);
+		found = await g.pathQuery([star, E1, star, E2, star]);
 		expect(found.nodeCount).toEqual(3);
 		expect(found.edgeCount).toEqual(2);
 	}, 30000);
+
+	it("should turn a path-query to Cypher", () => {
+		const star = "*";
+
+		let q = [star, "R", star];
+		expect(pathQueryToCypher([])).toEqual(null);
+		expect(() => pathQueryToCypher([" "])).toThrow(Error);
+		expect(pathQueryToCypher(["A"], 4)).toEqual("Match (n:A) return n limit 4");
+		expect(pathQueryToCypher(["A", star, "B"], 14)).toEqual("Match p=(:A)-->(:B) return p limit 14");
+		expect(pathQueryToCypher(["A", star, "B", star, "C"], 23)).toEqual("Match p=(:A)-->(:B)-->(:C) return p limit 23");
+		expect(pathQueryToCypher([star, "R", star, star, "D"], 23)).toEqual("Match p=()-[:R]->()-->(:D) return p limit 23");
+	});
 
 	it(
 		"should get nodes and respect the amount",
