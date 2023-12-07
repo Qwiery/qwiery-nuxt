@@ -44,7 +44,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Instantiates Qwiery.
-	 * @param options? {adapters:string[]} Diverse options.
+	 * @param [options={}] {adapters:string[]} Diverse options.
 	 */
 	constructor(options = {}) {
 		super();
@@ -93,6 +93,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the package version.
+	 *
 	 * @returns {string}
 	 */
 	static get version() {
@@ -101,6 +102,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Package info in one line.
+	 *
 	 * @returns {string}
 	 */
 	static get info() {
@@ -239,8 +241,16 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Clears the graph.
+	 *
+	 * Danger: it will remove all nodes and edges without confirmation request or warning.
+	 * @async
 	 * @emits  "clear" without any data.
 	 * @return {Promise<void>} Does not return anything.
+	 *
+	 * @example
+	 *
+	 * const q = new Qwiery();
+	 * await q.clear();
 	 */
 	async clear() {
 		try {
@@ -252,6 +262,12 @@ export default class Qwiery extends EventEmitter {
 		}
 	}
 
+	/**
+	 * Loads a graph and completely replaces the current data.
+	 *
+	 * @param name {string} The name of the dataset.
+	 * @returns {Promise<void>}
+	 */
 	async loadGraph(name = "food") {
 		try {
 			await this.callStore("loadGraph", [name]);
@@ -264,7 +280,15 @@ export default class Qwiery extends EventEmitter {
 	/**
 	 * Returns the parents and children of the given node id as a graph.
 	 * @param id {string} A node id.
+	 * @param [amount=10] {number} The maximum amount of nodes to return.
 	 * @returns {Promise<Graph>}
+	 *
+	 * @example
+	 *
+	 * const q = new Qwiery();
+	 * await q.randomGraph();
+	 * // this returns the parents and children of node with id "5" together with the edges
+	 * const g = await g.getNeighborhood("5")
 	 */
 	async getNeighborhood(id, amount = 10) {
 		try {
@@ -277,9 +301,19 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Generates pseudo-random graph data.
+	 * @description
+	 * This method implements various graph generation algorithms like Erdos-Renyi, Watts-Strogatz and more.
+	 * The parameters depend on the selected algorithm.
+	 *
 	 * @param name {string} The name of the algorithm to use.
 	 * @param args {*[]} Parameters specific to the algorithm.
 	 * @returns {Promise<Graph>} The generated graph.
+	 *
+	 * @example
+	 *
+	 * const q = new Qwiery();
+	 * // use the Erdos-Renyi algorithm to generate 40 nodes and 50 edges
+	 * await q.randomGraph("erdos", 40, 50)
 	 */
 	async randomGraph(name = "Erdos", ...args) {
 		const g = RandomGraph.create(name, ...args);
@@ -301,7 +335,10 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the schema from the existing data as a graph.
-	 * The name of the node and edges is the label (class).
+	 * @description
+	 * - the name of the node and edges is the label (class).
+	 * - the schema is a graph
+	 * - the schema is inferred from the data, there is strictly speaking no schema in the database constraining the data
 	 * @param cached {boolean} If true the cached version will be used, otherwise the schema will be recomputed and cached.
 	 * @return {Promise<Graph>}
 	 */
@@ -316,8 +353,21 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the graph of data matching the given path query.
+	 *
+	 * @description
+	 * - a path query is an array defining a path template
+	 * - the result is a graph in which every node is part of the full path
+	 * - path queries allow you to fetch data without having to write queries
+	 * - the asterisk defines a wildcard
 	 * @param path {string[]}
+	 * @param [amount=1000] {number} The maximum amount of nodes to return.
 	 * @return  {Promise<Graph>}
+	 *
+	 * @example
+	 *
+	 * await q.pathQuery(["*", "Knows", "*"])
+	 * await q.pathQuery(["Person", "*", "Location"])
+	 * await q.pathQuery(["Person", "*", "Location", "*", "Hotel"])
 	 */
 	async pathQuery(path, amount = 1000) {
 		try {
@@ -333,9 +383,15 @@ export default class Qwiery extends EventEmitter {
 	//region Node
 
 	/**
-	 * Search of the nodes for the given term.
+	 * Search of the nodes for the given term (in the specified fields).
+	 *
 	 * @param term {string} A search term.
-	 * @param fields {string[]} The properties to consider in the search.
+	 * @param [fields=[]] {string[]} The properties to consider in the search.
+	 * @param [amount=100] {number} The maximum amount of nodes to return.
+	 * @return {Promise<any>}
+	 * @example
+	 *
+	 * await q.searchNodes("ato", ["name", "description"])
 	 */
 	async searchNodes(term, fields = [], amount = 100) {
 		try {
@@ -348,10 +404,14 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Search of the nodes with specified labels for the given term.
+	 *
 	 * @param term {string} A search term.
 	 * @param fields {string[]} The properties to consider in the search.
 	 * @param label {string|null} Only nodes having the specified label.
 	 * @param [amount=100] {number} Return at most the given amount.
+	 * @example
+	 *
+	 * await q.searchNodesWithLabel("fos", ["firstName"], "Person", 20)
 	 */
 	async searchNodesWithLabel(term, fields = [], label = null, amount = 100) {
 		try {
@@ -361,11 +421,17 @@ export default class Qwiery extends EventEmitter {
 			throw e;
 		}
 	}
+
 	/**
 	 * Returns the nodes satisfying the given predicate.
+	 *
 	 * @param predicate {function|*} A Mongo-like projection. If the adapter supports it, a function can be passed.
 	 * @param amount {number} The maximum amount to return.
 	 * @returns {Promise<*[]>}
+	 * @see [Mongo Projections](https://www.mongodb.com/docs/manual/reference/operator/query/)
+	 * @example
+	 *
+	 * const found = await q.getNodes({age:{$gt: 20}})
 	 */
 	async getNodes(predicate = {}, amount = 1000) {
 		try {
@@ -378,9 +444,14 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the nodes with the specified labels.
+	 *
 	 * @param label {string} A label.
-	 * @param amount? {number} The maximum amount to return.
+	 * @param [amount=1000] {number} The maximum amount to return.
 	 * @returns {Promise<*[]>}
+	 *
+	 * @example
+	 *
+	 * const found = await q.getNodesWithLabel("Company", 30);
 	 */
 	async getNodesWithLabel(label, amount = 1000) {
 		try {
@@ -392,9 +463,27 @@ export default class Qwiery extends EventEmitter {
 	}
 
 	/**
-	 * Returns the node with the specified id.
+	 * Returns the node with the given specs.
+	 *
+	 *
+	 * @description
+	 * The specification can be
+	 * - a string representing the id of the node
+	 * - a predicate (function) if the underlying adapter supports it. This works for the JSON store, for instance, but not for the Cypher adapter.
+	 * - a Mongo projection (the adapter will convert this to a native query constraint).
+	 *
 	 * @param id {string|function|*} The node id or a Mongo-like projection. If the adapter supports it, a function can be passed.
 	 * @returns {Promise<*|null>}
+	 *
+	 * @example
+	 *
+	 * await q.getNode("bc0d7ac6-9a9a-44de-98d9-af371337482a")
+	 *
+	 * // only if the adapter handles it	 *
+	 * await q.getNode((n)=>{return n.id = "a" && !n.archived})
+	 *
+	 * // always works
+	 * await q.getNode({id: {$eq: 132}})
 	 */
 	async getNode(id) {
 		try {
@@ -407,6 +496,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Checks whether the node with the specified id exists.
+	 *
 	 * @param id {string} Id of the node.
 	 * @returns {Promise<boolean>}
 	 */
@@ -421,8 +511,13 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Return the amount of nodes with the specified predicate, if any given.
-	 * @param predicate? {function} An optional predicate.
+	 *
+	 * @param [predicate=null] {function} An optional predicate.
 	 * @returns {Promise<number>}
+	 *
+	 * @example
+	 *
+	 * await q.nodeCount({x:{$lt:10}})
 	 */
 	async nodeCount(predicate = null) {
 		try {
@@ -435,10 +530,19 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Creates a new node.
-	 * @param id? {string} The unique id of the node.
-	 * @param data? {*} The payload.
-	 * @param labels? {string[]} One or more labels.
+	 *
+	 * @param [id=null] {string|null} The unique id of the node.
+	 * @param [data] {*} The payload.
+	 * @param [labels] {string[]} One or more labels.
 	 * @returns {*}
+	 *
+	 * @example
+	 *
+	 * let n = await q.createNode(); // something like {"id":"f3b0db00-fee8-44f6-a3d3-50a3e0d3fe26"}
+	 * n = await q.createNode("a"); // {id:"a"}
+	 * n = await q.createNode(1042); // {id:"1042"}
+	 * n = await q.createNode({name: "Carl"}); // {id:"a5a278ef-7c59-4680-8e6b-cfe58ba6701a", name: "Carl"}
+	 * n = await q.createNode({name:"Yan"}, "a", "Person"); // {id:"a", name: "Carl", labels:["Person"]}
 	 */
 	async createNode(data = null, id = null, labels = null) {
 		try {
@@ -453,6 +557,8 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Creates a sequence of nodes.
+	 *
+	 * @see {@link createNode}
 	 * @param seq {string[]|*[]} A sequence of node id's or node specs.
 	 * @returns {Promise<*[]>} The created nodes.
 	 */
@@ -467,8 +573,17 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Deletes the specified node.
+	 *
+	 * Note: it's the adapter's responsibility to manage the integrity of the graph. This is automatic if you use
+	 * Neo4j but not if you implement your own adapter. All the Qwiery adapters (JSON, SQL...) do ensure integrity.
+	 *
 	 * @param id {string} The id of the node to delete.
 	 * @returns {Promise<void>}
+	 * @see {@link deleteNodes}
+	 *
+	 * @example
+	 *
+	 * await q.deleteNode("5005b86d-e350-43b1-aa6e-fb910fa19174"); // void
 	 */
 	async deleteNode(id) {
 		try {
@@ -483,8 +598,14 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Flexible deletion of nodes via the given predicate.
+	 *
+	 * @see {@link deleteNode}
 	 * @param predicate {function} A predicate function.
 	 * @returns {Promise<string[]>} Returns the deleted items.
+	 *
+	 * @example
+	 *
+	 * await q.deleteNodes({age:{$gt: 50}});
 	 */
 	async deleteNodes(predicate) {
 		try {
@@ -497,10 +618,24 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Updates a node.
-	 * @param data? {*} The payload.
-	 * @param id? {string} The id of the node to update or create.
-	 * @param labels? {string[]} The labels of the node.
+	 *
+	 * Note:
+	 * - this raises an error if the node does not exist. The {@link upsertNode} does not raise an error and will create the node instead
+	 * - the given data has to specify an id or the second param (id) has to be given in order to update something
+	 * - you cannot change the id via an update.
+	 *
+	 * @param [data=null] {*} The payload.
+	 * @param [id=null] {string|null} The id of the node to update or create.
+	 * @param [labels=null] {string[]} The labels of the node.
 	 * @returns {*}
+	 *
+	 * @example
+	 *
+	 * await q.updateNode({id: "a", name:"Kris"})
+	 * await q.updateNode({name:"Kris"}, "a")
+	 * await q.updateNode({name:"Kris"}, "a", ["A", "B"])
+	 * await q.updateNode({id:"a", name:"Kris", labels:["A", "B"]})
+	 *
 	 */
 	async updateNode(data = null, id = null, labels = null) {
 		try {
@@ -513,9 +648,12 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Upserts a node.
-	 * @param data? {*} The payload.
-	 * @param id? {string} The id of the node to update or create.
-	 * @param labels? {string[]} The labels of the node.
+	 *
+	 * Note: same as {@link updateNode} but does not raise an error if the node does not exist.
+	 *
+	 * @param [data=null] {*} The payload.
+	 * @param [id=null] {string|null} The id of the node to update or create.
+	 * @param [labels=null] {string[]} The labels of the node.
 	 * @returns {*}
 	 */
 	async upsertNode(data = null, id = null, labels = null) {
@@ -529,6 +667,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Fetches all the labels across all nodes.
+	 *
 	 * @return {Promise<string[]>}
 	 */
 	async getNodeLabels() {
@@ -542,6 +681,9 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Fetches all the properties of a given label.
+	 *
+	 * Note: this is inferred from all the nodes with the specified label. The property is returned if at least one node with the given label has this property assigned.
+	 *
 	 * @return {Promise<string[]>}
 	 */
 	async getNodeLabelProperties(labelName) {
@@ -558,9 +700,15 @@ export default class Qwiery extends EventEmitter {
 	//region Edge
 
 	/**
-	 * Checks whether the edge with the given id exists.
-	 * @param id {string} The edge id.
-	 * @returns {Promise<boolean>}
+	 * Checks whether an edge with the specified Id exists in the store.
+	 *
+	 * @param {string} id - The Id of the edge to check.
+	 * @returns {Promise<boolean>} A Promise that resolves to a boolean value indicating whether the edge exists.
+	 * @throws {Error} If an error occurred while checking the existence of the edge.
+	 *
+	 * @example
+	 *
+	 * await q.edgeExists("e1")
 	 */
 	async edgeExists(id) {
 		try {
@@ -573,8 +721,9 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the amount of edges, optionally filtered with the specified predicate.
-	 * @param predicate? {function} An optional predicate.
-	 * @returns {Promise<number>}
+	 *
+	 * @param {function|null} [predicate=null] - An optional predicate.
+	 * @returns {Promise<number>} - A promise that resolves to the number of edges.
 	 */
 	async edgeCount(predicate = null) {
 		try {
@@ -587,10 +736,11 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Creates an edge.
+	 *
 	 * @param sourceId {string} The id of the source node.
-	 * @param targetId? {string} The id of the target node.
-	 * @param data? {*} The payload.
-	 * @param id? {string} The unique id of the edge.
+	 * @param [targetId=null] {string|null} The id of the target node.
+	 * @param [data=null] {*} The payload.
+	 * @param [id=null] {string} The unique id of the edge.
 	 * @param labels {string[]} One or more labels.
 	 * @returns {*}
 	 */
@@ -610,6 +760,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Deletes the edge with the specified id.
+	 *
 	 * @param id {string} The edge id.
 	 * @returns {Promise<void>}
 	 */
@@ -624,9 +775,10 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Updates an edge.
+	 *
 	 * @param data {*} The payload.
-	 * @param id? {string} The edge id.
-	 * @param labels?
+	 * @param [id=null] {string|null} The edge id.
+	 * @param [labels=null] The labels on the edge.
 	 * @returns {*}
 	 */
 	async updateEdge(data, id = null, labels = null) {
@@ -640,9 +792,10 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Upserts an edge.
+	 *
 	 * @param data {*} The payload.
-	 * @param id? {string} The edge id.
-	 * @param labels?
+	 * @param [id=null] {string|null} The edge id.
+	 * @param [labels=null] The labels on the edge.
 	 * @returns {*}
 	 */
 	async upsertEdge(data, id = null, labels = null) {
@@ -656,6 +809,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the edge with the specified id.
+	 *
 	 * @param id {string|function|*} The node id or a Mongo-like projection. If the adapter supports it, a function can be passed.
 	 * @returns {*}
 	 */
@@ -670,6 +824,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the edges between the specified endpoints.
+	 *
 	 * @param sourceId {string} The source id.
 	 * @param targetId {string} The target id.
 	 * @param amount {number} The maximum amount to return.
@@ -686,9 +841,9 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the (first) edge between the specified endpoints.
+	 *
 	 * @param sourceId {string} The source id.
 	 * @param targetId {string} The target id.
-	 * @param amount {number} The maximum amount to return.
 	 * @returns {Promise<*[]>}
 	 */
 	async getEdgeBetween(sourceId, targetId) {
@@ -702,6 +857,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the edge between the given endpoints and the specified label.
+	 *
 	 * @param sourceId {string} The source id.
 	 * @param targetId {string} The target id.
 	 * @param label {string} The label.
@@ -718,6 +874,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the edges with the specific label.
+	 *
 	 * @param label {string} A label.
 	 * @param amount {number} The maximum amount to return.
 	 * @returns {Promise<*[]>}
@@ -733,8 +890,9 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Returns the edges satisfying the given predicate.
+	 *
 	 * @param predicate {function|*} A Mongo-like projection. If the adapter supports it, a function can be passed.
-	 * @param amount? {number} The maximum amount to return.
+	 * @param [amount=1000] {number} The maximum amount to return.
 	 * @returns {Promise<*[]>}
 	 */
 	async getEdges(predicate, amount = 1000) {
@@ -748,9 +906,10 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * This is a utility method to fetch the edges to the children of the specified node.
-	 * This method should typically not be overriden by adapter implementations.
-	 * @param sourceId
-	 * @param amount
+	 * This method should typically not be overridden by adapter implementations.
+	 *
+	 * @param sourceId {string} The source id.
+	 * @param [amount=1000] {number} The maximum amount to return.
 	 * @returns {Promise<*>}
 	 */
 	async getDownstreamEdges(sourceId, amount = 1000) {
@@ -763,6 +922,7 @@ export default class Qwiery extends EventEmitter {
 
 	/**
 	 * Fetches all the labels across all edges.
+	 *
 	 * @return {Promise<*>}
 	 */
 	async getEdgeLabels() {

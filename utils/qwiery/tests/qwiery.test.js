@@ -141,4 +141,9 @@ describe("Qwiery", function () {
 		found = await q.getEdgesBetween("a", "b", 1000);
 		expect(found).toHaveLength(100);
 	});
+	it("should ", async () => {
+		const q = new Qwiery();
+		let n = await q.createNode({});
+		console.log(JSON.stringify(n));
+	});
 });

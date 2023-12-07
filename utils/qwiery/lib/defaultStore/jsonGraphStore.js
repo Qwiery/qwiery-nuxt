@@ -617,32 +617,31 @@ export default class JsonGraphStore extends Store {
 	/** @inheritdoc */
 	async createNode(data = null, id = null, labels = null) {
 		const specs = Utils.getNodeSpecs(data, id, labels);
-		if (specs === null) {
-			throw new Error(Errors.insufficientNodeSpecs());
-		}
 		const node = {
 			id: Utils.id(),
 		};
+		if (specs !== null) {
+			if (specs.data && specs.data.id) {
+				node.id = specs.data.id;
+			}
+			// id has priority over the possible id in the payload
+			if (specs.id) {
+				node.id = specs.id;
+			}
+			// the only guaranteed value is the id while no labels means no attribute
+			if (specs.labels && specs.labels.length > 0) {
+				node.labels = specs.labels;
+			}
+			if (await this.nodeExists(node.id)) {
+				throw new Error(Errors.nodeExistsAlready(node.id));
+			}
 
-		if (specs.data && specs.data.id) {
-			node.id = specs.data.id;
-		}
-		// id has priority over the possible id in the payload
-		if (specs.id) {
-			node.id = specs.id;
-		}
-		// the only guaranteed value is the id while no labels means no attribute
-		if (specs.labels && specs.labels.length > 0) {
-			node.labels = specs.labels;
-		}
-		if (await this.nodeExists(node.id)) {
-			throw new Error(Errors.nodeExistsAlready(node.id));
+			// copy additional attribs
+			if (_.isPlainObject(data)) {
+				_.assign(node, Utils.getReducedPlainObject(data, ["id", "labels"]));
+			}
 		}
 
-		// copy additional attribs
-		if (_.isPlainObject(data)) {
-			_.assign(node, Utils.getReducedPlainObject(data, ["id", "labels"]));
-		}
 		this.#nodes.push(node);
 		return node;
 	}

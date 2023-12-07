@@ -1,7 +1,7 @@
 import _ from "lodash";
 import neo4j from "neo4j-driver";
 import { Utils } from "../../utils/lib/utils.js";
-import toCypher from "../lib/projections";
+import toCypher from "../lib/projections.js";
 import parseProjection from "../../utils/lib/mongo/mongoParse.js";
 import Graph from "../../graphs/lib/graph.js";
 
@@ -110,7 +110,7 @@ export const pathQueryToCypher = (pathQuery, amount = 100) => {
 /*
  * Adapter implementation.
  * */
-async function CypherAdapter(options, done) {
+export default async function CypherAdapter(options, done) {
 	const qwiery = this;
 	let driver = null;
 	let error = null;
@@ -1387,7 +1387,7 @@ async function CypherAdapter(options, done) {
 				const pi = singleRecord.get(0);
 				error = pi === 3.14 ? null : "Failed to connect to Neo4j.";
 				await session.close();
-				// make sure this hook is setup only once
+				// make sure this hook is set up only once
 				process.on("SIGTERM", () => {
 					if (driver) {
 						driver.close();
@@ -1404,5 +1404,3 @@ async function CypherAdapter(options, done) {
 		done(null, api);
 	});
 }
-
-module.exports = CypherAdapter;

@@ -35,3 +35,16 @@ setTimeout(() => {
 }, 500);
 
 export { q as GraphDB };
+
+// ============================================================;
+// Cypher graph adapter
+// ============================================================;
+// console.log("Qwiery backend with Cypher adapter enabled.");
+// import Cypher from "~/utils/qwiery-cypher/lib/index";
+//
+// Qwiery.plugin(Cypher);
+// const q = new Qwiery({
+// 	adapters: ["cypher"],
+// });
+
+// export { q as GraphDB };

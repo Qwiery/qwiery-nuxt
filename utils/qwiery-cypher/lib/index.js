@@ -1,5 +1,5 @@
-import CypherAdapter from "./cypherAdapter";
+import CypherAdapter from "./cypherAdapter.js";
 
-module.exports = (Q) => {
+export default (Q) => {
 	Q.adapter("cypher", CypherAdapter);
 };
