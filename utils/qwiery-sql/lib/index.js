@@ -1,5 +1,5 @@
-import SqliteAdapter from "./sqliteAdapter.js";
+import SqlAdapter from "./sqlAdapter.js";
 
 export default (Q) => {
-	Q.adapter("sql", SqliteAdapter);
+	Q.adapter("sql", SqlAdapter);
 };

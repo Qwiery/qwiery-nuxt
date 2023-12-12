@@ -1,5 +1,5 @@
 import { describe, test, it, expect, vi, afterAll } from "vitest";
-import setupSqliteSchema from "../lib/sqliteSchema";
+import setupSqliteSchema from "../lib/sqlSchema.js";
 import Qwiery from "../../qwiery/lib/qwiery.js";
 import SqlAdapter from "../lib/";
 import { Utils } from "../../utils/lib/utils.js";

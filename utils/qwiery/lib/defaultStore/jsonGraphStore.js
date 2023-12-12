@@ -101,7 +101,7 @@ export default class JsonGraphStore extends Store {
 			case "food":
 			case "foods":
 			case "foodgraph":
-				json = await Datasets.foodGraph();
+				json = await Datasets.getDataset("food");
 				break;
 		}
 		if (json) {

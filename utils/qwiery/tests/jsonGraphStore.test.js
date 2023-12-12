@@ -430,7 +430,7 @@ describe("JsonGraphStore", function () {
 		"should load a JSON file",
 		async () => {
 			// will go only the first time to Google Drive, thereafter sits in the /datasets directory in the solution
-			const json = await Datasets.foodGraph();
+			const json = await Datasets.getDataset("food");
 			expect(json.nodes.length).toEqual(33411);
 			expect(json.edges.length).toEqual(287056);
 			const g = JsonGraphStore.fromJSON(json);

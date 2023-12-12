@@ -2,7 +2,7 @@ import { Utils } from "../../utils/lib/utils.js";
 
 import _ from "lodash";
 import AdapterUtils from "./utils.js";
-import setupSqliteSchema from "./sqliteSchema.js";
+import setupSqliteSchema from "./sqlSchema.js";
 import toSequelize from "./sequelize.js";
 import { Error, Op } from "sequelize";
 import Graph from "../../graphs/lib/graph.js";
@@ -12,7 +12,7 @@ const DefaultOptions = {
 	defaultEdgeLabel: "RelatedTo",
 };
 const AdapterId = "sql";
-export default async function SqliteAdapter(options, done) {
+export default async function SqlAdapter(options, done) {
 	const qwiery = this;
 	let driver = null;
 	let error = null;
@@ -1258,6 +1258,21 @@ export default async function SqliteAdapter(options, done) {
 				} catch (e) {
 					done(e.message, [], null);
 				}
+			};
+		},
+		loadGraph(done) {
+			return async ([name]) => {
+				// todo: how to transfer the data from one database to another via Sequelize?
+				throw new Error("Food for thought.");
+				// if (!isInitialized) {
+				// 	await setup(options[AdapterId]);
+				// }
+				//
+				// try {
+				// 	done(null, [], null);
+				// } catch (e) {
+				// 	done(e.message, [], null);
+				// }
 			};
 		},
 		//endregion
