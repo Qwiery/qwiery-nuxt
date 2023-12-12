@@ -163,8 +163,8 @@ Content-Type: application/json
 
 > {%
     import Utils from "./httpUtils.js"
-    client.test("The node should be update", () => {
+    client.test("The node should be updated", () => {
         client.assert(response.status === 200, "Response status is not 200");
-        client.assert(response.body.data.name === "changed");
+        client.assert(response.body.name === "changed");
     });
 %}

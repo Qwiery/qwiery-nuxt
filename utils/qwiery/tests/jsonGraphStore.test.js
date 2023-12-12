@@ -14,16 +14,20 @@ describe("JsonGraphStore", function () {
 	it("should crud nodes", async function () {
 		const jg = new JsonGraphStore();
 
-		await expect(jg.createNode({})).rejects.toThrow(Error);
+		// you can create an empty node, the id will be generated
+		let n = await jg.createNode();
+		expect(n.id || null).not.toBeNull();
+		n = await jg.createNode({});
+		expect(n.id || null).not.toBeNull();
 		expect(await jg.createNode({ id: "a" })).toEqual({ id: "a" });
 		// node is already present
 		await expect(jg.createNode({ id: "a" })).rejects.toThrow(Error);
 		expect(await jg.createNode({ id: "b" }, null, "s")).toEqual({ id: "b", labels: ["s"] });
-		expect(await jg.nodeCount()).toEqual(2);
+		expect(await jg.nodeCount()).toEqual(4);
 		await jg.deleteNode("b");
-		expect(await jg.nodeCount()).toEqual(1);
+		expect(await jg.nodeCount()).toEqual(3);
 		await jg.deleteNode("5");
-		expect(await jg.nodeCount()).toEqual(1);
+		expect(await jg.nodeCount()).toEqual(3);
 		let found = (await jg.getNode("a")) || null;
 		expect(found).not.toBeNull();
 		await jg.updateNode({ id: "a", x: 22 });

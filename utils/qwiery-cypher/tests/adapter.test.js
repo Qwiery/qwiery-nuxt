@@ -5,6 +5,7 @@ import { Utils } from "../../utils/lib/utils.js";
 import _ from "lodash";
 import path from "path";
 import { pathQueryToCypher } from "../lib/cypherAdapter.js";
+const AdapterId = "cypher";
 function createRandomLabel() {
 	return `Label${Utils.randomId(5)}`;
 }
@@ -35,7 +36,7 @@ describe("Adapter", function () {
 		// generic way to configure plugins
 		Qwiery.plugin(Cypher);
 		q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 
 		await q.createNode("n1");
@@ -45,7 +46,7 @@ describe("Adapter", function () {
 	it("should get all node labels", async () => {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		let labelsBefore = await q.getNodeLabels();
 		const threeLabels = [createRandomLabel(), createRandomLabel(), createRandomLabel()];
@@ -58,7 +59,7 @@ describe("Adapter", function () {
 	it("should get all edge labels", async () => {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 
 		const a = await q.createNode({ id: Utils.randomId() });
@@ -76,7 +77,7 @@ describe("Adapter", function () {
 		Qwiery.plugin(Cypher);
 		// uses default connection info to Neo4j
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		let node = await q.createNode({ name: "ump", u: 45, m: 7, p: -2 });
 		expect(await q.nodeExists(node.id)).toBeTruthy();
@@ -89,7 +90,7 @@ describe("Adapter", function () {
 	it("should throw if node id exists", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 			cypher: {
 				recreateTables: true,
 			},
@@ -101,7 +102,7 @@ describe("Adapter", function () {
 	it("should throw if edge id exists", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 			cypher: {
 				recreateTables: true,
 			},
@@ -116,7 +117,7 @@ describe("Adapter", function () {
 	it("should crud edges", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		let a = await q.createNode(Utils.id());
 		let b = await q.createNode(Utils.id());
@@ -167,7 +168,7 @@ describe("Adapter", function () {
 	it("should update a node", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		let a = await q.createNode({
 			name: "a",
@@ -186,7 +187,7 @@ describe("Adapter", function () {
 	it("should delete an edge", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		let a = await q.createNode(Utils.id());
 		let b = await q.createNode(Utils.id());
@@ -201,7 +202,7 @@ describe("Adapter", function () {
 	it("should get nodes with a specific label", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		const A = "A" + Utils.randomInteger(1, 100000);
 		const B = "B" + Utils.randomInteger(1, 100000);
@@ -225,7 +226,7 @@ describe("Adapter", function () {
 	it("should upsert elements", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		let a = await q.createNode(Utils.id());
 		let b = await q.createNode(Utils.id());
@@ -275,7 +276,7 @@ describe("Adapter", function () {
 	it("should use Mongo projections", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		const prefix = Utils.randomLetters(3);
 		const a = await q.createNode({ id: Utils.id(), x: 9, y: 45 });
@@ -318,7 +319,7 @@ describe("Adapter", function () {
 	it("should count nodes", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		const prefix = Utils.randomLetters(3);
 		await q.createNodes(_.range(10).map((i) => ({ name: `${prefix}${i}` })));
@@ -329,7 +330,7 @@ describe("Adapter", function () {
 	it("should count edges", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		const prefix = Utils.randomLetters(3);
 		let a = await q.createNode(Utils.id());
@@ -355,7 +356,7 @@ describe("Adapter", function () {
 	it("should delete nodes", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		await q.deleteNodes({ n: { $gt: 1 } });
 
@@ -374,7 +375,7 @@ describe("Adapter", function () {
 	it("should clear the graph", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		await q.deleteNodes({ n: { $gt: 1 } });
 		const prefix = Utils.id();
@@ -395,7 +396,7 @@ describe("Adapter", function () {
 	it("should give you Cypher power", async function () {
 		Qwiery.plugin(Cypher);
 		const q = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 			cypher: {
 				recreateTables: true,
 			},
@@ -451,7 +452,7 @@ describe("Adapter", function () {
 		async () => {
 			Qwiery.plugin(Cypher);
 			const q = new Qwiery({
-				adapters: ["cypher"],
+				adapters: [AdapterId],
 			});
 
 			const nodeLabels = [`AA${Utils.randomId(5)}`, `BB${Utils.randomId(5)}`, `CC${Utils.randomId(5)}`];
@@ -505,7 +506,7 @@ describe("Adapter", function () {
 	it("should path-query", async () => {
 		Qwiery.plugin(Cypher);
 		const g = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		const A = `A${Utils.randomId(5)}`;
 		const B = `B${Utils.randomId(5)}`;
@@ -571,7 +572,7 @@ describe("Adapter", function () {
 		async () => {
 			Qwiery.plugin(Cypher);
 			const g = new Qwiery({
-				adapters: ["cypher"],
+				adapters: [AdapterId],
 			});
 			const prefix = Utils.randomId(3);
 			const beforeCount = await g.nodeCount();
@@ -593,7 +594,7 @@ describe("Adapter", function () {
 		async () => {
 			Qwiery.plugin(Cypher);
 			const g = new Qwiery({
-				adapters: ["cypher"],
+				adapters: [AdapterId],
 			});
 			const prefix = Utils.randomId(7);
 			const cLabel = `C${Utils.randomId(5)}`;
@@ -640,7 +641,7 @@ describe("Adapter", function () {
 		async () => {
 			Qwiery.plugin(Cypher);
 			const g = new Qwiery({
-				adapters: ["cypher"],
+				adapters: [AdapterId],
 			});
 			const prefix = Utils.randomId(4);
 			const root = await g.createNode(`${prefix}Root`);
@@ -662,7 +663,7 @@ describe("Adapter", function () {
 	it("should get node label properties", async () => {
 		Qwiery.plugin(Cypher);
 		const g = new Qwiery({
-			adapters: ["cypher"],
+			adapters: [AdapterId],
 		});
 		const labels = ["LAB" + Utils.randomId(5)];
 		await g.createNode({

@@ -91,6 +91,7 @@ Content-Type: application/json
 # @name Update edge
 < {%
     import Utils from "./httpUtils.js"
+
     client.global.set("name", Utils.rnd())
 %}
 PATCH {{baseUrl}}/api/graph/edge
@@ -131,25 +132,21 @@ DELETE {{baseUrl}}/api/graph/edge
 Content-Type: application/json
 
 {
-  "id": "edge1"
+    "id": "edge1"
 }
 
 
 
 ###
 # @name Gone
-GET {{baseUrl}}/api/graph/edge
+GET {{baseUrl}}/api/graph/edge?id=edge1
 Content-Type: application/json
-
-{
-  "id": "edge1"
-}
 
 > {%
     import Utils from "./httpUtils.js"
 
     client.test("The edge should be gone", () => {
-        client.assert(response.status === 200, "Response status is not 200");
-        client.assert(response.body.length === 0);
+        client.assert(response.status === 204, "Response should be no content");
+        client.assert(response.body===null);
     });
 %}
