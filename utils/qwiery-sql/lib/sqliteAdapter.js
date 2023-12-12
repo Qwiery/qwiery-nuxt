@@ -11,7 +11,7 @@ const DefaultOptions = {
 	defaultNodeLabel: "Thing",
 	defaultEdgeLabel: "RelatedTo",
 };
-const AdapterId = "sqlite";
+const AdapterId = "sql";
 export default async function SqliteAdapter(options, done) {
 	const qwiery = this;
 	let driver = null;
@@ -373,7 +373,6 @@ export default async function SqliteAdapter(options, done) {
 		searchNodes(done) {
 			return async ([term, fields, amount]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				if (!amount) {
@@ -417,7 +416,6 @@ export default async function SqliteAdapter(options, done) {
 		searchNodesWithLabel(done) {
 			return async ([term, fields, label, amount]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				if (!amount) {
@@ -455,7 +453,6 @@ export default async function SqliteAdapter(options, done) {
 		createNode(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 
@@ -494,7 +491,6 @@ export default async function SqliteAdapter(options, done) {
 		nodeExists(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -530,7 +526,6 @@ export default async function SqliteAdapter(options, done) {
 		updateNode(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -566,7 +561,6 @@ export default async function SqliteAdapter(options, done) {
 		upsertNode(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getNodeSpecs(data, id, labels);
@@ -589,7 +583,6 @@ export default async function SqliteAdapter(options, done) {
 		getNode(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 
@@ -625,7 +618,6 @@ export default async function SqliteAdapter(options, done) {
 		getNodes(done) {
 			return async ([projection, amount]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				if (_.isNil(projection)) {
@@ -683,7 +675,6 @@ export default async function SqliteAdapter(options, done) {
 		deleteNodes(done) {
 			return async ([projection]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				let sequelizeProjection = {};
@@ -716,7 +707,6 @@ export default async function SqliteAdapter(options, done) {
 		deleteNode(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				let sequelizeProjection = {};
@@ -749,7 +739,6 @@ export default async function SqliteAdapter(options, done) {
 		nodeCount(done) {
 			return async ([projection]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				let sequelizeProjection = {};
@@ -808,7 +797,6 @@ export default async function SqliteAdapter(options, done) {
 		deleteEdge(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				let sequelizeProjection = {};
@@ -892,7 +880,6 @@ export default async function SqliteAdapter(options, done) {
 		createEdge(done) {
 			return async ([sourceId, targetId, data = null, id = null, labels = null]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getEdgeSpecs(sourceId, targetId, data, id, labels);
@@ -927,7 +914,6 @@ export default async function SqliteAdapter(options, done) {
 		upsertEdge(done) {
 			return async ([data = null, id = null, labels = null]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -949,7 +935,6 @@ export default async function SqliteAdapter(options, done) {
 		updateEdge(done) {
 			return async ([data, id, labels]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				const specs = Utils.getEdgeSpecs(data, null, id, labels);
@@ -1047,7 +1032,6 @@ export default async function SqliteAdapter(options, done) {
 		getEdges(done) {
 			return async ([projection, amount]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				let sequelizeProjection = {};
@@ -1084,7 +1068,6 @@ export default async function SqliteAdapter(options, done) {
 		edgeExists(done) {
 			return async ([id]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -1166,7 +1149,6 @@ export default async function SqliteAdapter(options, done) {
 		getNeighborhood(done) {
 			return async ([id, amount]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -1202,7 +1184,6 @@ export default async function SqliteAdapter(options, done) {
 		clear(done) {
 			return async () => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -1225,7 +1206,6 @@ export default async function SqliteAdapter(options, done) {
 		inferSchemaGraph(done) {
 			return async ([cached]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 				try {
@@ -1269,7 +1249,6 @@ export default async function SqliteAdapter(options, done) {
 		pathQuery(done) {
 			return async ([path, amount]) => {
 				if (!isInitialized) {
-					// 'sqlite' is the id of the adapter which should be used to pass options
 					await setup(options[AdapterId]);
 				}
 

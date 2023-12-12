@@ -1,7 +1,7 @@
 import { describe, test, it, expect, vi, afterAll } from "vitest";
 import setupSqliteSchema from "../lib/sqliteSchema";
 import Qwiery from "../../qwiery/lib/qwiery.js";
-import Sqlite from "../lib/";
+import SqlAdapter from "../lib/";
 import { Utils } from "../../utils/lib/utils.js";
 import AdapterUtils from "../lib/utils.js";
 import _ from "lodash";
@@ -11,7 +11,7 @@ import fs from "fs";
 
 describe("Adapter", function () {
 	afterAll(() => {
-		// even though Sqlite is in-memory a file called "memory" is created in the root
+		// even though SqlAdapter is in-memory a file called "memory" is created in the root
 		const what = path.join(process.cwd(), "memory");
 		if (fs.existsSync(what)) {
 			Utils.deleteFileOrDirectory(what);
@@ -39,10 +39,10 @@ describe("Adapter", function () {
 		const filePath = path.join(__dirname, `${Utils.randomId()}.sqlite`);
 
 		// generic way to configure plugins
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				dialect: "sqlite",
 				storage: filePath,
 				recreateTables: true,
@@ -57,10 +57,10 @@ describe("Adapter", function () {
 	});
 
 	it("should get all node labels", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -72,10 +72,10 @@ describe("Adapter", function () {
 	});
 
 	it("should get all edge labels", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -122,7 +122,7 @@ describe("Adapter", function () {
 		expect(await Node.count()).toEqual(1);
 	});
 
-	it("should use on-disk Sqlite", async () => {
+	it("should use on-disk SqlAdapter", async () => {
 		const filePath = path.join(__dirname, `${Utils.randomId()}.sqlite`);
 		const { db, Node, Edge } = await setupSqliteSchema({
 			dialect: "sqlite",
@@ -182,11 +182,11 @@ describe("Adapter", function () {
 	});
 
 	it("should set a default node label", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		// uses default connection info to Neo4j
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -199,10 +199,10 @@ describe("Adapter", function () {
 	});
 
 	it("should throw if node id exists", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -211,10 +211,10 @@ describe("Adapter", function () {
 	});
 
 	it("should throw if edge id exists", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -226,10 +226,10 @@ describe("Adapter", function () {
 	});
 
 	it("should crud edges", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -280,10 +280,10 @@ describe("Adapter", function () {
 	});
 
 	it("should update a node", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -302,10 +302,10 @@ describe("Adapter", function () {
 	});
 
 	it("should delete an edge", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -320,9 +320,9 @@ describe("Adapter", function () {
 	});
 
 	it("should get nodes with a specific label", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
+			adapters: ["sql"],
 		});
 		const A = "A" + Utils.randomInteger(1, 100000);
 		const B = "B" + Utils.randomInteger(1, 100000);
@@ -345,10 +345,10 @@ describe("Adapter", function () {
 	});
 
 	it("should upsert elements", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -398,10 +398,10 @@ describe("Adapter", function () {
 	});
 
 	it("should use Mongo projections", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -445,10 +445,10 @@ describe("Adapter", function () {
 	});
 
 	it("should count nodes", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -460,9 +460,9 @@ describe("Adapter", function () {
 	});
 
 	it("should count edges", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
+			adapters: ["sql"],
 		});
 		const prefix = Utils.randomLetters(3);
 		let a = await q.createNode(Utils.id());
@@ -486,10 +486,10 @@ describe("Adapter", function () {
 	});
 
 	it("should delete nodes", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -508,10 +508,10 @@ describe("Adapter", function () {
 	});
 
 	it("should clear the graph", async function () {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -529,11 +529,11 @@ describe("Adapter", function () {
 		expect(edgeCount).toEqual(0);
 	});
 
-	it("should give you Sqlite power", async function () {
-		Qwiery.plugin(Sqlite);
+	it("should give you SqlAdapter power", async function () {
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -584,10 +584,10 @@ describe("Adapter", function () {
 	});
 
 	it("should infer the schema", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const q = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -616,10 +616,10 @@ describe("Adapter", function () {
 	});
 
 	it("should path-query", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const g = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -660,10 +660,10 @@ describe("Adapter", function () {
 	}, 30000);
 
 	it("should get nodes and respect the amount", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const g = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -681,10 +681,10 @@ describe("Adapter", function () {
 	});
 
 	it("should search for nodes", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const g = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -725,10 +725,10 @@ describe("Adapter", function () {
 	});
 
 	it("should get the neighborhood graph", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const g = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});
@@ -747,10 +747,10 @@ describe("Adapter", function () {
 	});
 
 	it("should get node label properties", async () => {
-		Qwiery.plugin(Sqlite);
+		Qwiery.plugin(SqlAdapter);
 		const g = new Qwiery({
-			adapters: ["sqlite"],
-			sqlite: {
+			adapters: ["sql"],
+			sql: {
 				recreateTables: true,
 			},
 		});

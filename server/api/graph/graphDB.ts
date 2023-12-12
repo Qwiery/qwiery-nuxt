@@ -5,13 +5,13 @@ import Qwiery from "~/utils/qwiery/lib/qwiery";
 // Sqlite graph adapter
 // ============================================================;
 // console.log("Qwiery backend with SQLite adapter enabled.");
-// import Sqlite from "~/utils/qwiery-sqlite/lib/index.js";
+// import Sqlite from "~/utils/qwiery-sql/lib/index.js";
 // Qwiery.plugin(Sqlite);
 // let filePath = path.join(process.cwd(), "data.sqlite");
 // console.log("Data path >>", filePath);
 // const q = new Qwiery({
-// 	adapters: ["sqlite"],
-// 	sqlite: {
+// 	adapters: ["sql"],
+// 	sql: {
 // 		dialect: "sqlite",
 // 		storage: filePath,
 // 	},
