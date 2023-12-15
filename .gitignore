@@ -25,3 +25,4 @@ logs
 .vscode
 !/Icon
 datasets
+/linkurious-ogma*.tgz.*
