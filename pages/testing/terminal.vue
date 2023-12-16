@@ -2,6 +2,7 @@
 	<Terminal class="m-3" :executor="executor" />
 </template>
 <script setup lang="ts">
+	// https://pyodide.org/en/stable/usage/quickstart.html
 	import { Utils } from "../../utils/utils/lib/utils";
 
 	let stdOut = "";

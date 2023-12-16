@@ -1,16 +1,22 @@
 import { EventEmitter } from "eventemitter3";
 import _ from "lodash";
+import { Utils } from "../../utils/utils/lib/utils";
 
 export default class TerminalController extends EventEmitter {
 	public static preamble = "qwiery>";
-	public executor: null | ((input: string) => Promise<string[]>) = null;
-	private outputStack: string[][] = [];
+	/**
+	 * The executor is a function that takes a command and returns something which gets transformed into a printable bunch.
+	 * @type {((input: string) => Promise<any>) | null}
+	 */
+	public executor: null | ((input: string) => Promise<string | string[] | null | Error | any>) = null;
+
 	private inputStack: string[][] = [];
 	private historyIndex: number = -1;
 	private events = {
 		output: "output",
 		input: "input",
 		response: "response",
+		clear: "clear",
 	};
 
 	constructor() {
@@ -44,15 +50,14 @@ export default class TerminalController extends EventEmitter {
 		const result = this.executor ? await this.executor(command) : null;
 		this.addInput(command);
 		if (result) {
-			this.addOutput(result);
+			this.sendOutput(result);
 		}
 
 		return;
 	}
 
 	private clear() {
-		this.outputStack = [];
-		this.raiseEvent("output", this.outputStack);
+		this.raiseEvent("clear", null);
 	}
 
 	private addHistory(input: string | string[]) {
@@ -65,21 +70,48 @@ export default class TerminalController extends EventEmitter {
 		this.historyIndex = this.inputStack.length;
 	}
 
-	private addOutput(output: string | string[]) {
-		if (_.isArray(output)) {
-			this.outputStack.push(<string[]>output);
-		} else {
-			this.outputStack.push([<string>output]);
+	private sendOutput(output: string | string[] | null | Error | any) {
+		if (output === null) {
+			return;
 		}
-		this.raiseEvent("output", this.outputStack);
+		if (_.isArray(output) || _.isString(output)) {
+			this.raiseEvent("output", {
+				type: "output",
+				data: output,
+			});
+		} else if (output instanceof Error) {
+			this.sendError(output);
+		} else {
+			this.raiseEvent("output", output);
+		}
+	}
+
+	private sendError(error: string | Error) {
+		if (error instanceof Error && !Utils.isEmpty(error.message)) {
+			this.raiseEvent("output", {
+				type: "error",
+				data: error.message,
+			});
+		} else {
+			this.raiseEvent("output", {
+				type: "error",
+				data: error,
+			});
+		}
+	}
+
+	private sendInput(input: string | string[]) {
+		this.raiseEvent("output", {
+			type: "input",
+			data: input,
+		});
 	}
 
 	private addInput(input: string) {
-		this.outputStack.push([`<span class="text-blue-400">${TerminalController.preamble}</span> ${input}`]);
+		this.sendInput(input);
 		if (!Utils.isEmpty(input)) {
 			this.addHistory(input);
 		}
-		this.raiseEvent("output", this.outputStack);
 	}
 
 	historyUp() {

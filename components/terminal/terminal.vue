@@ -34,8 +34,19 @@
 		if (props.executor) {
 			controller.executor = props.executor;
 		}
-		controller.on("output", (data: string[]) => {
-			output.value = data.join("<br/>");
+		controller.on("output", (obj: any) => {
+			switch (obj.type) {
+				case "input":
+					input.value += formatInput(obj.data);
+					break;
+				case "output":
+					output.value = formatOutput(obj.data);
+					break;
+				case "error":
+					output.value = formatError(obj.data);
+					break;
+			}
+
 			bottom.value?.scrollIntoView({
 				behavior: "instant",
 				block: "end",
@@ -49,14 +60,33 @@
 		return controller;
 	}
 
-	let controller: TerminalController = null;
+	function formatOutput(output: string | string[]) {
+		if (Array.isArray(output)) {
+			return formatOutput((<string[]>output).join("<br/>"));
+		}
+		return output;
+	}
+
+	function formatInput(input: string | string[]) {
+		if (Array.isArray(input)) {
+			return formatInput((<string[]>input).join("<br/>"));
+		}
+		return `<span class="text-blue-400">${TerminalController.preamble}</span> ${input}`;
+	}
+
+	function formatError(error: string | Error) {
+		if (error instanceof Error) {
+			return `<span class="text-red-400">${error.message}</span>`;
+		}
+		return `<span class="text-red-400">${error}</span>`;
+	}
+
+	let controller: TerminalController | null = null;
 
 	onMounted(() => {
 		setFocusOnInput();
 		controller = createController();
 	});
-
-	function setHandler() {}
 
 	function setFocusOnInput() {
 		cmdInput.value?.focus();
@@ -64,22 +94,22 @@
 
 	function historyUp(event: KeyboardEvent) {
 		event.preventDefault();
-		controller.historyUp();
+		controller?.historyUp();
 	}
 
 	function historyDown(event: KeyboardEvent) {
 		event.preventDefault();
-		controller.historyDown();
+		controller?.historyDown();
 	}
 
 	function tab(event: KeyboardEvent) {
 		event.preventDefault();
-		controller.tab();
+		controller?.tab();
 	}
 
 	function execute(event: KeyboardEvent) {
 		event.preventDefault();
-		controller.execute(input.value);
+		controller?.execute(input.value);
 		input.value = "";
 	}
 </script>
