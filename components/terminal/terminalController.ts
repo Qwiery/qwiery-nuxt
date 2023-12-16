@@ -1,9 +1,10 @@
 import { EventEmitter } from "eventemitter3";
 import _ from "lodash";
+
 export default class TerminalController extends EventEmitter {
 	public static preamble = "qwiery>";
-
-	private outputStack: string[] = [];
+	public executor: null | ((input: string) => Promise<string[]>) = null;
+	private outputStack: string[][] = [];
 	private inputStack: string[][] = [];
 	private historyIndex: number = -1;
 	private events = {
@@ -11,9 +12,11 @@ export default class TerminalController extends EventEmitter {
 		input: "input",
 		response: "response",
 	};
+
 	constructor() {
 		super();
 	}
+
 	private raiseEvent(eventName: string, data: any): void {
 		if (this.events[eventName]) {
 			this.emit(this.events[eventName], data);
@@ -38,15 +41,20 @@ export default class TerminalController extends EventEmitter {
 			case "clear":
 				return this.clear();
 		}
-		const result = `You typed: ${command}`;
+		const result = this.executor ? await this.executor(command) : null;
 		this.addInput(command);
-		this.addOutput(result);
+		if (result) {
+			this.addOutput(result);
+		}
+
 		return;
 	}
+
 	private clear() {
 		this.outputStack = [];
 		this.raiseEvent("output", this.outputStack);
 	}
+
 	private addHistory(input: string | string[]) {
 		if (_.isArray(input)) {
 			this.inputStack.push(<string[]>input);
@@ -56,17 +64,24 @@ export default class TerminalController extends EventEmitter {
 
 		this.historyIndex = this.inputStack.length;
 	}
-	private addOutput(output: string) {
-		this.outputStack.push(output);
+
+	private addOutput(output: string | string[]) {
+		if (_.isArray(output)) {
+			this.outputStack.push(<string[]>output);
+		} else {
+			this.outputStack.push([<string>output]);
+		}
 		this.raiseEvent("output", this.outputStack);
 	}
+
 	private addInput(input: string) {
-		this.outputStack.push(`<span class="text-blue-400">${TerminalController.preamble}</span> ${input}`);
+		this.outputStack.push([`<span class="text-blue-400">${TerminalController.preamble}</span> ${input}`]);
 		if (!Utils.isEmpty(input)) {
 			this.addHistory(input);
 		}
 		this.raiseEvent("output", this.outputStack);
 	}
+
 	historyUp() {
 		if (this.historyIndex - 1 < 0) {
 			return;
@@ -74,6 +89,7 @@ export default class TerminalController extends EventEmitter {
 		this.historyIndex--;
 		this.raiseEvent("input", this.inputStack[this.historyIndex]);
 	}
+
 	historyDown() {
 		if (this.historyIndex + 1 > this.inputStack.length - 1) {
 			this.historyIndex = this.inputStack.length;
@@ -82,5 +98,6 @@ export default class TerminalController extends EventEmitter {
 		this.historyIndex++;
 		this.raiseEvent("input", this.inputStack[this.historyIndex]);
 	}
+
 	tab() {}
 }

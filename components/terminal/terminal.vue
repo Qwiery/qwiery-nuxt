@@ -1,8 +1,8 @@
 <template>
 	<div @click="setFocusOnInput()">
-		<div ref="terminal" class="bg-black text-white font-mono p-2 h-[450px]">
+		<div ref="terminal" class="bg-black text-white font-mono p-2 h-[450px] rounded">
 			<div v-if="showBanner">
-				<div class="my-2 bg-blue-600 text-white px-2 py-1">Qwiery v{{ info }} Terminal</div>
+				<div class="my-2 bg-blue-600 text-white px-2 py-1 rounded">Qwiery v{{ info }} Terminal</div>
 			</div>
 			<div class="h-[370px] pb-4 overflow-scroll">
 				<div v-html="output"></div>
@@ -16,6 +16,9 @@
 	</div>
 </template>
 <script setup lang="ts">
+	const props = defineProps<{
+		executor?: (input: string) => Promise<string[]>;
+	}>();
 	import Qwiery from "../../utils/qwiery/lib/qwiery";
 	import TerminalController from "./terminalController";
 
@@ -28,6 +31,9 @@
 
 	function createController() {
 		const controller = new TerminalController();
+		if (props.executor) {
+			controller.executor = props.executor;
+		}
 		controller.on("output", (data: string[]) => {
 			output.value = data.join("<br/>");
 			bottom.value?.scrollIntoView({
@@ -43,21 +49,34 @@
 		return controller;
 	}
 
-	const controller = createController();
+	let controller: TerminalController = null;
+
 	onMounted(() => {
 		setFocusOnInput();
+		controller = createController();
 	});
+
+	function setHandler() {}
+
 	function setFocusOnInput() {
 		cmdInput.value?.focus();
 	}
+
 	function historyUp(event: KeyboardEvent) {
 		event.preventDefault();
 		controller.historyUp();
 	}
+
 	function historyDown(event: KeyboardEvent) {
 		event.preventDefault();
 		controller.historyDown();
 	}
+
+	function tab(event: KeyboardEvent) {
+		event.preventDefault();
+		controller.tab();
+	}
+
 	function execute(event: KeyboardEvent) {
 		event.preventDefault();
 		controller.execute(input.value);
