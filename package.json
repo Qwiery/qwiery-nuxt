@@ -2,7 +2,7 @@
     "name": "qwiery-nuxt",
     "private": true,
     "type": "module",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Qwiery is an open source toolbox to create graph-driven apps.",
     "author": "Orbifold Consulting <info@orbifold.net>",
     "homepage": "https://qwiery.com",
