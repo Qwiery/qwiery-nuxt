@@ -1,5 +1,6 @@
 // import CytoscapeViewer from "~/components/graphviz/cytoscape/CytoscapeViewer.vue";
-import OgmaViewer from "~/components/graphviz/ogma/OgmaViewer.vue";
+import yFilesViewer from "~/components/graphviz/yfiles/yFilesViewer.vue";
+// import OgmaViewer from "~/components/graphviz/ogma/OgmaViewer.vue";
 
 export default defineNuxtPlugin((nuxtApp) => {
 	/*
@@ -15,5 +16,5 @@ export default defineNuxtPlugin((nuxtApp) => {
 	 * - only the Cytoscape package is open source, while Ogma and yFiles are commercial
 	 * - Ogma and yFiles need to be installed in the package.json dependencies; change the location of the tgz file to reflect your local setup
 	 * */
-	nuxtApp.vueApp.component("GraphvizViewer", OgmaViewer);
+	nuxtApp.vueApp.component("GraphvizViewer", yFilesViewer);
 });

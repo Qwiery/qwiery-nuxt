@@ -40,7 +40,7 @@ export default defineNuxtConfig({
 		},
 	},
 	modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@nuxt/content"],
-	ssr: true,
+	ssr: false,
 	i18n: {
 		locales: [
 			{ code: "de", file: "de.json" },
@@ -92,4 +92,10 @@ export default defineNuxtConfig({
 			pathPrefix: true,
 		},
 	],
+	runtimeConfig: {
+		public: {
+			// public means that the value is available on the client and server, see https://nuxt.com/docs/guide/going-further/runtime-config#environment-variables
+			YFILES_LICENSE: "",
+		},
+	},
 });
