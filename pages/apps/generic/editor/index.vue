@@ -404,6 +404,7 @@
 				<pane size="70">
 					<!-- Main Content-->
 					<graphviz-viewer ref="viewerControl" @selection-changed="onSelectionChanged" @double-click="augmentNode" @create-node="createNewNode"></graphviz-viewer>
+
 					<div v-if="showSpinner" class="absolute inset-0 flex justify-center items-center z-10">
 						<spinner></spinner>
 					</div>

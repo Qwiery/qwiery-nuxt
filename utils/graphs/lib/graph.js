@@ -13,7 +13,6 @@ import MatrixMarket from "./formats/matrixMarket.js";
 import NamedGraph from "../lib/graphData/namedGraph.js";
 
 import RandomGraph from "./graphData/randomGraph.js";
-import OgmaUtils from "../../ogmaUtils.js";
 import JsonGraph from "./formats/jsonGraph.js";
 import TreeNode from "../../graphs/lib/treeNode.js";
 
@@ -1094,24 +1093,6 @@ export default class Graph {
 			_.pull(all, ...component);
 		}
 		return components;
-	}
-
-	/**
-	 * Returns the current graph in a format suitable for Ogma.
-	 *
-	 * @example
-	 *
-	 * const g = RandomGraph.BalancedTree()
-	 * const ogma = new Ogma();
-	 * ogma.setGraph(g.toOgma());
-	 *
-	 * @return {RawGraph}
-	 */
-	toOgma() {
-		return {
-			nodes: this.#nodes.map((n) => OgmaUtils.toRawNode(n)),
-			edges: this.#edges.map((e) => OgmaUtils.toRawEdge(e)),
-		};
 	}
 
 	/**

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import CytoViewer from "~/components/graphviz/GraphvizViewer.vue";
+	import CytoViewer from "~/components/graphviz/cytoscape/GraphvizViewer.vue";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
 

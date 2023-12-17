@@ -1,5 +1,5 @@
 import { describe, test, it, expect } from "vitest";
-import OgmaUtils from "../../ogmaUtils.js";
+import OgmaUtils from "../../ogmaUtils";
 
 describe("Ogma Utils", () => {
 	it("should get raw nodes", () => {
