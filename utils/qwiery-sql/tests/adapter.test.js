@@ -1,8 +1,8 @@
 import { describe, test, it, expect, vi, afterAll } from "vitest";
 import setupSqliteSchema from "../lib/sqlSchema.js";
-import Qwiery from "../../qwiery/lib/qwiery.js";
+import { Qwiery } from "@orbifold/dal";
 import SqlAdapter from "../lib/";
-import { Utils } from "../../utils/lib/utils.js";
+import { Utils } from "@orbifold/utils";
 import AdapterUtils from "../lib/utils.js";
 import _ from "lodash";
 import { SequelizeForeignKeyConstraintError, SequelizeValidationError } from "sequelize";

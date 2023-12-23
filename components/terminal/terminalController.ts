@@ -1,6 +1,6 @@
 import { EventEmitter } from "eventemitter3";
 import _ from "lodash";
-import { Utils } from "../../utils/utils/lib/utils";
+import { Utils } from "@orbifold/utils";
 
 export default class TerminalController extends EventEmitter {
 	public static preamble = "qwiery>";

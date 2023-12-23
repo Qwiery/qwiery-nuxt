@@ -2,7 +2,7 @@
     "name": "qwiery-nuxt",
     "private": true,
     "type": "module",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Qwiery is an open source toolbox to create graph-driven apps.",
     "author": "Orbifold Consulting <info@orbifold.net>",
     "homepage": "https://qwiery.com",
@@ -41,10 +41,15 @@
         "@faker-js/faker": "^8.0.2",
         "@headlessui/vue": "^1.7.16",
         "@heroicons/vue": "^2.0.18",
+        "@linkurious/ogma": "./packages/linkurious-ogma-4.6.0.tgz",
         "@nuxt/content": "^2.8.2",
         "@nuxt/devtools": "latest",
         "@nuxtjs/i18n": "^8.0.0-rc.5",
         "@nuxtjs/tailwindcss": "^6.8.0",
+        "@orbifold/dal": "^4.0.5",
+        "@orbifold/graphs": "^4.0.3",
+        "@orbifold/projections": "^4.0.0",
+        "@orbifold/utils": "^4.0.2",
         "@pinia/nuxt": "^0.5.1",
         "@suadelabs/vue3-multiselect": "^1.0.2",
         "@tailwindcss/forms": "^0.5.6",
@@ -78,7 +83,6 @@
         "vue-router": "^4.2.5",
         "vue3-perfect-scrollbar": "1.6.1",
         "vue3-popper": "^1.5.0",
-        "@linkurious/ogma": "./packages/linkurious-ogma-4.6.0.tgz",
-        "yfiles": "./packages/yfiles-25.0.4.tgz"
+        "yfiles": "./packages/yfiles-26.0.3.tgz"
     }
 }

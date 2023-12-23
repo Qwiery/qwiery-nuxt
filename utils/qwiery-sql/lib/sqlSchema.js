@@ -1,5 +1,5 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { Utils } from "../../utils/lib/utils.js";
+import { Utils } from "@orbifold/utils";
 import _ from "lodash";
 
 function parseSchemaOptions(options) {

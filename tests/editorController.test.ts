@@ -1,5 +1,5 @@
 import { describe, test, it, expect, vi } from "vitest";
-import { Utils } from "../utils/utils/lib/utils.js";
+import { Utils } from "@orbifold/utils";
 import EditorController from "../pages/apps/generic/editor/editorController";
 import GraphAPI from "../utils/GraphAPI";
 

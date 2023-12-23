@@ -1,7 +1,7 @@
 import EventEmitter from "eventemitter3";
 import GraphAPI from "../../../../utils/GraphAPI";
 import type { IQwieryNode } from "~/utils";
-import { Utils } from "../../../../utils/utils/lib/utils";
+import { Utils } from "@orbifold/utils";
 import _ from "lodash";
 /*
  * MVC controller between the graph viewer and the backend (via GraphAPI).

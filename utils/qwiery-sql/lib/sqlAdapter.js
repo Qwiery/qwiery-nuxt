@@ -1,11 +1,11 @@
-import { Utils } from "../../utils/lib/utils.js";
+import { Utils } from "@orbifold/utils";
 
 import _ from "lodash";
 import AdapterUtils from "./utils.js";
 import setupSqliteSchema from "./sqlSchema.js";
 import toSequelize from "./sequelize.js";
 import { Error, Op } from "sequelize";
-import Graph from "../../graphs/lib/graph.js";
+import { Graph } from "@orbifold/graphs";
 
 const DefaultOptions = {
 	defaultNodeLabel: "Thing",

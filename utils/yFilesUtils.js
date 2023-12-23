@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Utils } from "./utils/lib/utils.js";
+import { Utils } from "@orbifold/utils";
 import { GraphComponent } from "yfiles";
 
 export default class yFilesUtils {

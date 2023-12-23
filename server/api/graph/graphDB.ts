@@ -1,5 +1,5 @@
 import path from "path";
-import Qwiery from "~/utils/qwiery/lib/qwiery";
+import { Qwiery } from "@orbifold/dal";
 
 // ============================================================;
 // Sqlite graph adapter

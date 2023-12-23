@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 	// https://pyodide.org/en/stable/usage/quickstart.html
-	import { Utils } from "../../utils/utils/lib/utils";
+	import { Utils } from "@orbifold/utils";
 
 	let stdOut = "";
 

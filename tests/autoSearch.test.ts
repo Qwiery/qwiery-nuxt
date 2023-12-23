@@ -1,5 +1,5 @@
 import { describe, test, it, expect } from "vitest";
-import Graph from "../utils/graphs/lib/graph";
+import { Graph } from "@orbifold/graphs";
 import SchemaMachine from "../components/autoSearch/schemaMachine";
 
 const schema = new Graph();

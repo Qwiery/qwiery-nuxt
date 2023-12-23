@@ -1,4 +1,4 @@
-import Graph from "../utils/graphs/lib/graph";
+import { Graph } from "@orbifold/graphs";
 
 const notImplemented = "This is either not implemented by the data access guy or not available with the current data store.";
 

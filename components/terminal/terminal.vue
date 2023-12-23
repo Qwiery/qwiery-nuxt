@@ -19,16 +19,19 @@
 	const props = defineProps<{
 		executor?: (input: string) => Promise<string[]>;
 	}>();
-	import Qwiery from "../../utils/qwiery/lib/qwiery";
+
 	import TerminalController from "./terminalController";
 
 	const showBanner = ref(true);
-	const info = Qwiery.version;
+	const info = ref("");
 	const cmdInput = ref<HTMLInputElement>(null!);
 	const bottom = ref<HTMLDivElement>(null!);
 	const input = ref<string>("");
 	const output = ref<string>("");
 
+	onMounted(async () => {
+		info.value = await GraphAPI.info();
+	});
 	function createController() {
 		const controller = new TerminalController();
 		if (props.executor) {

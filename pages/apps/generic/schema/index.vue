@@ -21,7 +21,6 @@
 	import "splitpanes/dist/splitpanes.css";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
-	import { Toasts } from "~/composables/notifications";
 
 	let viewer: IGraphViewer;
 

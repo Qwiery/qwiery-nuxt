@@ -9,7 +9,7 @@
 					<TabList class="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
 						<Tab as="template" v-slot="{ selected }">
 							<a
-								href="javascript:;"
+								href="javascript:"
 								class="-mb-[1px] block border border-transparent p-3.5 py-2 !outline-none transition duration-300 hover:text-primary dark:hover:border-b-black"
 								:class="{ '!border-white-light !border-b-white  text-primary dark:!border-[#191e3a] dark:!border-b-black': selected }"
 								>Categories</a
@@ -25,7 +25,7 @@
 						</Tab>
 
 						<Tab as="template" disabled>
-							<a href="javascript:;" class="pointer-events-none -mb-[1px] block p-3.5 py-2 text-white-light dark:text-dark">Saved Cypher</a>
+							<a href="javascript:" class="pointer-events-none -mb-[1px] block p-3.5 py-2 text-white-light dark:text-dark">Saved Cypher</a>
 						</Tab>
 					</TabList>
 					<TabPanels class="flex-1 pt-5 text-sm">
@@ -117,7 +117,6 @@
 	import AutoSearch from "~/components/autoSearch/autoSearch.vue";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
-	import { Toasts } from "~/composables/notifications";
 
 	let isLeftVisible = ref(false);
 	let isRightVisible = ref(false);

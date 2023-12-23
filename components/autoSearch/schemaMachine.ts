@@ -1,5 +1,3 @@
-// import Graph from "../utils/graphs/lib/graph";
-
 export default class SchemaMachine {
 	// @ts-ignore
 	private schema: Graph;

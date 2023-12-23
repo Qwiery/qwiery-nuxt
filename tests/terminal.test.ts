@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import TerminalController from "../components/terminal/terminalController";
-import { Utils } from "../utils/utils/lib/utils";
+import { Utils } from "@orbifold/utils";
 
 describe("terminal", () => {
 	it("should raise the output event", () => {

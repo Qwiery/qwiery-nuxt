@@ -584,13 +584,14 @@
 	import { Pane, Splitpanes } from "splitpanes";
 	import "splitpanes/dist/splitpanes.css";
 	import { GraphStyle } from "~/utils/enums";
-	import { Notifications, Toasts } from "~/composables/notifications";
+
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { DataGenerator, Graph, type IGraphViewer, type IQwieryEdge, type IQwieryNode } from "~/utils";
+	import { Graph, type IGraphViewer, type IQwieryEdge, type IQwieryNode } from "~/utils";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import EditorController from "~/pages/apps/generic/editor/editorController";
 	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
+	import { faker } from "@faker-js/faker";
 
 	const searchTerm = ref("");
 	let isExploreSectionVisible = ref(true);
@@ -791,7 +792,7 @@
 
 	function generateSampleGraph() {
 		const g = Graph.create("Erdos");
-		g.nodes.forEach((n: any) => (n.name = DataGenerator.fullName()));
+		g.nodes.forEach((n: any) => (n.name = faker.person.fullName()));
 		viewer.loadGraph(g);
 		viewer.setStyle(GraphStyle.Default);
 	}
@@ -913,7 +914,7 @@
 	function addNode(position: any = { x: 0, y: 0 }) {
 		const node = {
 			data: {
-				name: DataGenerator.fullName(),
+				name: faker.person.fullName(),
 				x: position.x,
 				y: position.y,
 			},

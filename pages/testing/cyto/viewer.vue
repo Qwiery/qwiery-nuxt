@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import CytoViewer from "~/components/graphviz/cytoscape/GraphvizViewer.vue";
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
 
@@ -27,7 +26,7 @@
 </script>
 
 <template>
-	<cyto-viewer ref="cyto"></cyto-viewer>
+	<graphviz-viewer ref="cyto"></graphviz-viewer>
 	<auto-search-dialog ref="dialogControl" @on-query="onQuery"></auto-search-dialog>
 	<client-only>
 		<button v-tippy:b class="btn btn-primary" @click="autoSearchDialog.show()">Show Modal</button>

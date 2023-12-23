@@ -1,8 +1,8 @@
-import Graph from "./graphs/lib/graph";
-import type INodeBase from "./graphs/lib/iNodeBase";
-import { Utils } from "./utils/lib/utils";
+import { Graph, INodeBase } from "@orbifold/graphs";
+import { Utils } from "@orbifold/utils";
 import { GraphAPIBase } from "./GraphAPIBase";
 import type { IQwieryNode } from "~/utils/index";
+
 const showErrorToast = (error) => Toasts.error(error.value.data.message);
 /**
  * The graph API is a proxy to the REST service.
@@ -123,6 +123,13 @@ export default class GraphAPI implements GraphAPIBase {
 	//endregion
 
 	//region Graph
+	static async info(): Promise<string | null> {
+		const { data, pending, error, refresh } = await useFetch(`/api/graph/info`, {
+			method: "GET",
+		});
+		return <string>data.value || null;
+	}
+
 	/** @inheritdoc */
 	static async loadGraph(graphName: string): Promise<void> {
 		const { data, pending, error, refresh } = await useFetch(`/api/graph/loadGraph?graphName=${graphName}`, {
