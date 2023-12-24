@@ -8,7 +8,7 @@ describe("terminal", () => {
 		let raised = false;
 		let something = Utils.randomId();
 		controller.on("output", (data) => {
-			expect(data).toBe(`You typed: ${something}`);
+			expect(data).toEqual({ type: "input", data: something });
 			raised = true;
 		});
 		controller.execute(something);

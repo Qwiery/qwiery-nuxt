@@ -26,3 +26,4 @@ logs
 !/Icon
 datasets
 /packages/*
+/coverage
