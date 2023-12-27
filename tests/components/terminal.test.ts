@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import TerminalController from "../components/terminal/terminalController";
+import TerminalController from "../../components/terminal/terminalController";
 import { Utils } from "@orbifold/utils";
 
 describe("terminal", () => {
