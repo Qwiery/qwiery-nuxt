@@ -403,7 +403,7 @@
 				</pane>
 				<pane size="70">
 					<!-- Main Content-->
-					<graphviz-viewer ref="viewerControl" @selection-changed="onSelectionChanged" @double-click="augmentNode" @create-node="createNewNode"></graphviz-viewer>
+					<CytoscapeViewer class="!h-[90vh]" ref="viewerControl" @selection-changed="onSelectionChanged" @double-click="augmentNode" @create-node="createNewNode"></CytoscapeViewer>
 
 					<div v-if="showSpinner" class="absolute inset-0 flex justify-center items-center z-10">
 						<spinner></spinner>
@@ -587,7 +587,7 @@
 
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { Graph, type IGraphViewer, type IQwieryEdge, type IQwieryNode } from "~/utils";
+
 	import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 	import EditorController from "~/pages/apps/generic/editor/editorController";
 	import AutoSearchDialog from "~/components/autoSearchDialog/autoSearchDialog.vue";
@@ -605,7 +605,7 @@
 	let isPropertiesIconVisible = ref(true);
 	let isTopVisible = ref(false);
 	let isBottomVisible = ref(false);
-	let viewer: IGraphViewer;
+	let viewer: IGraphView;
 	let viewerControl = ref(null);
 	let autoSearchControl = ref<any>(null);
 	let showSpinner = ref(false);
@@ -629,7 +629,7 @@
 		title: "Graph Explorer",
 	});
 	onMounted(() => {
-		viewer = <IGraphViewer>(<unknown>viewerControl.value);
+		viewer = <IGraphView>(<unknown>viewerControl.value);
 		autoSearchDialog = <any>autoSearchControl.value;
 
 		dataSearchDialog = <unknown>dataSearchControl.value;
@@ -665,7 +665,7 @@
 	}
 
 	/**
-	 * See {@link IGraphViewer}
+	 * See {@link IGraphView}
 	 * @param layoutName {string} The name of the layout.
 	 */
 	function layout(layoutName = "organic") {
@@ -771,7 +771,7 @@
 	}
 
 	/**
-	 * See {@link IGraphViewer}
+	 * See {@link IGraphView}
 	 */
 	function fit() {
 		viewer.fit();

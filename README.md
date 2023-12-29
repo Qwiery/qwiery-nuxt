@@ -138,7 +138,7 @@ You can use any of the links above to contact us with respect to custom developm
 
 **MIT License**
 
-_Copyright (c) 2023 Orbifold B.V._
+_Copyright (c) 2024 Orbifold B.V._
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

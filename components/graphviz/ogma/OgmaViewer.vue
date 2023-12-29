@@ -2,7 +2,7 @@
 	<div id="graphHost"></div>
 </template>
 <script setup lang="ts">
-	import { CytoUtils, type IQwieryEdge, type IQwieryNode } from "~/utils";
+	import { type IQwieryEdge, type IQwieryNode } from "~/utils";
 	import Ogma from "@linkurious/ogma";
 	import OgmaUtils from "~/utils/ogmaUtils";
 	import _ from "lodash";
@@ -126,7 +126,7 @@
 	}
 
 	/**
-	 * Expose the IGraphViewer interface.
+	 * Expose the IGraphView interface.
 	 */
 	defineExpose({
 		addNode,

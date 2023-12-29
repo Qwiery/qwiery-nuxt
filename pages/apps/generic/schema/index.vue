@@ -15,14 +15,14 @@
 		</svg>
 		<span class="ml-2">Inferring schema...</span>
 	</div>
-	<graphviz-viewer v-show="!showSpinner" ref="viewerControl"></graphviz-viewer>
+	<CytoscapeViewer class="!h-[90vh]" v-show="!showSpinner" ref="viewerControl" />
 </template>
 <script setup lang="ts">
 	import "splitpanes/dist/splitpanes.css";
 	import GraphAPI from "~/utils/GraphAPI";
 	import { GraphStyle } from "~/utils/enums";
 
-	let viewer: IGraphViewer;
+	let viewer: IGraphView;
 
 	let viewerControl = ref(null);
 	let showSpinner = ref(true);
@@ -35,7 +35,7 @@
 		title: "Graph Schema",
 	});
 	onMounted(async () => {
-		viewer = <IGraphViewer>(<unknown>viewerControl.value);
+		viewer = <IGraphView>(<unknown>viewerControl.value);
 		if (viewer) {
 			// when this is the first page request the Sequelizer setup might not be ready yet
 			setTimeout(() => {

@@ -101,7 +101,7 @@
 	function fit() {}
 
 	/**
-	 * Expose the IGraphViewer interface.
+	 * Expose the IGraphView interface.
 	 */
 	defineExpose({
 		addNode,
