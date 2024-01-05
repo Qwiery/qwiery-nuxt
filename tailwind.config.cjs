@@ -1,3 +1,7 @@
+/*
+* dark: #282828
+* dark-light: #333333
+* */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [

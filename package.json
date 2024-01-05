@@ -54,6 +54,7 @@
         "@orbifold/projections": "^4.0.0",
         "@orbifold/utils": "^4.1.0",
         "@orbifold/vue-cytoscape": "^1.0.1",
+        "@orbifold/vue-yfiles": "latest",
         "@pinia/nuxt": "^0.5.1",
         "@suadelabs/vue3-multiselect": "^1.0.2",
         "@tailwindcss/forms": "^0.5.6",
