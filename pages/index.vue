@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 class="m-8 dark:text-white-dark">Projects</h1>
-		<div class="columns-4 m-12">
+		<div class="lg:columns-4 md:columns-2 sm:columns-1 m-12">
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[210px]">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-orange-700" title="Project Item"></div>
+				<div class="ml-1 project-card">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -25,8 +25,8 @@
 				</div>
 			</div>
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[210px]">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
+				<div class="m-1 project-card">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<div class="text-gray-300 font-bold text-xl mb-2">Food &amp; Recipes</div>
@@ -41,8 +41,8 @@
 				</div>
 			</div>
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[210px]">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-blue-700" title="Project Item"></div>
+				<div class="m-1 project-card">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<div class="text-gray-300 font-bold text-xl mb-2">Fraud Detection</div>
@@ -57,8 +57,8 @@
 				</div>
 			</div>
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[210px]">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-pink-700" title="Project Item"></div>
+				<div class="m-1 project-card">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<div class="text-gray-300 font-bold text-xl mb-2">Drug Repurposing</div>
@@ -73,12 +73,12 @@
 				</div>
 			</div>
 		</div>
-		<h1 class="m-8 dark:text-white-dark">Documentation</h1>
 
-		<div class="columns-6 m-12">
+		<h1 class="m-8 dark:text-white-dark">Documentation</h1>
+		<div class="lg:columns-4 md:columns-2 sm:columns-1 m-12">
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[250px] cursor-pointer" @click="navigate('qwiery')">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+				<div class="ml-1 documentation-card" @click="navigate('qwiery')">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -91,14 +91,16 @@
 								Guide
 							</p>
 							<div class="text-gray-300 font-bold text-xl mb-2">What is Qwiery?</div>
-							<p class="text-gray-500 text-base">This app is yours (MIT license) and we put a lot of time into making it modular and easy to use. It's composed of many components and this (Vue/Nuxt) app is just an example of how to assemble these components.</p>
+							<p class="text-gray-500 text-base overflow-hidden overflow-ellipsis max-h-[120px]">
+								This app is yours (MIT license) and we put a lot of time into making it modular and easy to use. It's composed of many components and this (Vue/Nuxt) app is just an example of how to assemble these components.
+							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[250px] cursor-pointer" @click="navigate('dal')">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+				<div class="m-1 documentation-card" @click="navigate('dal')">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -117,8 +119,8 @@
 				</div>
 			</div>
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[250px]">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+				<div class="m-1 documentation-card">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -143,8 +145,8 @@
 			</div>
 
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[250px] cursor-pointer" @click="navigate('plugins')">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+				<div class="m-1 documentation-card" @click="navigate('plugins')">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -163,8 +165,8 @@
 				</div>
 			</div>
 			<div>
-				<div class="max-w-sm w-full lg:max-w-full lg:flex dark:bg-[#333333] min-h-[250px] cursor-pointer" @click="navigate('faq')">
-					<div class="min-h-48 lg:h-auto lg:w-5 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+				<div class="m-1 documentation-card" @click="navigate('faq')">
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -191,14 +193,26 @@
 	import GraphAPI from "~/utils/GraphAPI";
 
 	useHead({
-		title: "Home",
+		title: "a",
+		meta: [
+			{
+				name: "description",
+				content: "The landing page of the Qwiery application.",
+			},
+		],
 	});
 	definePageMeta({
-		title: "Home",
-		description: "The home page of the Qwiery application.",
 		layout: "landing",
 	});
 
 	let info = QwieryInfo();
 	// let n = await GraphAPI.createNode({ name: "Swa" });
 </script>
+<style>
+	.project-card {
+		@apply rounded-r max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[260px];
+	}
+	.documentation-card {
+		@apply rounded-r max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[220px] cursor-pointer;
+	}
+</style>
