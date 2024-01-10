@@ -583,7 +583,6 @@
 <script setup lang="ts">
 	import { Pane, Splitpanes } from "splitpanes";
 	import "splitpanes/dist/splitpanes.css";
-	import { GraphStyle } from "~/utils/enums";
 
 	import { useAppStore } from "~/stores";
 	import GraphAPI from "~/utils/GraphAPI";
@@ -794,7 +793,7 @@
 		const g = Graph.create("Erdos");
 		g.nodes.forEach((n: any) => (n.name = faker.person.fullName()));
 		viewer.loadGraph(g);
-		viewer.setStyle(GraphStyle.Default);
+		viewer.setStyle("default");
 	}
 
 	function clearGraph() {
@@ -836,7 +835,7 @@
 						Toasts.info("The inferred schema is empty.");
 					}
 					viewer.loadGraph(schema);
-					viewer.setStyle(GraphStyle.Schema);
+					viewer.setStyle("schema");
 				} else {
 					Toasts.error("The schema could not be loaded.");
 				}
@@ -1019,7 +1018,7 @@
 			await new Promise((r) => setTimeout(r, 2000));
 			if (g) {
 				viewer.loadGraph(g);
-				viewer.setStyle(GraphStyle.Default);
+				viewer.setStyle("default");
 			} else {
 				Toasts.error("The data could not be loaded.");
 			}

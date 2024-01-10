@@ -4,8 +4,8 @@ import path from "path";
 export default defineNuxtConfig({
 	app: {
 		head: {
-			title: "Graph Visualizer",
-			titleTemplate: "%s | Qwiery",
+			title: "Qwiery",
+			titleTemplate: "%s",
 			htmlAttrs: {
 				lang: "en",
 			},
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
 			autoprefixer: {},
 		},
 	},
-	modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@nuxt/content"],
+	modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/i18n"],
 	ssr: false,
 	i18n: {
 		locales: [
@@ -65,23 +65,7 @@ export default defineNuxtConfig({
 			openAPI: true, // http://localhost:3000/_nitro/swagger
 		},
 	},
-	content: {
-		// https://content.nuxtjs.org/api/configuration
-		highlight: {
-			theme: {
-				// Default theme (same as single string)
-				default: "material-theme-palenight",
-				// Theme used if `html.dark`
-				dark: "github-dark",
-			},
-		},
-		markdown: {
-			toc: {
-				depth: 5,
-				searchDepth: 5,
-			},
-		},
-	},
+
 	tailwindcss: {
 		// goto http://localhost:3000/_tailwind/
 		cssPath: "~/assets/css/documentation.css",

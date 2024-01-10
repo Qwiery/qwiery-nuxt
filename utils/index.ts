@@ -9,8 +9,6 @@ import pkg from "../package.json" assert { type: "json" };
 export { Graph, RandomGraph, Forest, Strings, Utils, Errors, Datasets };
 export type { IQwieryNode, IQwieryEdge, GraphLike };
 
-import { GraphStyle } from "~/utils/enums";
-
 export function QwieryInfo() {
 	return {
 		version: pkg.version,

@@ -2,7 +2,7 @@ import _ from "lodash";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-let route = null;
+let route: any = null;
 let target = "_blank";
 
 export function navigate(destination) {
@@ -55,6 +55,10 @@ export function navigate(destination) {
 				break;
 			case "adapters":
 				route = { fullPath: "https://qwiery.com/dal/adapters" };
+				break;
+			case "project1":
+				route = { fullPath: "/apps/generic/editor" };
+				target = "_self";
 				break;
 		}
 	}

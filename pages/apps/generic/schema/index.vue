@@ -20,7 +20,6 @@
 <script setup lang="ts">
 	import "splitpanes/dist/splitpanes.css";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { GraphStyle } from "~/utils/enums";
 
 	let viewer: IGraphView;
 
@@ -51,7 +50,7 @@
 			name.value = schema.name || "Inferred schema";
 			description.value = schema.description || "";
 			viewer.loadGraph(schema);
-			viewer.setStyle(GraphStyle.Schema);
+			viewer.setStyle("schema");
 		} else {
 			Toasts.error("The schema could not be loaded.");
 		}

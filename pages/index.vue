@@ -3,7 +3,7 @@
 		<h1 class="m-8 dark:text-white-dark">Projects</h1>
 		<div class="lg:columns-4 md:columns-2 sm:columns-1 m-12">
 			<div>
-				<div class="ml-1 project-card">
+				<div class="ml-1 project-card cursor-pointer" @click="navigate('project1')">
 					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
@@ -193,7 +193,7 @@
 	import GraphAPI from "~/utils/GraphAPI";
 
 	useHead({
-		title: "a",
+		title: "Qwiery - Projects",
 		meta: [
 			{
 				name: "description",

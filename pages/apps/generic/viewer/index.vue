@@ -116,7 +116,6 @@
 	import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 	import AutoSearch from "~/components/autoSearch/autoSearch.vue";
 	import GraphAPI from "~/utils/GraphAPI";
-	import { GraphStyle } from "~/utils/enums";
 
 	let isLeftVisible = ref(false);
 	let isRightVisible = ref(false);
@@ -148,7 +147,7 @@
 			await new Promise((r) => setTimeout(r, 2000));
 			if (g) {
 				viewer.loadGraph(g);
-				viewer.setStyle(GraphStyle.Default);
+				viewer.setStyle("default");
 			} else {
 				Toasts.error("The data could not be loaded.");
 			}
