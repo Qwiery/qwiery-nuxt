@@ -2,23 +2,11 @@
 	<header class="z-40">
 		<div class="shadow-sm">
 			<div class="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-[#333333]">
-				<div class="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
-					<NuxtLink to="/" class="main-logo flex shrink-0 items-center">
-						<img class="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/images/orbifold.svg" alt="" />
-						<span class="hidden align-middle text-2xl font-semibold transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">Qwiery</span>
-					</NuxtLink>
+				<div class="flex">
+					<span class="align-middle text-2xl font-semibold transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">Project 1</span>
 
-					<a href="javascript:" class="collapse-icon flex flex-none rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary ltr:ml-2 rtl:mr-2 dark:bg-dark/40 dark:text-[#a1a1aa] dark:hover:bg-dark/60 dark:hover:text-primary lg:hidden" @click="store.toggleSidebar()">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M20 7L4 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-							<path opacity="0.5" d="M20 12L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-							<path d="M20 17L4 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-						</svg>
-					</a>
-				</div>
-				<div class="ltr:mr-2 rtl:ml-2 sm:block">
 					<!--Header icons-->
-					<ul class="hidden flex items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
+					<ul class="flex ml-6 items-center space-x-2 rtl:space-x-reverse dark:text-[#a1a1aa]">
 						<li>
 							<NuxtLink to="/" class="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">
 								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
