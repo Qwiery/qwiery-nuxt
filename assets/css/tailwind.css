@@ -69,7 +69,7 @@
     }
     .sidebar .nav-item > button.active,
     .sidebar .nav-item > a.active {
-        @apply bg-[#000]/[0.08] text-black dark:bg-[#282828] dark:text-white-dark;
+        @apply bg-gray-300 text-white dark:bg-[#282828] dark:text-white-dark;
     }
 
     .sidebar .nav-item > button.active > div > span,

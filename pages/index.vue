@@ -4,7 +4,7 @@
 		<div class="lg:columns-4 md:columns-2 sm:columns-1 m-12">
 			<div>
 				<div class="ml-1 project-card cursor-pointer" @click="navigate('project1')">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-blue-700 bg-blue-400" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -13,7 +13,7 @@
 								</svg>
 								Members only
 							</p>
-							<div class="text-gray-300 font-bold text-xl mb-2">The Graph Database Landscape</div>
+							<div class="text-gray-500 dark:text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">The Graph Database Landscape</div>
 							<p class="text-gray-500 text-base">A graph about graph databases and their scope.</p>
 						</div>
 						<div class="flex items-center">
@@ -26,10 +26,10 @@
 			</div>
 			<div>
 				<div class="m-1 project-card">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-blue-700 bg-blue-400" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
-							<div class="text-gray-300 font-bold text-xl mb-2">Food &amp; Recipes</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">Food &amp; Recipes</div>
 							<p class="text-gray-500 text-base">A large graphs about everything delicious.</p>
 						</div>
 						<div class="flex items-center">
@@ -42,10 +42,10 @@
 			</div>
 			<div>
 				<div class="m-1 project-card">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-blue-700 bg-blue-400" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
-							<div class="text-gray-300 font-bold text-xl mb-2">Fraud Detection</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">Fraud Detection</div>
 							<p class="text-gray-500 text-base">A typical dataset covering bank fraud detection scenarios.</p>
 						</div>
 						<div class="flex items-center">
@@ -58,10 +58,10 @@
 			</div>
 			<div>
 				<div class="m-1 project-card">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-emerald-700" title="Project Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-blue-700 bg-blue-400" title="Project Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
-							<div class="text-gray-300 font-bold text-xl mb-2">Drug Repurposing</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">Drug Repurposing</div>
 							<p class="text-gray-500 text-base">A comprehensive biological knowledge graph relating genes, compounds, diseases, biological processes, side effects and symptoms.</p>
 						</div>
 						<div class="flex items-center">
@@ -78,7 +78,7 @@
 		<div class="lg:columns-4 md:columns-2 sm:columns-1 m-12">
 			<div>
 				<div class="ml-1 documentation-card" @click="navigate('qwiery')">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700 bg-gray-200" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -90,7 +90,7 @@
 								</svg>
 								Guide
 							</p>
-							<div class="text-gray-300 font-bold text-xl mb-2">What is Qwiery?</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">What is Qwiery?</div>
 							<p class="text-gray-500 text-base overflow-hidden overflow-ellipsis max-h-[120px]">
 								This app is yours (MIT license) and we put a lot of time into making it modular and easy to use. It's composed of many components and this (Vue/Nuxt) app is just an example of how to assemble these components.
 							</p>
@@ -100,7 +100,7 @@
 			</div>
 			<div>
 				<div class="m-1 documentation-card" @click="navigate('dal')">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700 bg-gray-200" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -112,7 +112,7 @@
 								</svg>
 								Guide
 							</p>
-							<div class="text-gray-300 font-bold text-xl mb-2">Backend Data Access</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">Backend Data Access</div>
 							<p class="text-gray-500 text-base">How to connect diverse graph databases (Neo4j, AWS Neptune...) or emulate a graph store (JSON, MongoDB...).</p>
 						</div>
 					</div>
@@ -120,7 +120,7 @@
 			</div>
 			<div>
 				<div class="m-1 documentation-card">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700 bg-gray-200" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -132,7 +132,7 @@
 								</svg>
 								Guide
 							</p>
-							<div class="text-gray-300 font-bold text-xl mb-2">Graph Visualization Packages</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">Graph Visualization Packages</div>
 							<p class="text-gray-500 text-base">
 								We provide wrappers around <span class="cursor-pointer font-bold text-secondary" @click="navigate('cytoscape')" title="About the Cytoscape graph visualization wrapper">Cytoscape</span>,
 								<span class="cursor-pointer font-bold text-secondary" @click="navigate('yfiles')" title="About the yFiles graph visualization wrapper">yFiles</span>,
@@ -146,7 +146,7 @@
 
 			<div>
 				<div class="m-1 documentation-card" @click="navigate('plugins')">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700 bg-gray-200" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -158,7 +158,7 @@
 								</svg>
 								Guide
 							</p>
-							<div class="text-gray-300 font-bold text-xl mb-2">Plugins &amp; Data Adapters</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">Plugins &amp; Data Adapters</div>
 							<p class="text-gray-500 text-base">Backend addons can transform data on the fly, validate against a schema and much more.</p>
 						</div>
 					</div>
@@ -166,7 +166,7 @@
 			</div>
 			<div>
 				<div class="m-1 documentation-card" @click="navigate('faq')">
-					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700" title="Documentation Item"></div>
+					<div class="sm:w-5 flex-none bg-cover rounded-l text-center overflow-hidden dark:bg-gray-700 bg-gray-200" title="Documentation Item"></div>
 					<div class="p-4 flex flex-col justify-between leading-normal">
 						<div class="mb-8">
 							<p class="text-sm text-orange-300 flex items-center">
@@ -178,7 +178,7 @@
 								</svg>
 								Guide
 							</p>
-							<div class="text-gray-300 font-bold text-xl mb-2">FAQ</div>
+							<div class="text-gray-500 dark:text-gray-300 font-bold text-xl mb-2">FAQ</div>
 							<p class="text-gray-500 text-base">We're here to help.</p>
 						</div>
 					</div>
@@ -210,9 +210,9 @@
 </script>
 <style>
 	.project-card {
-		@apply rounded-r max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[260px];
+		@apply rounded max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[260px] border dark:border-gray-700;
 	}
 	.documentation-card {
-		@apply rounded-r max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[220px] cursor-pointer;
+		@apply rounded max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[220px] cursor-pointer border dark:border-gray-600;
 	}
 </style>
