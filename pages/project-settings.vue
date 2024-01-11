@@ -8,7 +8,7 @@
 		<div class="my-2">
 			<label for="project-description">Project Description:</label>
 			<textarea id="project-description" rows="20" class="form-textarea ltr:rounded-l-none rtl:rounded-r-none">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a mauris mollis, pellentesque metus nec, fermentum nunc. Nunc tempor maximus erat, faucibus laoreet lorem finibus non. Aenean molestie tellus lacus, elementum porttitor nunc molestie in. Sed sollicitudin lacus eu lectus commodo sagittis. Nulla facilisi. Vivamus vitae nulla blandit, semper lorem non, viverra elit. Nunc maximus tellus vel diam mattis imperdiet. Ut aliquam molestie magna, sit amet euismod neque eleifend at. Vestibulum ut dictum neque. Donec nisl nisi, consequat fermentum ultricies eget, sagittis in ex.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a mauris mollis, pellentesque metus nec, fermentum nunc. Nunc tempor maximus erat, faucibus laoreet lorem finibus non. Aenean molestie tellus lacus, elementum porttitor nunc molestie in. Sed sollicitudin lacus eu lectus commodo sagittis. Nulla facilisi. Vivamus vitae nulla blandit, semper lorem non, viverra elit. Nunc maximus tellus vel diam mattis imperdiet. Ut aliquam molestie magna, sit amet euismod neque eleifend at. Vestibulum ut dictum neque. Donec nisl nisi, consequat fermentum ultricies eget, sagittis in ex.
 
 Suspendisse dapibus feugiat venenatis. Maecenas rhoncus elit a aliquam porttitor. Phasellus suscipit eget velit eget tincidunt. Sed non euismod nibh, vitae dapibus arcu. Nullam in tortor augue. Ut varius tortor id dapibus fermentum. Donec pretium sed quam ut varius. Vivamus malesuada feugiat mauris nec laoreet. Integer ac suscipit est, non scelerisque lectus.
 

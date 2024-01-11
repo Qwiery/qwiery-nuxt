@@ -82,4 +82,73 @@ export default {
 			}
 		}
 	},
+
+	/**
+	 * This is the content of the sidebar.
+	 */
+	sidebarTree: [
+		{
+			text: "Explorations",
+			description: "Explorations are a datasets you can edit. They are the starting point for creating recipes, perspectives, notebooks, and dashboards.",
+			children: [
+				{
+					text: "Recipes",
+					link: "/apps/generic/editor",
+				},
+				{
+					text: "Schema",
+					link: "/apps/generic/schema",
+				},
+			],
+		},
+		{
+			text: "Perspectives",
+			description: "Perspectives are a visualization of a dataset. These are read-only views of datasets.",
+			children: [
+				{
+					text: "Thai Food",
+					link: "/apps/generic/viewer",
+				},
+				{
+					text: "Italian Food",
+				},
+			],
+		},
+		{
+			text: "Notebooks",
+			description: "Notebooks are collections of recipes that can be used to analyze data.",
+			children: [
+				{
+					text: "Notebook 1",
+				},
+				{
+					text: "Notebook 2",
+				},
+			],
+		},
+		{
+			text: "Dashboards",
+			description: "Dashboards are collections of visualizations that can be used to monitor and analyze data.",
+			children: [
+				{
+					text: "Dashboard 1",
+				},
+				{
+					text: "Dashboard 2",
+				},
+			],
+		},
+		{
+			text: "Datasets",
+			description: "Datasets are collections of data (a sub-graph) that can be used in diverse places. They can be used to create recipes, perspectives, notebooks, and dashboards.",
+			children: [
+				{
+					text: "Dataset 1",
+				},
+				{
+					text: "Dataset 2",
+				},
+			],
+		},
+	],
 };

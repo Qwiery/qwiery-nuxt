@@ -27,6 +27,9 @@
 			<!-- BEGIN APP SETTING LAUNCHER -->
 			<app-settings />
 			<!-- END APP SETTING LAUNCHER -->
+			<!-- BEGIN TERMINAL -->
+			<TerminalHost />
+			<!-- END TERMINAL -->
 
 			<div class="main-container min-h-screen text-black dark:text-white-dark" :class="[store.navbar]">
 				<!--  BEGIN SIDEBAR  -->

@@ -26,6 +26,8 @@ export const useAppStore = defineStore("app", {
 		semidark: false,
 		graphlib: "cytoscape",
 		showAppSettings: false,
+		showTerminal: false,
+
 		commitGraphChanges: true,
 	}),
 
@@ -101,6 +103,9 @@ export const useAppStore = defineStore("app", {
 		},
 		toggleAppSettings(state: boolean = false) {
 			this.showAppSettings = !this.showAppSettings;
+		},
+		toggleTerminal(state: boolean = false) {
+			this.showTerminal = !this.showTerminal;
 		},
 		commitClientChanges(yn: boolean) {
 			this.commitGraphChanges = yn;
