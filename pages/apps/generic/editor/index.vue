@@ -1,4 +1,48 @@
 <template>
+	<!--Menu-->
+	<div class="flex w-full bg-gray-200 dark:bg-primary h-[26px] border-b border-gray-100 dark:border-gray-600">
+		<!-- Save As -->
+		<div>
+			<Popper placement="bottom-start" offsetDistance="0" class="">
+				<button type="button" class="btn dark:btn-dark btn-sm dropdown-toggle h-[25px] m-0 rounded-none bg-gray-200">
+					Save as...
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="ltr:ml-1 rtl:mr-1 inline-block" data-v-5784ed69-s="">
+						<path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+				</button>
+				<template #content="{ close }">
+					<ul @click="close()" class="whitespace-nowrap bg-gray-200 dark:bg-[#333] z-100 p-4 shadow-md">
+						<li class="my-2">
+							<a href="javascript:"> Exploration </a>
+						</li>
+						<li class="my-2"><a href="javascript:">Dataset</a></li>
+						<li class="my-2"><a href="javascript:">Image</a></li>
+						<li class="my-2"><a href="javascript:">JSON</a></li>
+					</ul>
+				</template>
+			</Popper>
+		</div>
+		<!-- Open -->
+		<div class="ml-1">
+			<Popper placement="bottom-start" offsetDistance="0" class="">
+				<button type="button" class="btn dark:btn-dark btn-sm dropdown-toggle h-[25px] m-0 rounded-none bg-gray-200">
+					Open
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="ltr:ml-1 rtl:mr-1 inline-block" data-v-5784ed69-s="">
+						<path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+				</button>
+				<template #content="{ close }">
+					<ul @click="close()" class="whitespace-nowrap bg-gray-200 dark:bg-[#333] z-100 p-4 shadow-md">
+						<li class="my-2">
+							<a href="javascript:"> Exploration </a>
+						</li>
+						<li class="my-2"><a href="javascript:">Dataset</a></li>
+						<li class="my-2"><a href="javascript:">JSON</a></li>
+					</ul>
+				</template>
+			</Popper>
+		</div>
+	</div>
 	<!-- Toolbar -->
 	<div class=" ">
 		<div class="relative flex w-full items-center bg-white dark:bg-[#333333]">
