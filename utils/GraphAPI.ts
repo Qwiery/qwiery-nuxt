@@ -3,7 +3,7 @@ import { Utils } from "@orbifold/utils";
 import { GraphAPIBase } from "./GraphAPIBase";
 import type { IQwieryNode } from "~/utils/index";
 import WebServiceGraphAPI from "~/utils/WebServiceGraphAPI";
-
+import Neo4jGraphAPI from "~/utils/Neo4jGraphAPI";
 const showErrorToast = (error) => Toasts.error(error.value.data.message);
 /**
  * The graph API is a thin layer on top of several implementations of the {@link GraphAPIBase} class.
@@ -18,7 +18,7 @@ export default class GraphAPI implements GraphAPIBase {
 	 * Simply change this property to switch between implementations.
 	 * @type {GraphAPIBase}
 	 */
-	static api: GraphAPIBase = WebServiceGraphAPI;
+	static api: GraphAPIBase = Neo4jGraphAPI;
 
 	//region Nodes
 	static async deleteNode(id: string): Promise<void> {

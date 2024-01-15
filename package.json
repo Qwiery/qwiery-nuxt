@@ -49,6 +49,7 @@
         "@nuxtjs/i18n": "^8.0.0-rc.5",
         "@nuxtjs/tailwindcss": "^6.8.0",
         "@orbifold/dal": "^4.0.5",
+        "@orbifold/cypher": "^4.1.1",
         "@orbifold/entities": "4.0.0",
         "@orbifold/graphs": "^4.0.3",
         "@orbifold/projections": "^4.0.0",
