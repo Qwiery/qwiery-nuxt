@@ -61,6 +61,7 @@
         "@tailwindcss/typography": "^0.5.10",
         "@vitest/coverage-v8": "0.34.6",
         "@vitest/ui": "0.34.6",
+        "apexcharts": "^3.45.1",
         "autoprefixer": "^10.4.16",
         "buffer": "^6.0.3",
         "cytoscape": "^3.26.0",
@@ -88,6 +89,7 @@
         "vue": "^3.3.4",
         "vue-height-collapsible": "0.1.1",
         "vue-router": "^4.2.5",
+        "vue3-apexcharts": "1.4.4",
         "vue3-perfect-scrollbar": "1.6.1",
         "vue3-popper": "^1.5.0",
         "yfiles": "./packages/yfiles-26.0.3.tgz"

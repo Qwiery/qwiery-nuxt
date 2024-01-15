@@ -65,7 +65,6 @@ export default defineNuxtConfig({
 			openAPI: true, // http://localhost:3000/_nitro/swagger
 		},
 	},
-
 	tailwindcss: {
 		// goto http://localhost:3000/_tailwind/
 		cssPath: "~/assets/css/documentation.css",

@@ -1,4 +1,4 @@
-import { Graph } from "@orbifold/graphs";
+import { Graph, type INodeBase } from "@orbifold/graphs";
 
 const notImplemented = "This is either not implemented by the data access guy or not available with the current data store.";
 
@@ -74,7 +74,7 @@ export class GraphAPIBase {
 	 * @param term {string} A search term.
 	 * @param fields {string[]} The properties to consider in the search.
 	 */
-	static searchNodes(term: string, fields: string[]) {
+	static searchNodes(term: string, fields: string[]): Promise<INodeBase[]> {
 		throw new Error(notImplemented);
 	}
 

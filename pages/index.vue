@@ -191,6 +191,7 @@
 <script setup lang="ts">
 	import { QwieryInfo } from "../utils";
 	import GraphAPI from "~/utils/GraphAPI";
+	import Neo4jGraphAPI from "~/utils/Neo4jGraphAPI";
 
 	useHead({
 		title: "Qwiery - Projects",
@@ -206,12 +207,12 @@
 	});
 
 	let info = QwieryInfo();
-	// let n = await GraphAPI.createNode({ name: "Swa" });
 </script>
 <style>
 	.project-card {
 		@apply rounded max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[260px] border dark:border-gray-700;
 	}
+
 	.documentation-card {
 		@apply rounded max-lg:rounded-l max-w-sm w-full lg:max-w-full md:flex dark:bg-[#333333] h-[220px] cursor-pointer border dark:border-gray-600;
 	}
