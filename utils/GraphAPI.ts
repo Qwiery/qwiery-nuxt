@@ -39,65 +39,39 @@ export default class GraphAPI implements GraphAPIBase {
 	}
 
 	static async getNeighborhood(id: string, amount: number = 10): Promise<Graph | null> {
-		const data = await GraphAPI.api.getNeighborhood(id, amount);
-		if (data.value) {
-			return <Graph>data.value;
-		} else {
-			return null;
-		}
+		return await GraphAPI.api.getNeighborhood(id, amount);
 	}
 
 	static async getNodesWithLabel(labelName: string, amount: number = 100): Promise<any[] | null> {
-		const data = await GraphAPI.api.getNodesWithLabel(labelName, amount);
-		if (data.value) {
-			return <any[]>data.value;
-		} else {
-			return null;
-		}
+		return await GraphAPI.api.getNodesWithLabel(labelName, amount);
 	}
 
 	static async searchNodesWithLabel(term: string, fields: string[], label: string, amount: number = 100): Promise<any[] | null> {
-		const data = await GraphAPI.api.searchNodesWithLabel(term, fields, label, amount);
-		if (data.value) {
-			return <any[]>data.value;
-		} else {
-			return null;
-		}
+		return await GraphAPI.api.searchNodesWithLabel(term, fields, label, amount);
 	}
 
 	static async getNodeLabels(): Promise<string[] | null> {
-		const data = await GraphAPI.api.getNodeLabels();
-		if (error.value) {
-			await showErrorToast(error);
-			return null;
-		} else {
-			return <string[]>data.value || null;
-		}
+		return await GraphAPI.api.getNodeLabels();
 	}
 
 	static async getNodeLabelProperties(labelName: string): Promise<string[] | null> {
-		const data = await GraphAPI.api.getNodeLabelProperties(labelName);
-		return <string[]>data.value || null;
+		return await GraphAPI.api.getNodeLabelProperties(labelName);
 	}
 
 	static async getNode(id: string): Promise<INodeBase | null> {
-		const data = await GraphAPI.api.getNode(id);
-		return <INodeBase>data.value || null;
+		return await GraphAPI.api.getNode(id);
 	}
 
 	static async createNode(nodeData: any = null, id = null, labels = null): Promise<INodeBase | null> {
 		const nodeSpecs = Utils.mergeNodeSpecs(nodeData, id, labels);
-
-		const data = await GraphAPI.api.createNode(nodeSpecs);
-		return <INodeBase>data.value || null;
+		return await GraphAPI.api.createNode(nodeSpecs);
 	}
 
 	//endregion
 
 	//region Graph
 	static async info(): Promise<string | null> {
-		const data = await GraphAPI.api.info();
-		return <string>data.value || null;
+		return await GraphAPI.api.info();
 	}
 
 	/** @inheritdoc */
@@ -107,27 +81,12 @@ export default class GraphAPI implements GraphAPIBase {
 
 	/** @inheritdoc */
 	static async getSchema(): Promise<Graph | null> {
-		const data = await GraphAPI.api.getSchema();
-		const found = <Graph>data.value || null;
-		if (found) {
-			return Graph.fromJSON(found);
-		} else {
-			return null;
-		}
+		return await GraphAPI.api.getSchema();
 	}
 
 	/** @inheritdoc */
 	static async pathQuery(pathQuery: string[], amount = 1000): Promise<Graph | null> {
-		const data = await GraphAPI.api.pathQuery(pathQuery, amount);
-		const found = <Graph>data.value || null;
-		if (found) {
-			// getting rid of the proxy would go like
-			// const obj = JSON.parse(JSON.stringify(found));
-			// return Graph.fromJSON(obj);
-			return found;
-		} else {
-			return null;
-		}
+		return await GraphAPI.api.pathQuery(pathQuery, amount);
 	}
 
 	//endregion
